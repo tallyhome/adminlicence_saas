@@ -1,10 +1,23 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\DashboardController;
-use App\Http\Controllers\Admin\ProjectController;
 use App\Http\Controllers\Admin\SerialKeyController;
-use App\Http\Controllers\Auth\AdminAuthController;
+use App\Http\Controllers\Admin\AdminAuthController;
+use Illuminate\Support\Facades\Route;
+
+/*
+|--------------------------------------------------------------------------
+| Web Routes
+|--------------------------------------------------------------------------
+|
+| Here is where you can register web routes for your application. These
+| routes are loaded by the RouteServiceProvider and all of them will
+| be assigned to the "web" middleware group. Make something great!
+|
+*/
+
+// Inclure les routes d'administration
+require __DIR__.'/admin.php';
 
 Route::get('/', function () {
     return redirect()->route('admin.login');
@@ -16,19 +29,4 @@ Route::post('/admin/login', [AdminAuthController::class, 'login']);
 Route::post('/admin/logout', [AdminAuthController::class, 'logout'])->name('admin.logout');
 
 // Routes d'administration protégées
-Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
-    // Dashboard
-    Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
-    
-    // Gestion des projets
-    Route::resource('projects', ProjectController::class);
-    
-    // Gestion des clés de série
-    Route::resource('serial-keys', SerialKeyController::class);
-    Route::patch('/serial-keys/{serialKey}/revoke', [SerialKeyController::class, 'revoke'])->name('serial-keys.revoke');
-    
-    // Documentation d'intégration client
-    Route::get('/client-example', function () {
-        return view('admin.client-example');
-    })->name('client-example');
-});
+// Les routes d'administration sont définies dans admin.php

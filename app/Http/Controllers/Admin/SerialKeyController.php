@@ -6,10 +6,21 @@ use App\Http\Controllers\Controller;
 use App\Models\Project;
 use App\Models\SerialKey;
 use App\Services\LicenceService;
+use App\Services\LicenceHistoryService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class SerialKeyController extends Controller
 {
+    protected $licenceService;
+    protected $historyService;
+
+    public function __construct(LicenceService $licenceService, LicenceHistoryService $historyService)
+    {
+        $this->licenceService = $licenceService;
+        $this->historyService = $historyService;
+    }
+
     /**
      * Afficher la liste des clés de série.
      *
@@ -76,6 +87,14 @@ class SerialKeyController extends Controller
 
             $serialKey->save();
             $createdKeys[] = $serialKey;
+
+            // Enregistrer dans l'historique
+            $this->historyService->logAction($serialKey, 'created', [
+                'project_id' => $validated['project_id'],
+                'domain' => $validated['domain'],
+                'ip_address' => $validated['ip_address'],
+                'expires_at' => $validated['expires_at']
+            ]);
         }
 
         return redirect()->route('admin.serial-keys.index')
@@ -115,31 +134,23 @@ class SerialKeyController extends Controller
     public function update(Request $request, SerialKey $serialKey)
     {
         $validated = $request->validate([
-            'project_id' => 'required|exists:projects,id',
             'status' => 'required|in:active,revoked,expired,suspended',
             'domain' => 'nullable|string|max:255',
             'ip_address' => 'nullable|ip',
             'expires_at' => 'nullable|date',
         ]);
 
+        $oldData = $serialKey->toArray();
         $serialKey->update($validated);
 
-        return redirect()->route('admin.serial-keys.index')
+        // Enregistrer dans l'historique
+        $this->historyService->logAction($serialKey, 'updated', [
+            'old_data' => $oldData,
+            'new_data' => $validated
+        ]);
+
+        return redirect()->route('admin.serial-keys.show', $serialKey)
             ->with('success', 'Clé de série mise à jour avec succès.');
-    }
-
-    /**
-     * Révoquer une clé de série.
-     *
-     * @param  \App\Models\SerialKey  $serialKey
-     * @return \Illuminate\Http\RedirectResponse
-     */
-    public function revoke(SerialKey $serialKey)
-    {
-        $serialKey->update(['status' => 'revoked']);
-
-        return redirect()->back()
-            ->with('success', 'Clé de série révoquée avec succès.');
     }
 
     /**
@@ -150,24 +161,59 @@ class SerialKeyController extends Controller
      */
     public function destroy(SerialKey $serialKey)
     {
+        // Enregistrer dans l'historique avant la suppression
+        $this->historyService->logAction($serialKey, 'deleted', [
+            'project_id' => $serialKey->project_id,
+            'serial_key' => $serialKey->serial_key
+        ]);
+
         $serialKey->delete();
 
         return redirect()->route('admin.serial-keys.index')
             ->with('success', 'Clé de série supprimée avec succès.');
     }
-    
+
     /**
      * Révoquer une clé de série.
      *
-     * @param  \App\Models\SerialKey  $serialKey
-     * @param  \App\Services\LicenceService  $licenceService
+     * @param SerialKey $serialKey
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function revoke(SerialKey $serialKey, LicenceService $licenceService)
+    public function revoke(SerialKey $serialKey)
     {
-        $licenceService->revokeKey($serialKey);
+        $this->licenceService->revokeKey($serialKey);
+        
+        // Enregistrer dans l'historique
+        $this->historyService->logAction($serialKey, 'revoked', [
+            'old_status' => $serialKey->getOriginal('status'),
+            'new_status' => 'revoked',
+            'performed_by' => Auth::id(),
+            'ip_address' => request()->ip()
+        ]);
 
         return redirect()->route('admin.serial-keys.show', $serialKey)
-            ->with('success', 'Clé de série révoquée avec succès.');
+            ->with('success', 'La clé de série a été révoquée avec succès.');
+    }
+
+    /**
+     * Suspendre une clé de série.
+     *
+     * @param SerialKey $serialKey
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function suspend(SerialKey $serialKey)
+    {
+        $this->licenceService->suspendKey($serialKey);
+        
+        // Enregistrer dans l'historique
+        $this->historyService->logAction($serialKey, 'suspended', [
+            'old_status' => $serialKey->getOriginal('status'),
+            'new_status' => 'suspended',
+            'performed_by' => Auth::id(),
+            'ip_address' => request()->ip()
+        ]);
+
+        return redirect()->route('admin.serial-keys.show', $serialKey)
+            ->with('success', 'La clé de série a été suspendue avec succès.');
     }
 }
