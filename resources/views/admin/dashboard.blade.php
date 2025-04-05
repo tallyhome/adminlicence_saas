@@ -235,7 +235,6 @@
                 </table>
             </div>
             <div class="pagination-tailwind">
-                {{ $recentKeys->links() }}
             </div>
         </div>
     </div>
