@@ -1,7 +1,5 @@
 <?php
 
-use App\Http\Controllers\Admin\DashboardController;
-use App\Http\Controllers\Admin\SerialKeyController;
 use App\Http\Controllers\Admin\AdminAuthController;
 use Illuminate\Support\Facades\Route;
 
@@ -16,17 +14,15 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-// Inclure les routes d'administration
-require __DIR__.'/admin.php';
-
+// Route principale qui redirige vers la page de connexion admin
 Route::get('/', function () {
     return redirect()->route('admin.login');
 });
 
-// Routes d'authentification admin
-Route::get('/admin/login', [AdminAuthController::class, 'showLoginForm'])->name('admin.login');
-Route::post('/admin/login', [AdminAuthController::class, 'login']);
-Route::post('/admin/logout', [AdminAuthController::class, 'logout'])->name('admin.logout');
+// Définition explicite de la route 'login' qui redirige vers 'admin.login'
+Route::get('/login', function () {
+    return redirect()->route('admin.login');
+})->name('login');
 
-// Routes d'administration protégées
-// Les routes d'administration sont définies dans admin.php
+// Inclure les routes admin
+require __DIR__.'/admin.php';

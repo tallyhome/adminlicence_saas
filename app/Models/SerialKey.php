@@ -81,4 +81,12 @@ class SerialKey extends Model
     {
         return $this->ip_address === null || $this->ip_address === $ipAddress;
     }
+
+    /**
+     * Relation avec l'historique
+     */
+    public function history()
+    {
+        return $this->hasMany(SerialKeyHistory::class);
+    }
 }

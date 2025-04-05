@@ -15,10 +15,7 @@ class ProjectController extends Controller
      */
     public function index()
     {
-        $projects = Project::withCount(['serialKeys', 'serialKeys as active_keys_count' => function ($query) {
-            $query->where('status', 'active');
-        }])->latest()->paginate(10);
-
+        $projects = Project::with(['serialKeys', 'apiKeys'])->paginate(10);
         return view('admin.projects.index', compact('projects'));
     }
 
@@ -41,13 +38,13 @@ class ProjectController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'name' => 'required|string|max:255|unique:projects',
+            'name' => 'required|string|max:255',
             'description' => 'nullable|string',
         ]);
 
-        Project::create($validated);
+        $project = Project::create($validated);
 
-        return redirect()->route('admin.projects.index')
+        return redirect()->route('admin.projects.show', $project)
             ->with('success', 'Projet créé avec succès.');
     }
 
@@ -59,10 +56,7 @@ class ProjectController extends Controller
      */
     public function show(Project $project)
     {
-        $project->load(['serialKeys' => function ($query) {
-            $query->latest();
-        }]);
-
+        $project->load(['serialKeys', 'apiKeys']);
         return view('admin.projects.show', compact('project'));
     }
 
@@ -87,13 +81,13 @@ class ProjectController extends Controller
     public function update(Request $request, Project $project)
     {
         $validated = $request->validate([
-            'name' => 'required|string|max:255|unique:projects,name,' . $project->id,
+            'name' => 'required|string|max:255',
             'description' => 'nullable|string',
         ]);
 
         $project->update($validated);
 
-        return redirect()->route('admin.projects.index')
+        return redirect()->route('admin.projects.show', $project)
             ->with('success', 'Projet mis à jour avec succès.');
     }
 

@@ -178,4 +178,18 @@ class LicenceService
     {
         return hash('sha256', $keyId . time() . Str::random(32));
     }
+
+    /**
+     * Génère une nouvelle clé de licence unique
+     *
+     * @return string
+     */
+    public function generateKey(): string
+    {
+        do {
+            $key = strtoupper(Str::random(4) . '-' . Str::random(4) . '-' . Str::random(4) . '-' . Str::random(4));
+        } while (SerialKey::where('serial_key', $key)->exists());
+
+        return $key;
+    }
 }

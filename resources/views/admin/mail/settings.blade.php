@@ -1,137 +1,120 @@
-@extends('layouts.admin')
+@extends('admin.layouts.app')
+
+@section('title', 'Configuration des emails')
 
 @section('content')
-<div class="container-fluid px-4">
-    <h1 class="mt-4">Configuration des Emails</h1>
-    
-    @if(session('success'))
-        <div class="alert alert-success">
-            {{ session('success') }}
-        </div>
-    @endif
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Configuration des emails</h1>
+        <a href="{{ route('admin.dashboard') }}" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Retour
+        </a>
+    </div>
 
-    @if(session('error'))
-        <div class="alert alert-danger">
-            {{ session('error') }}
-        </div>
-    @endif
-
-    <div class="card mb-4">
+    <div class="card">
         <div class="card-header">
-            <i class="fas fa-envelope me-1"></i>
-            Paramètres SMTP
+            <h3 class="card-title">Paramètres SMTP</h3>
         </div>
         <div class="card-body">
             <form action="{{ route('admin.mail.settings.store') }}" method="POST">
                 @csrf
                 
-                <div class="row mb-3">
+                <div class="row">
                     <div class="col-md-6">
-                        <div class="form-group mb-3">
-                            <label for="mailer">Type de Mailer</label>
-                            <select name="mailer" id="mailer" class="form-control @error('mailer') is-invalid @enderror" required>
-                                <option value="smtp" {{ $mailConfig->mailer === 'smtp' ? 'selected' : '' }}>SMTP</option>
-                                <option value="sendmail" {{ $mailConfig->mailer === 'sendmail' ? 'selected' : '' }}>Sendmail</option>
+                        <!-- Driver -->
+                        <div class="mb-3">
+                            <label for="mail_driver" class="form-label">Driver</label>
+                            <select id="mail_driver" name="mail_driver" class="form-select @error('mail_driver') is-invalid @enderror" required>
+                                <option value="smtp" {{ old('mail_driver', $settings['mail_driver']) === 'smtp' ? 'selected' : '' }}>SMTP</option>
+                                <option value="mailgun" {{ old('mail_driver', $settings['mail_driver']) === 'mailgun' ? 'selected' : '' }}>Mailgun</option>
+                                <option value="ses" {{ old('mail_driver', $settings['mail_driver']) === 'ses' ? 'selected' : '' }}>Amazon SES</option>
+                                <option value="postmark" {{ old('mail_driver', $settings['mail_driver']) === 'postmark' ? 'selected' : '' }}>Postmark</option>
                             </select>
-                            @error('mailer')
+                            @error('mail_driver')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
 
-                        <div class="form-group mb-3">
-                            <label for="host">Serveur SMTP</label>
-                            <input type="text" name="host" id="host" class="form-control @error('host') is-invalid @enderror" 
-                                value="{{ old('host', $mailConfig->host) }}" required>
-                            @error('host')
+                        <!-- Host -->
+                        <div class="mb-3">
+                            <label for="mail_host" class="form-label">Serveur SMTP</label>
+                            <input type="text" id="mail_host" name="mail_host" class="form-control @error('mail_host') is-invalid @enderror" 
+                                   value="{{ old('mail_host', $settings['mail_host']) }}" required>
+                            @error('mail_host')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
 
-                        <div class="form-group mb-3">
-                            <label for="port">Port SMTP</label>
-                            <input type="number" name="port" id="port" class="form-control @error('port') is-invalid @enderror" 
-                                value="{{ old('port', $mailConfig->port) }}" required>
-                            @error('port')
+                        <!-- Port -->
+                        <div class="mb-3">
+                            <label for="mail_port" class="form-label">Port</label>
+                            <input type="number" id="mail_port" name="mail_port" class="form-control @error('mail_port') is-invalid @enderror" 
+                                   value="{{ old('mail_port', $settings['mail_port']) }}" required>
+                            @error('mail_port')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
 
-                        <div class="form-group mb-3">
-                            <label for="encryption">Chiffrement</label>
-                            <select name="encryption" id="encryption" class="form-control @error('encryption') is-invalid @enderror" required>
-                                <option value="tls" {{ $mailConfig->encryption === 'tls' ? 'selected' : '' }}>TLS</option>
-                                <option value="ssl" {{ $mailConfig->encryption === 'ssl' ? 'selected' : '' }}>SSL</option>
+                        <!-- Encryption -->
+                        <div class="mb-3">
+                            <label for="mail_encryption" class="form-label">Chiffrement</label>
+                            <select id="mail_encryption" name="mail_encryption" class="form-select @error('mail_encryption') is-invalid @enderror" required>
+                                <option value="tls" {{ old('mail_encryption', $settings['mail_encryption']) === 'tls' ? 'selected' : '' }}>TLS</option>
+                                <option value="ssl" {{ old('mail_encryption', $settings['mail_encryption']) === 'ssl' ? 'selected' : '' }}>SSL</option>
                             </select>
-                            @error('encryption')
+                            @error('mail_encryption')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
                     </div>
 
                     <div class="col-md-6">
-                        <div class="form-group mb-3">
-                            <label for="username">Nom d'utilisateur SMTP</label>
-                            <input type="text" name="username" id="username" class="form-control @error('username') is-invalid @enderror" 
-                                value="{{ old('username', $mailConfig->username) }}" required>
-                            @error('username')
+                        <!-- Username -->
+                        <div class="mb-3">
+                            <label for="mail_username" class="form-label">Nom d'utilisateur</label>
+                            <input type="text" id="mail_username" name="mail_username" class="form-control @error('mail_username') is-invalid @enderror" 
+                                   value="{{ old('mail_username', $settings['mail_username']) }}" required>
+                            @error('mail_username')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
 
-                        <div class="form-group mb-3">
-                            <label for="password">Mot de passe SMTP</label>
-                            <input type="password" name="password" id="password" class="form-control @error('password') is-invalid @enderror" 
-                                value="{{ old('password', $mailConfig->password) }}" required>
-                            @error('password')
+                        <!-- Password -->
+                        <div class="mb-3">
+                            <label for="mail_password" class="form-label">Mot de passe</label>
+                            <input type="password" id="mail_password" name="mail_password" class="form-control @error('mail_password') is-invalid @enderror" 
+                                   value="{{ old('mail_password', $settings['mail_password']) }}" required>
+                            @error('mail_password')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
 
-                        <div class="form-group mb-3">
-                            <label for="from_address">Adresse d'expédition</label>
-                            <input type="email" name="from_address" id="from_address" class="form-control @error('from_address') is-invalid @enderror" 
-                                value="{{ old('from_address', $mailConfig->from_address) }}" required>
-                            @error('from_address')
+                        <!-- From Address -->
+                        <div class="mb-3">
+                            <label for="mail_from_address" class="form-label">Adresse d'expédition</label>
+                            <input type="email" id="mail_from_address" name="mail_from_address" class="form-control @error('mail_from_address') is-invalid @enderror" 
+                                   value="{{ old('mail_from_address', $settings['mail_from_address']) }}" required>
+                            @error('mail_from_address')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
 
-                        <div class="form-group mb-3">
-                            <label for="from_name">Nom d'expédition</label>
-                            <input type="text" name="from_name" id="from_name" class="form-control @error('from_name') is-invalid @enderror" 
-                                value="{{ old('from_name', $mailConfig->from_name) }}" required>
-                            @error('from_name')
+                        <!-- From Name -->
+                        <div class="mb-3">
+                            <label for="mail_from_name" class="form-label">Nom d'expédition</label>
+                            <input type="text" id="mail_from_name" name="mail_from_name" class="form-control @error('mail_from_name') is-invalid @enderror" 
+                                   value="{{ old('mail_from_name', $settings['mail_from_name']) }}" required>
+                            @error('mail_from_name')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
                     </div>
                 </div>
 
-                <div class="form-group mb-3">
-                    <label for="template_name">Nom du modèle</label>
-                    <input type="text" name="template_name" id="template_name" class="form-control @error('template_name') is-invalid @enderror" 
-                        value="{{ old('template_name', $mailConfig->template_name) }}" required>
-                    @error('template_name')
-                        <div class="invalid-feedback">{{ $message }}</div>
-                    @enderror
-                </div>
-
-                <div class="form-group mb-3">
-                    <label for="template_content">Contenu du modèle</label>
-                    <textarea name="template_content" id="template_content" rows="5" 
-                        class="form-control @error('template_content') is-invalid @enderror" required
-                    >{{ old('template_content', $mailConfig->template_content) }}</textarea>
-                    @error('template_content')
-                        <div class="invalid-feedback">{{ $message }}</div>
-                    @enderror
-                </div>
-
-                <div class="d-flex justify-content-between">
-                    <button type="submit" class="btn btn-primary">Enregistrer la configuration</button>
-                    <form action="{{ route('admin.mail.test') }}" method="POST" class="d-inline">
-                        @csrf
-                        <button type="submit" class="btn btn-secondary">Envoyer un email de test</button>
-                    </form>
+                <div class="text-end">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i> Enregistrer les paramètres
+                    </button>
                 </div>
             </form>
         </div>

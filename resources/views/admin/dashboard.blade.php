@@ -1,149 +1,291 @@
-@extends('layouts.admin')
+@extends('admin.layouts.app')
 
-@section('title', 'Tableau de bord')
-
-@section('header', 'Tableau de bord')
+@section('title', __('Tableau de bord'))
 
 @section('content')
-<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-    <!-- Statistiques des projets -->
-    <div class="bg-white overflow-hidden shadow rounded-lg">
-        <div class="px-4 py-5 sm:p-6">
-            <dl>
-                <dt class="text-sm font-medium text-gray-500 truncate">Total des projets</dt>
-                <dd class="mt-1 text-3xl font-semibold text-gray-900">{{ $stats['total_projects'] }}</dd>
-            </dl>
+<div class="container-fluid">
+    <!-- Sélecteur de pagination -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="float-end">
+                <select class="form-select" id="perPageSelect" onchange="window.location.href='{{ route('admin.dashboard') }}?per_page=' + this.value">
+                    <option value="25" {{ $validPerPage == 25 ? 'selected' : '' }}>25 par page</option>
+                    <option value="50" {{ $validPerPage == 50 ? 'selected' : '' }}>50 par page</option>
+                    <option value="100" {{ $validPerPage == 100 ? 'selected' : '' }}>100 par page</option>
+                </select>
+            </div>
         </div>
     </div>
 
-    <!-- Statistiques des clés actives -->
-    <div class="bg-white overflow-hidden shadow rounded-lg">
-        <div class="px-4 py-5 sm:p-6">
-            <dl>
-                <dt class="text-sm font-medium text-gray-500 truncate">Clés actives</dt>
-                <dd class="mt-1 text-3xl font-semibold text-green-600">{{ $stats['active_keys'] }}</dd>
-            </dl>
+    <!-- Cartes de statistiques -->
+    <div class="row">
+        <div class="col-xl col-lg-4 col-md-6 mb-4">
+            <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                {{ __('Clés totales') }}</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $stats['total_keys'] }}</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-key fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl col-lg-4 col-md-6 mb-4">
+            <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                {{ __('Clés actives') }}</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $stats['active_keys'] }}</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-check-circle fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl col-lg-4 col-md-6 mb-4">
+            <div class="card border-left-info shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                                {{ __('Clés utilisées') }}</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $stats['used_keys'] }}</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-laptop fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl col-lg-6 col-md-6 mb-4">
+            <div class="card border-left-warning shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                                {{ __('Clés suspendues') }}</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $stats['suspended_keys'] }}</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-pause-circle fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl col-lg-6 col-md-6 mb-4">
+            <div class="card border-left-danger shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
+                                {{ __('Clés révoquées') }}</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $stats['revoked_keys'] }}</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-ban fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
-    <!-- Statistiques des clés révoquées -->
-    <div class="bg-white overflow-hidden shadow rounded-lg">
-        <div class="px-4 py-5 sm:p-6">
-            <dl>
-                <dt class="text-sm font-medium text-gray-500 truncate">Clés révoquées</dt>
-                <dd class="mt-1 text-3xl font-semibold text-red-600">{{ $stats['revoked_keys'] }}</dd>
-            </dl>
+    <!-- Statistiques des clés par projet -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card shadow">
+                <div class="card-header py-3 d-flex justify-content-between align-items-center">
+                    <h6 class="m-0 font-weight-bold text-primary">{{ __('Utilisation des clés par projet') }}</h6>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered" width="100%" cellspacing="0">
+                            <thead>
+                                <tr>
+                                    <th>{{ __('Projet') }}</th>
+                                    <th>{{ __('Clés totales') }}</th>
+                                    <th>{{ __('Clés utilisées') }}</th>
+                                    <th>{{ __('Clés disponibles') }}</th>
+                                    <th>{{ __('Statut') }}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($projectStats as $project)
+                                <tr>
+                                    <td>{{ $project->name }}</td>
+                                    <td>{{ $project->serialKeys_count }}</td>
+                                    <td>{{ $project->used_keys_count }}</td>
+                                    <td>{{ $project->available_keys_count }}</td>
+                                    <td>
+                                        @if($project->serialKeys_count > 0)
+                                            <div class="progress mb-2" style="height: 20px;">
+                                                @php
+                                                    $usedPercentage = ($project->used_keys_count / $project->serialKeys_count) * 100;
+                                                    $availablePercentage = 100 - $usedPercentage;
+                                                    $progressClass = $project->is_running_low ? 'bg-danger' : 'bg-success';
+                                                @endphp
+                                                <div class="progress-bar bg-primary" role="progressbar" style="width: {{ $usedPercentage }}%" 
+                                                     aria-valuenow="{{ $usedPercentage }}" aria-valuemin="0" aria-valuemax="100">
+                                                    {{ round($usedPercentage) }}% utilisées
+                                                </div>
+                                                <div class="progress-bar {{ $progressClass }}" role="progressbar" style="width: {{ $availablePercentage }}%" 
+                                                     aria-valuenow="{{ $availablePercentage }}" aria-valuemin="0" aria-valuemax="100">
+                                                    {{ round($availablePercentage) }}% disponibles
+                                                </div>
+                                            </div>
+                                            @if($project->is_running_low)
+                                                <span class="badge bg-danger">{{ __('Stock faible') }}</span>
+                                            @else
+                                                <span class="badge bg-success">{{ __('Stock suffisant') }}</span>
+                                            @endif
+                                        @else
+                                            <span class="badge bg-secondary">{{ __('Aucune clé') }}</span>
+                                        @endif
+                                    </td>
+                                </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
-    <!-- Statistiques des clés expirées -->
-    <div class="bg-white overflow-hidden shadow rounded-lg">
-        <div class="px-4 py-5 sm:p-6">
-            <dl>
-                <dt class="text-sm font-medium text-gray-500 truncate">Clés expirées</dt>
-                <dd class="mt-1 text-3xl font-semibold text-yellow-600">{{ $stats['expired_keys'] }}</dd>
-            </dl>
+    <!-- Graphiques -->
+    <div class="row">
+        <div class="col-xl-8 col-lg-7">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">{{ __('Utilisation des clés (30 derniers jours)') }}</h6>
+                </div>
+                <div class="card-body">
+                    <div class="chart-area">
+                        <canvas id="usageChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-4 col-lg-5">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">{{ __('Répartition par projet') }}</h6>
+                </div>
+                <div class="card-body">
+                    <div class="chart-pie pt-4">
+                        <canvas id="projectChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tableau des clés récentes -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">{{ __('Clés récentes') }}</h6>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>{{ __('Clé') }}</th>
+                            <th>{{ __('Projet') }}</th>
+                            <th>{{ __('Statut') }}</th>
+                            <th>{{ __('Date de création') }}</th>
+                            <th>{{ __('Actions') }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach($recentKeys as $key)
+                        <tr>
+                            <td>{{ $key->serial_key }}</td>
+                            <td>{{ $key->project->name }}</td>
+                            <td>
+                                <span class="badge badge-{{ $key->status == 'active' ? 'success' : ($key->status == 'suspended' ? 'warning' : 'danger') }}">
+                                    {{ __(ucfirst($key->status)) }}
+                                </span>
+                            </td>
+                            <td>{{ $key->created_at->format('d/m/Y H:i') }}</td>
+                            <td>
+                                <a href="{{ route('admin.serial-keys.show', $key) }}" class="btn btn-sm btn-info">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+            {{ $recentKeys->links() }}
         </div>
     </div>
 </div>
 
-<div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-    <!-- Projets récents -->
-    <div class="bg-white shadow overflow-hidden sm:rounded-lg">
-        <div class="px-4 py-5 sm:px-6 flex justify-between items-center">
-            <h3 class="text-lg leading-6 font-medium text-gray-900">Projets récents</h3>
-            <a href="{{ route('admin.projects.index') }}" class="text-sm text-indigo-600 hover:text-indigo-900">Voir tous</a>
-        </div>
-        <div class="border-t border-gray-200">
-            <ul class="divide-y divide-gray-200">
-                @forelse ($recentProjects as $project)
-                <li>
-                    <a href="{{ route('admin.projects.show', $project) }}" class="block hover:bg-gray-50">
-                        <div class="px-4 py-4 sm:px-6">
-                            <div class="flex items-center justify-between">
-                                <p class="text-sm font-medium text-indigo-600 truncate">{{ $project->name }}</p>
-                                <div class="ml-2 flex-shrink-0 flex">
-                                    <p class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                                        {{ $project->activeKeysCount() }} clés actives
-                                    </p>
-                                </div>
-                            </div>
-                            <div class="mt-2 sm:flex sm:justify-between">
-                                <div class="sm:flex">
-                                    <p class="flex items-center text-sm text-gray-500">
-                                        {{ $project->description ?? 'Aucune description' }}
-                                    </p>
-                                </div>
-                                <div class="mt-2 flex items-center text-sm text-gray-500 sm:mt-0">
-                                    <p>Créé le {{ $project->created_at->format('d/m/Y') }}</p>
-                                </div>
-                            </div>
-                        </div>
-                    </a>
-                </li>
-                @empty
-                <li class="px-4 py-4 sm:px-6 text-gray-500 text-center">
-                    Aucun projet créé pour le moment.
-                </li>
-                @endforelse
-            </ul>
-        </div>
-    </div>
+@push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // Graphique d'utilisation
+    const usageCtx = document.getElementById('usageChart').getContext('2d');
+    new Chart(usageCtx, {
+        type: 'line',
+        data: {
+            labels: {!! json_encode($usageStats->pluck('date')) !!},
+            datasets: [{
+                label: '{{ __("Utilisation") }}',
+                data: {!! json_encode($usageStats->pluck('count')) !!},
+                borderColor: 'rgb(75, 192, 192)',
+                tension: 0.1
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
 
-    <!-- Clés récentes -->
-    <div class="bg-white shadow overflow-hidden sm:rounded-lg">
-        <div class="px-4 py-5 sm:px-6 flex justify-between items-center">
-            <h3 class="text-lg leading-6 font-medium text-gray-900">Clés récentes</h3>
-            <a href="{{ route('admin.serial-keys.index') }}" class="text-sm text-indigo-600 hover:text-indigo-900">Voir toutes</a>
-        </div>
-        <div class="border-t border-gray-200">
-            <ul class="divide-y divide-gray-200">
-                @forelse ($recentKeys as $key)
-                <li>
-                    <a href="{{ route('admin.serial-keys.show', $key) }}" class="block hover:bg-gray-50">
-                        <div class="px-4 py-4 sm:px-6">
-                            <div class="flex items-center justify-between">
-                                <p class="text-sm font-medium text-indigo-600 truncate">{{ $key->serial_key }}</p>
-                                <div class="ml-2 flex-shrink-0 flex">
-                                    @if($key->status === 'active')
-                                    <p class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                                        Active
-                                    </p>
-                                    @elseif($key->status === 'revoked')
-                                    <p class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
-                                        Révoquée
-                                    </p>
-                                    @elseif($key->status === 'expired')
-                                    <p class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
-                                        Expirée
-                                    </p>
-                                    @else
-                                    <p class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">
-                                        Suspendue
-                                    </p>
-                                    @endif
-                                </div>
-                            </div>
-                            <div class="mt-2 sm:flex sm:justify-between">
-                                <div class="sm:flex">
-                                    <p class="flex items-center text-sm text-gray-500">
-                                        Projet: {{ $key->project->name }}
-                                    </p>
-                                </div>
-                                <div class="mt-2 flex items-center text-sm text-gray-500 sm:mt-0">
-                                    <p>{{ $key->expires_at ? 'Expire le ' . $key->expires_at->format('d/m/Y') : 'Sans expiration' }}</p>
-                                </div>
-                            </div>
-                        </div>
-                    </a>
-                </li>
-                @empty
-                <li class="px-4 py-4 sm:px-6 text-gray-500 text-center">
-                    Aucune clé créée pour le moment.
-                </li>
-                @endforelse
-            </ul>
-         </div>
-    </div>
-</div>
+    // Graphique de répartition par projet
+    const projectCtx = document.getElementById('projectChart').getContext('2d');
+    new Chart(projectCtx, {
+        type: 'pie',
+        data: {
+            labels: {!! json_encode($projectStats->pluck('name')) !!},
+            datasets: [{
+                data: {!! json_encode($projectStats->pluck('serial_keys_count')) !!},
+                backgroundColor: [
+                    'rgb(255, 99, 132)',
+                    'rgb(54, 162, 235)',
+                    'rgb(255, 205, 86)',
+                    'rgb(75, 192, 192)',
+                    'rgb(153, 102, 255)'
+                ]
+            }]
+        },
+        options: {
+            responsive: true
+        }
+    });
+</script>
+@endpush
 @endsection

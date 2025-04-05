@@ -120,4 +120,47 @@ return [
 
     'password_timeout' => env('AUTH_PASSWORD_TIMEOUT', 10800),
 
+    /*
+    |--------------------------------------------------------------------------
+    | Authentication Routes
+    |--------------------------------------------------------------------------
+    |
+    | Here you may specify the route names that will be used by Laravel's
+    | authentication system. This is particularly useful when you want to
+    | customize the default route names used by Laravel.
+    |
+    */
+
+    'routes' => [
+        'login' => 'admin.login',
+        'logout' => 'admin.logout',
+        'register' => null,
+        'password.request' => null,
+        'password.reset' => null,
+        'password.email' => null,
+        'password.update' => null,
+        'verification.notice' => null,
+        'verification.verify' => null,
+        'verification.send' => null,
+        'user-profile-information.update' => null,
+        'user-password.update' => null,
+        'password.confirm' => null,
+        'password.confirmation' => null,
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Custom Login Routes
+    |--------------------------------------------------------------------------
+    |
+    | Here you may specify custom login routes for different guards.
+    | This helps Laravel's authentication system use the correct routes.
+    |
+    */
+
+    'login_routes' => [
+        'web' => 'admin.login',
+        'admin' => 'admin.login',
+    ],
+
 ];
