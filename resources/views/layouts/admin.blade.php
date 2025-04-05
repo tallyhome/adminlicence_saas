@@ -14,6 +14,9 @@
     <!-- Scripts -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="{{ asset('css/custom-pagination.css') }}">
 </head>
 <body class="font-sans antialiased">
     <div class="min-h-screen bg-gray-100">
@@ -119,6 +122,22 @@
                 </div>
             </div>
         </main>
+        
+        <!-- Footer -->
+        <footer class="bg-white border-t border-gray-100 py-4 mt-auto">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex justify-between items-center">
+                    <div>
+                        &copy; {{ date('Y') }} {{ config('app.name') }}
+                    </div>
+                    <div>
+                        <a href="{{ route('admin.version') }}" class="text-gray-600 hover:text-gray-900">
+                            Version {{ config('version.full')() }}
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </footer>
     </div>
 </body>
 </html>

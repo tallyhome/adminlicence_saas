@@ -84,6 +84,11 @@
                         <i class="fas fa-book me-2"></i> Documentation API
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link {{ request()->routeIs('admin.version') ? 'active' : '' }}" href="{{ route('admin.version') }}">
+                        <i class="fas fa-code-branch me-2"></i> Informations de version
+                    </a>
+                </li>
             </ul>
         </div>
 
@@ -135,6 +140,9 @@
 
                 @yield('content')
             </div>
+            
+            <!-- Footer -->
+            @include('admin.layouts.partials.footer')
         </div>
     </div>
 

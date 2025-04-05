@@ -1,0 +1,32 @@
+/* Styles personnalisés pour la pagination */
+
+/* Masquer les grandes flèches de pagination et les liens numériques */
+.flex.items-center.justify-between svg,
+.flex.justify-between svg,
+.relative.inline-flex.items-center svg,
+.pagination-tailwind nav span[aria-current="page"],
+.pagination-tailwind nav a:not([rel="prev"]):not([rel="next"]) {
+    display: none !important;
+}
+
+/* Masquer complètement les boutons de pagination */
+.pagination-tailwind a[rel="prev"],
+.pagination-tailwind a[rel="next"] {
+    display: none !important;
+}
+
+/* Ajuster l'espacement et la taille des boutons de pagination */
+.pagination-tailwind nav {
+    margin-top: 1rem;
+}
+
+/* Réduire la taille des boutons de pagination */
+.pagination-tailwind .relative.inline-flex.items-center {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.875rem;
+}
+
+/* Assurer que les flèches sont bien alignées */
+.pagination-tailwind .relative.inline-flex.items-center svg {
+    vertical-align: middle;
+}

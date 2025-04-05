@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\MailController;
 use App\Http\Controllers\Admin\ProjectController;
 use App\Http\Controllers\Admin\SerialKeyController;
+use App\Http\Controllers\Admin\VersionController;
 use Illuminate\Support\Facades\Route;
 
 // Routes d'authentification
@@ -21,6 +22,9 @@ Route::middleware('auth:admin')->group(function () {
 
     // Tableau de bord
     Route::get('/', [DashboardController::class, 'index'])->name('admin.dashboard');
+    
+    // Informations de version
+    Route::get('/version', [VersionController::class, 'index'])->name('admin.version');
 
     // Gestion des projets
     Route::resource('projects', ProjectController::class)
