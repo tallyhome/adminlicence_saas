@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\AdminAuthController;
+use App\Http\Controllers\DocumentationController;
 use App\Http\Controllers\SubscriptionController;
 use App\Http\Controllers\WebhookController;
 use Illuminate\Support\Facades\Route;
@@ -21,7 +22,7 @@ Route::get('/', function () {
     return redirect()->route('admin.login');
 });
 
-// Définition explicite de la route 'login' qui redirige vers 'admin.login'
+// Define the login route that redirects to admin login
 Route::get('/login', function () {
     return redirect()->route('admin.login');
 })->name('login');
@@ -56,5 +57,12 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/subscription/resume', [SubscriptionController::class, 'resumeSubscription'])->name('subscription.resume');
 });
 
+// Routes de documentation
+Route::get('/documentation', [DocumentationController::class, 'index'])->name('documentation.index');
+Route::get('/documentation/api', [DocumentationController::class, 'apiIntegration'])->name('documentation.api');
+
 // Inclure les routes admin
 require __DIR__.'/admin.php';
+
+// Inclure les routes d'installation
+require __DIR__.'/install.php';

@@ -17,13 +17,9 @@ class RedirectIfUnauthenticated
      */
     public function handle(Request $request, Closure $next): Response
     {
-        // Définir explicitement la route 'login' si elle n'existe pas déjà
-        if (!Route::has('login')) {
-            Route::get('/login', function () {
-                return redirect()->route('admin.login');
-            })->name('login');
-        }
-
+        // Nous supprimons cette partie qui crée une redirection en boucle
+        // car la route login est déjà définie dans RouteServiceProvider et UrlServiceProvider
+        
         return $next($request);
     }
 }

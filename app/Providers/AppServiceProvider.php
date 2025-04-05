@@ -21,10 +21,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        // Commenté pour éviter les boucles de redirection
         // Définir la route 'login' au démarrage de l'application
         // Cette approche garantit que la route existe avant que tout composant essaie de l'utiliser
-        Route::get('/login', function () {
-            return redirect()->route('admin.login');
-        })->name('login');
+        // Route::get('/login', function () {
+        //     return redirect()->route('admin.login');
+        // })->name('login');
     }
 }

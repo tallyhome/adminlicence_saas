@@ -21,11 +21,12 @@ class AuthServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        // Commenté pour éviter les boucles de redirection
         // Register a fallback for the default 'login' route
-        if (!Route::has('login')) {
-            Route::get('/login', function () {
-                return redirect()->route('admin.login');
-            })->name('login');
-        }
+        // if (!Route::has('login')) {
+        //     Route::get('/login', function () {
+        //         return redirect()->route('admin.login');
+        //     })->name('login');
+        // }
     }
 }

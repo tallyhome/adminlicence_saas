@@ -5,8 +5,8 @@
  */
 
 // Configuration
-$apiBaseUrl = 'https://licence.myvcard.fr'; // URL de base de l'API (sans /public)
-$serialKey = 'XXXX-XXXX-XXXX-XXXX'; // Remplacez par une clé de licence valide
+$apiBaseUrl = 'http://127.0.0.1:8000/'; // URL de base de l'API (sans /public)
+$serialKey = '4WHX-DYIY-6D8Z-JW6F'; // Remplacez par une clé de licence valide
 $domain = 'example.com'; // Domaine de test
 $ipAddress = '192.168.1.1'; // Adresse IP de test (ou utilisez $_SERVER['REMOTE_ADDR'])
 

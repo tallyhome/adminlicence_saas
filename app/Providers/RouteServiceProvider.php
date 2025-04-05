@@ -24,10 +24,11 @@ class RouteServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // Définir la route 'login' avant le chargement des autres routes
-        Route::get('/login', function () {
-            return redirect()->route('admin.login');
-        })->name('login');
+        // Nous commentons cette définition de route car elle est déjà définie dans web.php
+        // et cause une boucle de redirection
+        // Route::get('/login', function () {
+        //     return redirect()->route('admin.login');
+        // })->name('login');
 
         $this->routes(function () {
             Route::middleware('api')

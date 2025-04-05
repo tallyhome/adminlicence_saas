@@ -21,10 +21,11 @@ class FixLoginRouteServiceProvider extends ServiceProvider
             $url = new class($routes, $app->make('request')) extends UrlGenerator {
                 public function route($name, $parameters = [], $absolute = true)
                 {
+                    // Commenté pour éviter les boucles de redirection
                     // Si la route est 'login', utiliser 'admin.login' à la place
-                    if ($name === 'login') {
-                        return parent::route('admin.login', $parameters, $absolute);
-                    }
+                    // if ($name === 'login') {
+                    //     return parent::route('admin.login', $parameters, $absolute);
+                    // }
                     
                     return parent::route($name, $parameters, $absolute);
                 }

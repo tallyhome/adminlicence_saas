@@ -21,10 +21,12 @@ class RedirectIfAuthenticated
 
         foreach ($guards as $guard) {
             if (Auth::guard($guard)->check()) {
+                // Si l'utilisateur est authentifié en tant qu'admin, redirigez-le vers le tableau de bord admin
                 if ($guard === 'admin') {
                     return redirect()->route('admin.dashboard');
                 }
-                return redirect('/');
+                // Pour tout autre type d'authentification, redirigez vers la page d'accueil
+                return redirect(RouteServiceProvider::HOME);
             }
         }
 

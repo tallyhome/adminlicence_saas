@@ -22,11 +22,12 @@ class UrlServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // Créer une route 'login' qui redirige vers 'admin.login'
-        if (!RouteFacade::has('login')) {
-            RouteFacade::get('/login', function () {
-                return redirect()->route('admin.login');
-            })->name('login');
-        }
+        // Nous commentons cette définition de route car elle est déjà définie dans web.php
+        // et cause une boucle de redirection
+        // if (!RouteFacade::has('login')) {
+        //     RouteFacade::get('/login', function () {
+        //         return redirect()->route('admin.login');
+        //     })->name('login');
+        // }
     }
 }

@@ -2,31 +2,29 @@
 
 namespace App\Http\Middleware;
 
+use App\Services\TranslationService;
 use Closure;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\App;
-use Illuminate\Support\Facades\Session;
 use Symfony\Component\HttpFoundation\Response;
 
 class LocaleMiddleware
 {
     /**
-     * Liste des langues disponibles dans l'application
+     * Le service de traduction
      *
-     * @var array
+     * @var TranslationService
      */
-    protected $availableLocales = [
-        'en', // Anglais
-        'fr', // Français
-        'es', // Espagnol
-        'de', // Allemand
-        'it', // Italien
-        'pt', // Portugais
-        'nl', // Néerlandais
-        'ru', // Russe
-        'zh', // Chinois
-        'ja'  // Japonais
-    ];
+    protected $translationService;
+
+    /**
+     * Constructeur
+     *
+     * @param TranslationService $translationService
+     */
+    public function __construct(TranslationService $translationService)
+    {
+        $this->translationService = $translationService;
+    }
 
     /**
      * Handle an incoming request.
@@ -39,24 +37,15 @@ class LocaleMiddleware
         if ($request->has('lang')) {
             $locale = $request->get('lang');
             
-            // Vérifier si la langue demandée est disponible
-            if (in_array($locale, $this->availableLocales)) {
-                // Stocker la langue dans la session
-                Session::put('locale', $locale);
-                App::setLocale($locale);
-            }
+            // Vérifier si la langue demandée est disponible et la définir
+            $this->translationService->setLocale($locale);
         } 
-        // Sinon, utiliser la langue stockée en session si elle existe
-        elseif (Session::has('locale') && in_array(Session::get('locale'), $this->availableLocales)) {
-            App::setLocale(Session::get('locale'));
-        } 
-        // Sinon, détecter la langue du navigateur
+        // Sinon, utiliser la détection automatique de langue via le service
         else {
-            $browserLocale = substr($request->server('HTTP_ACCEPT_LANGUAGE') ?? '', 0, 2);
-            
-            if (in_array($browserLocale, $this->availableLocales)) {
-                Session::put('locale', $browserLocale);
-                App::setLocale($browserLocale);
+            // Si aucune langue n'est définie en session, essayer de détecter celle du navigateur
+            if (!session()->has('locale')) {
+                $browserLocale = substr($request->server('HTTP_ACCEPT_LANGUAGE') ?? '', 0, 2);
+                $this->translationService->setLocale($browserLocale);
             }
         }
         

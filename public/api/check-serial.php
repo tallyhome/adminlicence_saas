@@ -52,13 +52,16 @@ if (!$result['valid']) {
         'message' => $result['message'],
     ]);
 } else {
+    // Générer un token si nécessaire
+    $token = $result['token'] ?? md5($data['serial_key'] . time() . rand(1000, 9999));
+    
     echo json_encode([
         'status' => 'success',
         'message' => 'Clé de série valide',
         'data' => [
-            'token' => $result['token'],
-            'project' => $result['project'],
-            'expires_at' => $result['expires_at'],
+            'token' => $token,
+            'project' => $result['project'] ?? '',
+            'expires_at' => $result['expires_at'] ?? null,
         ],
     ]);
 }
