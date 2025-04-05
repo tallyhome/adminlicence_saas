@@ -7,6 +7,9 @@
 
     <title>{{ config('app.name', 'Laravel') }} - @yield('title')</title>
 
+    <!-- Favicon -->
+    <link rel="icon" href="{{ asset('favicon.ico') }}">
+
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
@@ -14,6 +17,8 @@
     <!-- Styles -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="stylesheet" href="{{ asset('css/dark-mode.css') }}">
+
     <style>
         .sidebar {
             min-height: 100vh;
@@ -46,7 +51,7 @@
     </style>
     @stack('styles')
 </head>
-<body>
+<body class="{{ session('dark_mode') ? 'dark-mode' : '' }}">
     <div class="d-flex">
         <!-- Sidebar -->
         <div class="sidebar p-3" style="width: 250px;">
@@ -87,6 +92,11 @@
                 <li class="nav-item">
                     <a class="nav-link {{ request()->routeIs('admin.version') ? 'active' : '' }}" href="{{ route('admin.version') }}">
                         <i class="fas fa-code-branch me-2"></i> Informations de version
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {{ request()->routeIs('admin.settings.*') ? 'active' : '' }}" href="{{ route('admin.settings.index') }}">
+                        <i class="fas fa-cog me-2"></i> Paramètres
                     </a>
                 </li>
             </ul>
@@ -149,6 +159,7 @@
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.8/clipboard.min.js"></script>
+    <script src="{{ asset('js/dark-mode.js') }}"></script>
     @stack('scripts')
 </body>
 </html>

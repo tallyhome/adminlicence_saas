@@ -1,0 +1,113 @@
+{
+  "common": {
+    "dashboard": "Dashboard",
+    "projects": "Projects",
+    "serial_keys": "Serial Keys",
+    "api_documentation": "API Documentation",
+    "email": "Email",
+    "logout": "Logout",
+    "version": "Version",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "create": "Create",
+    "back": "Back",
+    "actions": "Actions",
+    "status": "Status",
+    "name": "Name",
+    "description": "Description",
+    "date": "Date",
+    "success": "Success",
+    "error": "Error",
+    "warning": "Warning",
+    "info": "Information"
+  },
+  "auth": {
+    "login": "Login",
+    "email": "Email address",
+    "password": "Password",
+    "remember_me": "Remember me",
+    "forgot_password": "Forgot your password?",
+    "login_button": "Sign in"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "welcome": "Welcome to AdminLicence",
+    "total_projects": "Total Projects",
+    "total_keys": "Total Keys",
+    "active_keys": "Active Keys",
+    "recent_activity": "Recent Activity"
+  },
+  "projects": {
+    "title": "Projects",
+    "create_project": "Create Project",
+    "edit_project": "Edit Project",
+    "project_name": "Project Name",
+    "project_description": "Project Description",
+    "project_status": "Project Status",
+    "active": "Active",
+    "inactive": "Inactive",
+    "no_projects": "No projects found"
+  },
+  "serial_keys": {
+    "title": "Serial Keys",
+    "create_key": "Create Key",
+    "edit_key": "Edit Key",
+    "key": "Key",
+    "project": "Project",
+    "status": "Status",
+    "expiration": "Expiration",
+    "no_keys": "No keys found",
+    "generate": "Generate",
+    "active": "Active",
+    "inactive": "Inactive",
+    "expired": "Expired"
+  },
+  "api": {
+    "title": "API Documentation",
+    "description": "Use these endpoints to integrate AdminLicence into your application",
+    "endpoint": "Endpoint",
+    "method": "Method",
+    "parameters": "Parameters",
+    "response": "Response",
+    "example": "Example"
+  },
+  "email": {
+    "title": "Email Configuration",
+    "settings": "Settings",
+    "driver": "Driver",
+    "host": "Host",
+    "port": "Port",
+    "username": "Username",
+    "password": "Password",
+    "encryption": "Encryption",
+    "from_address": "From Address",
+    "from_name": "From Name",
+    "test_email": "Send Test Email"
+  },
+  "subscription": {
+    "plans": "Subscription Plans",
+    "current_plan": "Current Plan",
+    "upgrade": "Upgrade",
+    "downgrade": "Downgrade",
+    "cancel": "Cancel Subscription",
+    "resume": "Resume Subscription",
+    "payment_methods": "Payment Methods",
+    "invoices": "Invoices",
+    "billing": "Billing"
+  },
+  "language": {
+    "select": "Select Language",
+    "en": "English",
+    "fr": "French",
+    "es": "Spanish",
+    "de": "German",
+    "it": "Italian",
+    "pt": "Portuguese",
+    "nl": "Dutch",
+    "ru": "Russian",
+    "zh": "Chinese",
+    "ja": "Japanese"
+  }
+}

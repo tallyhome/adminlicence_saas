@@ -25,13 +25,74 @@ class SerialKeyController extends Controller
     /**
      * Afficher la liste des clés de licence
      */
-    public function index()
+    public function index(Request $request)
     {
-        $serialKeys = SerialKey::with(['project'])
-            ->latest()
-            ->paginate(10);
+        // Récupérer les paramètres de pagination
+        $perPage = $request->input('per_page', 10);
+        $validPerPage = in_array($perPage, [10, 25, 50, 100, 500, 1000]) ? $perPage : 10;
+        
+        // Récupérer les paramètres de recherche et de filtrage
+        $search = $request->input('search');
+        $projectFilter = $request->input('project_id');
+        $domainFilter = $request->input('domain');
+        $ipFilter = $request->input('ip_address');
+        $statusFilter = $request->input('status');
+        
+        // Construire la requête
+        $query = SerialKey::with(['project']);
+        
+        // Appliquer les filtres
+        if ($projectFilter) {
+            $query->where('project_id', $projectFilter);
+        }
+        
+        if ($domainFilter) {
+            $query->where('domain', 'like', "%{$domainFilter}%");
+        }
+        
+        if ($ipFilter) {
+            $query->where('ip_address', 'like', "%{$ipFilter}%");
+        }
+        
+        if ($statusFilter) {
+            $query->where('status', $statusFilter);
+        }
+        
+        // Appliquer la recherche
+        if ($search) {
+            $query->where(function($q) use ($search) {
+                $q->where('serial_key', 'like', "%{$search}%")
+                  ->orWhere('domain', 'like', "%{$search}%")
+                  ->orWhere('ip_address', 'like', "%{$search}%")
+                  ->orWhereHas('project', function($q) use ($search) {
+                      $q->where('name', 'like', "%{$search}%");
+                  });
+            });
+        }
+        
+        // Récupérer les résultats
+        $serialKeys = $query->latest()->paginate($validPerPage)->appends(request()->query());
+        
+        // Récupérer la liste des projets pour le filtre
+        $projects = Project::all();
+        
+        // Liste des statuts pour le filtre
+        $statuses = [
+            'active' => 'Active',
+            'suspended' => 'Suspendue',
+            'revoked' => 'Révoquée',
+            'expired' => 'Expirée'
+        ];
+        
+        // Ajouter une logique pour détecter les clés expirées
+        if ($request->input('status') === 'expired') {
+            $query->where(function($q) {
+                $q->whereNotNull('expires_at')
+                  ->where('expires_at', '<', now());
+            });
+        }
 
-        return view('admin.serial-keys.index', compact('serialKeys'));
+        return view('admin.serial-keys.index', compact('serialKeys', 'projects', 'statuses'));
     }
 
     /**
@@ -50,7 +111,7 @@ class SerialKeyController extends Controller
     {
         $validated = $request->validate([
             'project_id' => 'required|exists:projects,id',
-            'quantity' => 'required|integer|min:1|max:100',
+            'quantity' => 'required|integer|min:1|max:100000',
             'domain' => 'nullable|string|max:255',
             'ip_address' => 'nullable|ip',
             'expires_at' => 'nullable|date|after:today',

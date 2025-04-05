@@ -20,8 +20,8 @@ class DashboardController extends Controller
     public function index(Request $request)
     {
         // Récupérer les paramètres de pagination
-        $perPage = $request->input('per_page', 25);
-        $validPerPage = in_array($perPage, [25, 50, 100]) ? $perPage : 25;
+        $perPage = $request->input('per_page', 10);
+        $validPerPage = in_array($perPage, [10, 25, 50, 100, 500, 1000]) ? $perPage : 10;
 
         // Statistiques générales
         $stats = [
@@ -30,10 +30,9 @@ class DashboardController extends Controller
             'suspended_keys' => SerialKey::where('status', 'suspended')->count(),
             'revoked_keys' => SerialKey::where('status', 'revoked')->count(),
             'used_keys' => SerialKey::where('status', 'active')
-                ->where(function($query) {
-                    $query->whereNotNull('domain')
-                          ->orWhereNotNull('ip_address');
-                })->count(),
+                ->whereNotNull('domain')
+                ->whereNotNull('ip_address')
+                ->count(),
             'total_projects' => Project::count(),
         ];
 

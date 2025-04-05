@@ -1,0 +1,113 @@
+{
+  "common": {
+    "dashboard": "Tableau de bord",
+    "projects": "Projets",
+    "serial_keys": "Clés de série",
+    "api_documentation": "Documentation API",
+    "email": "Email",
+    "logout": "Déconnexion",
+    "version": "Version",
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "delete": "Supprimer",
+    "edit": "Modifier",
+    "create": "Créer",
+    "back": "Retour",
+    "actions": "Actions",
+    "status": "Statut",
+    "name": "Nom",
+    "description": "Description",
+    "date": "Date",
+    "success": "Succès",
+    "error": "Erreur",
+    "warning": "Avertissement",
+    "info": "Information"
+  },
+  "auth": {
+    "login": "Connexion",
+    "email": "Adresse email",
+    "password": "Mot de passe",
+    "remember_me": "Se souvenir de moi",
+    "forgot_password": "Mot de passe oublié ?",
+    "login_button": "Se connecter"
+  },
+  "dashboard": {
+    "title": "Tableau de bord",
+    "welcome": "Bienvenue dans AdminLicence",
+    "total_projects": "Projets totaux",
+    "total_keys": "Clés totales",
+    "active_keys": "Clés actives",
+    "recent_activity": "Activité récente"
+  },
+  "projects": {
+    "title": "Projets",
+    "create_project": "Créer un projet",
+    "edit_project": "Modifier le projet",
+    "project_name": "Nom du projet",
+    "project_description": "Description du projet",
+    "project_status": "Statut du projet",
+    "active": "Actif",
+    "inactive": "Inactif",
+    "no_projects": "Aucun projet trouvé"
+  },
+  "serial_keys": {
+    "title": "Clés de série",
+    "create_key": "Créer une clé",
+    "edit_key": "Modifier la clé",
+    "key": "Clé",
+    "project": "Projet",
+    "status": "Statut",
+    "expiration": "Expiration",
+    "no_keys": "Aucune clé trouvée",
+    "generate": "Générer",
+    "active": "Active",
+    "inactive": "Inactive",
+    "expired": "Expirée"
+  },
+  "api": {
+    "title": "Documentation API",
+    "description": "Utilisez ces endpoints pour intégrer AdminLicence dans votre application",
+    "endpoint": "Endpoint",
+    "method": "Méthode",
+    "parameters": "Paramètres",
+    "response": "Réponse",
+    "example": "Exemple"
+  },
+  "email": {
+    "title": "Configuration Email",
+    "settings": "Paramètres",
+    "driver": "Driver",
+    "host": "Hôte",
+    "port": "Port",
+    "username": "Nom d'utilisateur",
+    "password": "Mot de passe",
+    "encryption": "Chiffrement",
+    "from_address": "Adresse d'expédition",
+    "from_name": "Nom d'expédition",
+    "test_email": "Envoyer un email de test"
+  },
+  "subscription": {
+    "plans": "Plans d'abonnement",
+    "current_plan": "Plan actuel",
+    "upgrade": "Mettre à niveau",
+    "downgrade": "Rétrograder",
+    "cancel": "Annuler l'abonnement",
+    "resume": "Reprendre l'abonnement",
+    "payment_methods": "Méthodes de paiement",
+    "invoices": "Factures",
+    "billing": "Facturation"
+  },
+  "language": {
+    "select": "Sélectionner la langue",
+    "en": "Anglais",
+    "fr": "Français",
+    "es": "Espagnol",
+    "de": "Allemand",
+    "it": "Italien",
+    "pt": "Portugais",
+    "nl": "Néerlandais",
+    "ru": "Russe",
+    "zh": "Chinois",
+    "ja": "Japonais"
+  }
+}

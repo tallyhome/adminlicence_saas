@@ -1,0 +1,113 @@
+{
+  "common": {
+    "dashboard": "Dashboard",
+    "projects": "Progetti",
+    "serial_keys": "Chiavi seriali",
+    "api_documentation": "Documentazione API",
+    "email": "Email",
+    "logout": "Disconnetti",
+    "version": "Versione",
+    "save": "Salva",
+    "cancel": "Annulla",
+    "delete": "Elimina",
+    "edit": "Modifica",
+    "create": "Crea",
+    "back": "Indietro",
+    "actions": "Azioni",
+    "status": "Stato",
+    "name": "Nome",
+    "description": "Descrizione",
+    "date": "Data",
+    "success": "Successo",
+    "error": "Errore",
+    "warning": "Avviso",
+    "info": "Informazione"
+  },
+  "auth": {
+    "login": "Accesso",
+    "email": "Indirizzo email",
+    "password": "Password",
+    "remember_me": "Ricordami",
+    "forgot_password": "Password dimenticata?",
+    "login_button": "Accedi"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "welcome": "Benvenuto in AdminLicence",
+    "total_projects": "Progetti totali",
+    "total_keys": "Chiavi totali",
+    "active_keys": "Chiavi attive",
+    "recent_activity": "Attività recente"
+  },
+  "projects": {
+    "title": "Progetti",
+    "create_project": "Crea progetto",
+    "edit_project": "Modifica progetto",
+    "project_name": "Nome progetto",
+    "project_description": "Descrizione progetto",
+    "project_status": "Stato progetto",
+    "active": "Attivo",
+    "inactive": "Inattivo",
+    "no_projects": "Nessun progetto trovato"
+  },
+  "serial_keys": {
+    "title": "Chiavi seriali",
+    "create_key": "Crea chiave",
+    "edit_key": "Modifica chiave",
+    "key": "Chiave",
+    "project": "Progetto",
+    "status": "Stato",
+    "expiration": "Scadenza",
+    "no_keys": "Nessuna chiave trovata",
+    "generate": "Genera",
+    "active": "Attiva",
+    "inactive": "Inattiva",
+    "expired": "Scaduta"
+  },
+  "api": {
+    "title": "Documentazione API",
+    "description": "Utilizza questi endpoint per integrare AdminLicence nella tua applicazione",
+    "endpoint": "Endpoint",
+    "method": "Metodo",
+    "parameters": "Parametri",
+    "response": "Risposta",
+    "example": "Esempio"
+  },
+  "email": {
+    "title": "Configurazione Email",
+    "settings": "Impostazioni",
+    "driver": "Driver",
+    "host": "Host",
+    "port": "Porta",
+    "username": "Nome utente",
+    "password": "Password",
+    "encryption": "Crittografia",
+    "from_address": "Indirizzo mittente",
+    "from_name": "Nome mittente",
+    "test_email": "Invia email di test"
+  },
+  "subscription": {
+    "plans": "Piani di abbonamento",
+    "current_plan": "Piano attuale",
+    "upgrade": "Aggiorna",
+    "downgrade": "Retrocedi",
+    "cancel": "Annulla abbonamento",
+    "resume": "Riprendi abbonamento",
+    "payment_methods": "Metodi di pagamento",
+    "invoices": "Fatture",
+    "billing": "Fatturazione"
+  },
+  "language": {
+    "select": "Seleziona lingua",
+    "en": "Inglese",
+    "fr": "Francese",
+    "es": "Spagnolo",
+    "de": "Tedesco",
+    "it": "Italiano",
+    "pt": "Portoghese",
+    "nl": "Olandese",
+    "ru": "Russo",
+    "zh": "Cinese",
+    "ja": "Giapponese"
+  }
+}

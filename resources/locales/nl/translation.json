@@ -1,0 +1,113 @@
+{
+  "common": {
+    "dashboard": "Dashboard",
+    "projects": "Projecten",
+    "serial_keys": "Serienummers",
+    "api_documentation": "API-documentatie",
+    "email": "E-mail",
+    "logout": "Uitloggen",
+    "version": "Versie",
+    "save": "Opslaan",
+    "cancel": "Annuleren",
+    "delete": "Verwijderen",
+    "edit": "Bewerken",
+    "create": "Aanmaken",
+    "back": "Terug",
+    "actions": "Acties",
+    "status": "Status",
+    "name": "Naam",
+    "description": "Beschrijving",
+    "date": "Datum",
+    "success": "Succes",
+    "error": "Fout",
+    "warning": "Waarschuwing",
+    "info": "Informatie"
+  },
+  "auth": {
+    "login": "Inloggen",
+    "email": "E-mailadres",
+    "password": "Wachtwoord",
+    "remember_me": "Onthoud mij",
+    "forgot_password": "Wachtwoord vergeten?",
+    "login_button": "Inloggen"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "welcome": "Welkom bij AdminLicence",
+    "total_projects": "Totaal projecten",
+    "total_keys": "Totaal sleutels",
+    "active_keys": "Actieve sleutels",
+    "recent_activity": "Recente activiteit"
+  },
+  "projects": {
+    "title": "Projecten",
+    "create_project": "Project aanmaken",
+    "edit_project": "Project bewerken",
+    "project_name": "Projectnaam",
+    "project_description": "Projectbeschrijving",
+    "project_status": "Projectstatus",
+    "active": "Actief",
+    "inactive": "Inactief",
+    "no_projects": "Geen projecten gevonden"
+  },
+  "serial_keys": {
+    "title": "Serienummers",
+    "create_key": "Sleutel aanmaken",
+    "edit_key": "Sleutel bewerken",
+    "key": "Sleutel",
+    "project": "Project",
+    "status": "Status",
+    "expiration": "Vervaldatum",
+    "no_keys": "Geen sleutels gevonden",
+    "generate": "Genereren",
+    "active": "Actief",
+    "inactive": "Inactief",
+    "expired": "Verlopen"
+  },
+  "api": {
+    "title": "API-documentatie",
+    "description": "Gebruik deze endpoints om AdminLicence in uw applicatie te integreren",
+    "endpoint": "Endpoint",
+    "method": "Methode",
+    "parameters": "Parameters",
+    "response": "Antwoord",
+    "example": "Voorbeeld"
+  },
+  "email": {
+    "title": "E-mailconfiguratie",
+    "settings": "Instellingen",
+    "driver": "Driver",
+    "host": "Host",
+    "port": "Poort",
+    "username": "Gebruikersnaam",
+    "password": "Wachtwoord",
+    "encryption": "Versleuteling",
+    "from_address": "Afzenderadres",
+    "from_name": "Afzendernaam",
+    "test_email": "Testmail versturen"
+  },
+  "subscription": {
+    "plans": "Abonnementsplannen",
+    "current_plan": "Huidig plan",
+    "upgrade": "Upgraden",
+    "downgrade": "Downgraden",
+    "cancel": "Abonnement opzeggen",
+    "resume": "Abonnement hervatten",
+    "payment_methods": "Betaalmethoden",
+    "invoices": "Facturen",
+    "billing": "Facturering"
+  },
+  "language": {
+    "select": "Taal selecteren",
+    "en": "Engels",
+    "fr": "Frans",
+    "es": "Spaans",
+    "de": "Duits",
+    "it": "Italiaans",
+    "pt": "Portugees",
+    "nl": "Nederlands",
+    "ru": "Russisch",
+    "zh": "Chinees",
+    "ja": "Japans"
+  }
+}

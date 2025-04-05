@@ -1,0 +1,28 @@
+# Rediriger tout le trafic vers le dossier public
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    
+    # Ne pas rediriger si le fichier ou dossier existe déjà
+    RewriteCond %{REQUEST_URI} !^/public/
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_FILENAME} !-f
+    
+    # Rediriger vers le dossier public
+    RewriteRule ^(.*)$ public/$1 [L]
+</IfModule>
+
+# Empêcher l'accès aux fichiers sensibles
+<FilesMatch "^\.env|composer\.json|composer\.lock|package\.json|package-lock\.json|phpunit\.xml|README\.md|webpack\.mix\.js|yarn\.lock">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+# Désactiver l'affichage du contenu des répertoires
+Options -Indexes
+
+# Protection contre les attaques XSS
+<IfModule mod_headers.c>
+    Header set X-XSS-Protection "1; mode=block"
+    Header set X-Content-Type-Options "nosniff"
+    Header set X-Frame-Options "SAMEORIGIN"
+</IfModule>

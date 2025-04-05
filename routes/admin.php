@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\MailController;
 use App\Http\Controllers\Admin\ProjectController;
 use App\Http\Controllers\Admin\SerialKeyController;
+use App\Http\Controllers\Admin\SettingsController;
 use App\Http\Controllers\Admin\VersionController;
 use Illuminate\Support\Facades\Route;
 
@@ -73,6 +74,13 @@ Route::middleware('auth:admin')->group(function () {
     // Configuration des emails
     Route::get('mail/settings', [MailController::class, 'index'])->name('admin.mail.settings');
     Route::post('mail/settings', [MailController::class, 'store'])->name('admin.mail.settings.store');
+
+    // Routes pour les paramètres généraux
+    Route::get('settings', [SettingsController::class, 'index'])->name('admin.settings.index');
+    Route::put('settings/profile', [SettingsController::class, 'updateProfile'])->name('admin.settings.update-profile');
+    Route::put('settings/password', [SettingsController::class, 'updatePassword'])->name('admin.settings.update-password');
+    Route::put('settings/favicon', [SettingsController::class, 'updateFavicon'])->name('admin.settings.update-favicon');
+    Route::put('settings/dark-mode', [SettingsController::class, 'toggleDarkMode'])->name('admin.settings.toggle-dark-mode');
     
     // Documentation API
     Route::get('api/documentation', function () {

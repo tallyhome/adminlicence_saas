@@ -1,0 +1,113 @@
+{
+  "common": {
+    "dashboard": "Панель управления",
+    "projects": "Проекты",
+    "serial_keys": "Серийные ключи",
+    "api_documentation": "Документация API",
+    "email": "Электронная почта",
+    "logout": "Выйти",
+    "version": "Версия",
+    "save": "Сохранить",
+    "cancel": "Отмена",
+    "delete": "Удалить",
+    "edit": "Редактировать",
+    "create": "Создать",
+    "back": "Назад",
+    "actions": "Действия",
+    "status": "Статус",
+    "name": "Имя",
+    "description": "Описание",
+    "date": "Дата",
+    "success": "Успех",
+    "error": "Ошибка",
+    "warning": "Предупреждение",
+    "info": "Информация"
+  },
+  "auth": {
+    "login": "Вход",
+    "email": "Электронная почта",
+    "password": "Пароль",
+    "remember_me": "Запомнить меня",
+    "forgot_password": "Забыли пароль?",
+    "login_button": "Войти"
+  },
+  "dashboard": {
+    "title": "Панель управления",
+    "welcome": "Добро пожаловать в AdminLicence",
+    "total_projects": "Всего проектов",
+    "total_keys": "Всего ключей",
+    "active_keys": "Активные ключи",
+    "recent_activity": "Последние действия"
+  },
+  "projects": {
+    "title": "Проекты",
+    "create_project": "Создать проект",
+    "edit_project": "Редактировать проект",
+    "project_name": "Название проекта",
+    "project_description": "Описание проекта",
+    "project_status": "Статус проекта",
+    "active": "Активный",
+    "inactive": "Неактивный",
+    "no_projects": "Проекты не найдены"
+  },
+  "serial_keys": {
+    "title": "Серийные ключи",
+    "create_key": "Создать ключ",
+    "edit_key": "Редактировать ключ",
+    "key": "Ключ",
+    "project": "Проект",
+    "status": "Статус",
+    "expiration": "Срок действия",
+    "no_keys": "Ключи не найдены",
+    "generate": "Сгенерировать",
+    "active": "Активный",
+    "inactive": "Неактивный",
+    "expired": "Истекший"
+  },
+  "api": {
+    "title": "Документация API",
+    "description": "Используйте эти конечные точки для интеграции AdminLicence в ваше приложение",
+    "endpoint": "Конечная точка",
+    "method": "Метод",
+    "parameters": "Параметры",
+    "response": "Ответ",
+    "example": "Пример"
+  },
+  "email": {
+    "title": "Настройка электронной почты",
+    "settings": "Настройки",
+    "driver": "Драйвер",
+    "host": "Хост",
+    "port": "Порт",
+    "username": "Имя пользователя",
+    "password": "Пароль",
+    "encryption": "Шифрование",
+    "from_address": "Адрес отправителя",
+    "from_name": "Имя отправителя",
+    "test_email": "Отправить тестовое письмо"
+  },
+  "subscription": {
+    "plans": "Планы подписки",
+    "current_plan": "Текущий план",
+    "upgrade": "Повысить",
+    "downgrade": "Понизить",
+    "cancel": "Отменить подписку",
+    "resume": "Возобновить подписку",
+    "payment_methods": "Способы оплаты",
+    "invoices": "Счета",
+    "billing": "Биллинг"
+  },
+  "language": {
+    "select": "Выбрать язык",
+    "en": "Английский",
+    "fr": "Французский",
+    "es": "Испанский",
+    "de": "Немецкий",
+    "it": "Итальянский",
+    "pt": "Португальский",
+    "nl": "Голландский",
+    "ru": "Русский",
+    "zh": "Китайский",
+    "ja": "Японский"
+  }
+}

@@ -13,8 +13,8 @@ return [
     */
 
     'major' => 1,      // Changements majeurs/incompatibles
-    'minor' => 1,      // Nouvelles fonctionnalités compatibles
-    'patch' => 5,      // Corrections de bugs compatibles
+    'minor' => 8,      // Nouvelles fonctionnalités compatibles
+    'patch' => 0,      // Corrections de bugs compatibles
     'release' => null, // Suffixe de version (alpha, beta, rc, etc.),
      
     // Date de la dernière mise à jour

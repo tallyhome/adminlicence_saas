@@ -4,18 +4,6 @@
 
 @section('content')
 <div class="container-fluid">
-    <!-- Sélecteur de pagination -->
-    <div class="row mb-4">
-        <div class="col-12">
-            <div class="float-end">
-                <select class="form-select" id="perPageSelect" onchange="window.location.href='{{ route('admin.dashboard') }}?per_page=' + this.value">
-                    <option value="25" {{ $validPerPage == 25 ? 'selected' : '' }}>25 par page</option>
-                    <option value="50" {{ $validPerPage == 50 ? 'selected' : '' }}>50 par page</option>
-                    <option value="100" {{ $validPerPage == 100 ? 'selected' : '' }}>100 par page</option>
-                </select>
-            </div>
-        </div>
-    </div>
 
     <!-- Cartes de statistiques -->
     <div class="row">
@@ -198,8 +186,18 @@
 
     <!-- Tableau des clés récentes -->
     <div class="card shadow mb-4">
-        <div class="card-header py-3">
+        <div class="card-header py-3 d-flex justify-content-between align-items-center">
             <h6 class="m-0 font-weight-bold text-primary">{{ __('Clés récentes') }}</h6>
+            <div>
+                <select class="form-select" id="perPageSelect" onchange="window.location.href='{{ route('admin.dashboard') }}?per_page=' + this.value">
+                    <option value="10" {{ $validPerPage == 10 ? 'selected' : '' }}>10 par page</option>
+                    <option value="25" {{ $validPerPage == 25 ? 'selected' : '' }}>25 par page</option>
+                    <option value="50" {{ $validPerPage == 50 ? 'selected' : '' }}>50 par page</option>
+                    <option value="100" {{ $validPerPage == 100 ? 'selected' : '' }}>100 par page</option>
+                    <option value="500" {{ $validPerPage == 500 ? 'selected' : '' }}>500 par page</option>
+                    <option value="1000" {{ $validPerPage == 1000 ? 'selected' : '' }}>1000 par page</option>
+                </select>
+            </div>
         </div>
         <div class="card-body">
             <div class="table-responsive">

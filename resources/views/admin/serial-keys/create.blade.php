@@ -41,7 +41,7 @@
                         <div class="mb-3">
                             <label for="quantity" class="form-label">Nombre de clés à générer</label>
                             <input type="number" id="quantity" name="quantity" class="form-control @error('quantity') is-invalid @enderror" 
-                                   value="{{ old('quantity', 1) }}" min="1" max="100" required>
+                                   value="{{ old('quantity', 1) }}" min="1" max="100000" required>
                             @error('quantity')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror

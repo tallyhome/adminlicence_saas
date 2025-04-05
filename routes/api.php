@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\LicenceApiController;
 
 /*
 |--------------------------------------------------------------------------
@@ -18,14 +19,17 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-// Routes pour la validation des licences
+// Route de test pour vérifier que l'API fonctionne
+Route::get('/test', [LicenceApiController::class, 'test']);
+
+// Routes pour la validation des licences - Version directe (pour compatibilité)
+Route::post('/check-serial', [LicenceApiController::class, 'checkSerial']);
+
+// Routes pour la validation des licences - Version avec préfixe v1
 Route::prefix('v1')->group(function () {
-    // Route publique pour vérifier une clé de licence
-    Route::post('/check-serial', 'App\Http\Controllers\Api\LicenceController@checkSerial');
+    // Route de test pour vérifier que l'API fonctionne
+    Route::get('/test', [LicenceApiController::class, 'test']);
     
-    // Routes protégées par authentification JWT
-    Route::middleware('auth.jwt')->group(function () {
-        // Récupération du code dynamique pour l'application cliente
-        Route::get('/get-secure-code', 'App\Http\Controllers\Api\LicenceController@getSecureCode');
-    });
+    // Route publique pour vérifier une clé de licence
+    Route::post('/check-serial', [LicenceApiController::class, 'checkSerial']);
 });

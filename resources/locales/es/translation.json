@@ -1,0 +1,113 @@
+{
+  "common": {
+    "dashboard": "Panel de control",
+    "projects": "Proyectos",
+    "serial_keys": "Claves de serie",
+    "api_documentation": "Documentación API",
+    "email": "Correo electrónico",
+    "logout": "Cerrar sesión",
+    "version": "Versión",
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "delete": "Eliminar",
+    "edit": "Editar",
+    "create": "Crear",
+    "back": "Volver",
+    "actions": "Acciones",
+    "status": "Estado",
+    "name": "Nombre",
+    "description": "Descripción",
+    "date": "Fecha",
+    "success": "Éxito",
+    "error": "Error",
+    "warning": "Advertencia",
+    "info": "Información"
+  },
+  "auth": {
+    "login": "Iniciar sesión",
+    "email": "Correo electrónico",
+    "password": "Contraseña",
+    "remember_me": "Recordarme",
+    "forgot_password": "¿Olvidó su contraseña?",
+    "login_button": "Acceder"
+  },
+  "dashboard": {
+    "title": "Panel de control",
+    "welcome": "Bienvenido a AdminLicence",
+    "total_projects": "Proyectos totales",
+    "total_keys": "Claves totales",
+    "active_keys": "Claves activas",
+    "recent_activity": "Actividad reciente"
+  },
+  "projects": {
+    "title": "Proyectos",
+    "create_project": "Crear proyecto",
+    "edit_project": "Editar proyecto",
+    "project_name": "Nombre del proyecto",
+    "project_description": "Descripción del proyecto",
+    "project_status": "Estado del proyecto",
+    "active": "Activo",
+    "inactive": "Inactivo",
+    "no_projects": "No se encontraron proyectos"
+  },
+  "serial_keys": {
+    "title": "Claves de serie",
+    "create_key": "Crear clave",
+    "edit_key": "Editar clave",
+    "key": "Clave",
+    "project": "Proyecto",
+    "status": "Estado",
+    "expiration": "Vencimiento",
+    "no_keys": "No se encontraron claves",
+    "generate": "Generar",
+    "active": "Activa",
+    "inactive": "Inactiva",
+    "expired": "Vencida"
+  },
+  "api": {
+    "title": "Documentación API",
+    "description": "Utilice estos endpoints para integrar AdminLicence en su aplicación",
+    "endpoint": "Endpoint",
+    "method": "Método",
+    "parameters": "Parámetros",
+    "response": "Respuesta",
+    "example": "Ejemplo"
+  },
+  "email": {
+    "title": "Configuración de correo",
+    "settings": "Ajustes",
+    "driver": "Driver",
+    "host": "Host",
+    "port": "Puerto",
+    "username": "Usuario",
+    "password": "Contraseña",
+    "encryption": "Cifrado",
+    "from_address": "Dirección de origen",
+    "from_name": "Nombre de origen",
+    "test_email": "Enviar correo de prueba"
+  },
+  "subscription": {
+    "plans": "Planes de suscripción",
+    "current_plan": "Plan actual",
+    "upgrade": "Mejorar",
+    "downgrade": "Degradar",
+    "cancel": "Cancelar suscripción",
+    "resume": "Reanudar suscripción",
+    "payment_methods": "Métodos de pago",
+    "invoices": "Facturas",
+    "billing": "Facturación"
+  },
+  "language": {
+    "select": "Seleccionar idioma",
+    "en": "Inglés",
+    "fr": "Francés",
+    "es": "Español",
+    "de": "Alemán",
+    "it": "Italiano",
+    "pt": "Portugués",
+    "nl": "Holandés",
+    "ru": "Ruso",
+    "zh": "Chino",
+    "ja": "Japonés"
+  }
+}

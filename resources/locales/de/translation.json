@@ -1,0 +1,113 @@
+{
+  "common": {
+    "dashboard": "Dashboard",
+    "projects": "Projekte",
+    "serial_keys": "Seriennummern",
+    "api_documentation": "API-Dokumentation",
+    "email": "E-Mail",
+    "logout": "Abmelden",
+    "version": "Version",
+    "save": "Speichern",
+    "cancel": "Abbrechen",
+    "delete": "Löschen",
+    "edit": "Bearbeiten",
+    "create": "Erstellen",
+    "back": "Zurück",
+    "actions": "Aktionen",
+    "status": "Status",
+    "name": "Name",
+    "description": "Beschreibung",
+    "date": "Datum",
+    "success": "Erfolg",
+    "error": "Fehler",
+    "warning": "Warnung",
+    "info": "Information"
+  },
+  "auth": {
+    "login": "Anmelden",
+    "email": "E-Mail-Adresse",
+    "password": "Passwort",
+    "remember_me": "Angemeldet bleiben",
+    "forgot_password": "Passwort vergessen?",
+    "login_button": "Anmelden"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "welcome": "Willkommen bei AdminLicence",
+    "total_projects": "Projekte insgesamt",
+    "total_keys": "Schlüssel insgesamt",
+    "active_keys": "Aktive Schlüssel",
+    "recent_activity": "Neueste Aktivitäten"
+  },
+  "projects": {
+    "title": "Projekte",
+    "create_project": "Projekt erstellen",
+    "edit_project": "Projekt bearbeiten",
+    "project_name": "Projektname",
+    "project_description": "Projektbeschreibung",
+    "project_status": "Projektstatus",
+    "active": "Aktiv",
+    "inactive": "Inaktiv",
+    "no_projects": "Keine Projekte gefunden"
+  },
+  "serial_keys": {
+    "title": "Seriennummern",
+    "create_key": "Schlüssel erstellen",
+    "edit_key": "Schlüssel bearbeiten",
+    "key": "Schlüssel",
+    "project": "Projekt",
+    "status": "Status",
+    "expiration": "Ablaufdatum",
+    "no_keys": "Keine Schlüssel gefunden",
+    "generate": "Generieren",
+    "active": "Aktiv",
+    "inactive": "Inaktiv",
+    "expired": "Abgelaufen"
+  },
+  "api": {
+    "title": "API-Dokumentation",
+    "description": "Verwenden Sie diese Endpunkte, um AdminLicence in Ihre Anwendung zu integrieren",
+    "endpoint": "Endpunkt",
+    "method": "Methode",
+    "parameters": "Parameter",
+    "response": "Antwort",
+    "example": "Beispiel"
+  },
+  "email": {
+    "title": "E-Mail-Konfiguration",
+    "settings": "Einstellungen",
+    "driver": "Treiber",
+    "host": "Host",
+    "port": "Port",
+    "username": "Benutzername",
+    "password": "Passwort",
+    "encryption": "Verschlüsselung",
+    "from_address": "Absenderadresse",
+    "from_name": "Absendername",
+    "test_email": "Test-E-Mail senden"
+  },
+  "subscription": {
+    "plans": "Abonnementpläne",
+    "current_plan": "Aktueller Plan",
+    "upgrade": "Upgrade",
+    "downgrade": "Downgrade",
+    "cancel": "Abonnement kündigen",
+    "resume": "Abonnement fortsetzen",
+    "payment_methods": "Zahlungsmethoden",
+    "invoices": "Rechnungen",
+    "billing": "Abrechnung"
+  },
+  "language": {
+    "select": "Sprache auswählen",
+    "en": "Englisch",
+    "fr": "Französisch",
+    "es": "Spanisch",
+    "de": "Deutsch",
+    "it": "Italienisch",
+    "pt": "Portugiesisch",
+    "nl": "Niederländisch",
+    "ru": "Russisch",
+    "zh": "Chinesisch",
+    "ja": "Japanisch"
+  }
+}
