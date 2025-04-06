@@ -21,6 +21,7 @@ class EventServiceProvider extends ServiceProvider
         'App\\Events\\NewSupportTicket' => [],
         'App\\Events\\SupportTicketStatusChanged' => [],
         'App\\Events\\LicenceStatusChanged' => [],
+        'App\\Events\\NewPayment' => [],
     ];
 
     /**

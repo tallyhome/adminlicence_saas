@@ -30,13 +30,13 @@
 
                     <div class="mb-3">
                         <h5>URL du QR Code</h5>
-                        <textarea class="form-control" rows="3" readonly>{{ $qrCodeUrl }}</textarea>
+                        <textarea class="form-control" rows="3" readonly>{{ $otpauthUrl }}</textarea>
                     </div>
 
                     <div class="mb-3">
                         <h5>QR Code</h5>
                         <div class="text-center p-3 bg-light rounded">
-                            <img src="{{ $googleChartUrl }}" alt="QR Code" class="img-fluid">
+                            {!! $qrCode !!}
                         </div>
                     </div>
                 </div>

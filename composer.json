@@ -15,15 +15,16 @@
         "laravel/ui": "*",
         "pragmarx/google2fa": "^8.0",
         "pragmarx/google2fa-laravel": "*",
-        "spatie/laravel-ignition": "^2.0"
+        "spatie/laravel-ignition": "^2.0",
+        "bacon/bacon-qr-code": "^2.0"
     },
     "require-dev": {
         "fakerphp/faker": "^1.9.1",
         "laravel/pail": "^1.2.2",
         "laravel/pint": "^1.0",
         "laravel/sail": "^1.18",
+        "laravel/telescope": "^5.0",
         "mockery/mockery": "^1.4.4",
-        "nunomaduro/collision": "^8.0",
         "phpunit/phpunit": "^10.1"
     },
     "autoload": {

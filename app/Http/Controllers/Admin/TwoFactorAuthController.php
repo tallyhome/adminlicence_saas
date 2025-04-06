@@ -7,6 +7,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use PragmaRX\Google2FA\Google2FA;
 use Illuminate\Support\Str;
+use BaconQrCode\Renderer\ImageRenderer;
+use BaconQrCode\Renderer\Image\SvgImageBackEnd;
+use BaconQrCode\Renderer\RendererStyle\RendererStyle;
+use BaconQrCode\Writer;
 
 class TwoFactorAuthController extends Controller
 {
@@ -26,12 +30,23 @@ class TwoFactorAuthController extends Controller
             $admin->save();
         }
         
-        // Générer le QR code
-        $qrCodeUrl = $google2fa->getQRCodeUrl(
+        // Générer l'URL otpauth
+        $otpauthUrl = $google2fa->getQRCodeUrl(
             config('app.name'),
             $admin->email,
             $admin->two_factor_secret
         );
+        
+        // Générer le QR code en SVG
+        $renderer = new ImageRenderer(
+            new RendererStyle(200),
+            new SvgImageBackEnd()
+        );
+        $writer = new Writer($renderer);
+        $qrCode = $writer->writeString($otpauthUrl);
+        
+        // Convertir le SVG en URL data pour l'affichage dans une balise img
+        $qrCodeUrl = 'data:image/svg+xml;base64,' . base64_encode($qrCode);
         
         return view('admin.settings.two-factor', [
             'admin' => $admin,
@@ -183,5 +198,28 @@ class TwoFactorAuthController extends Controller
         session()->forget('admin_2fa_id');
         
         return redirect()->intended(route('admin.dashboard'));
+    }
+
+    /**
+     * Vérifier le code d'authentification à deux facteurs.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function verifyCode(Request $request)
+    {
+        $request->validate([
+            'code' => 'required|string|size:6',
+        ]);
+
+        $admin = Auth::guard('admin')->user();
+        $google2fa = new Google2FA();
+
+        // Vérifier le code fourni
+        $valid = $google2fa->verifyKey($admin->two_factor_secret, $request->code);
+
+        return response()->json([
+            'valid' => $valid
+        ]);
     }
 }

@@ -7,6 +7,7 @@ use App\Models\InvoiceItem;
 use App\Models\PaymentMethod;
 use App\Models\Subscription;
 use App\Models\Tenant;
+use App\Services\WebSocketService;
 use Exception;
 use Illuminate\Support\Facades\Log;
 use PayPalCheckoutSdk\Core\PayPalHttpClient;
@@ -310,6 +311,9 @@ class PayPalService
                 'period_end' => now()->addMonth(), // Assuming monthly billing
                 'type' => InvoiceItem::TYPE_SUBSCRIPTION,
             ]);
+            
+            // Envoyer une notification pour le nouveau paiement
+            app(WebSocketService::class)->notifyNewPayment($invoice);
             
             return true;
         } catch (Exception $e) {

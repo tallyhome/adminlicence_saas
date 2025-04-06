@@ -58,7 +58,7 @@
                         <div class="mt-3">
                             <p class="mb-2">1. Scannez le code QR avec votre application d'authentification :</p>
                             <div class="text-center p-3 bg-light rounded mb-3">
-                                <img src="https://chart.googleapis.com/chart?chs=200x200&chld=M|0&cht=qr&chl={{ urlencode('otpauth://totp/' . config('app.name') . ':' . $admin->email . '?secret=' . $secret . '&issuer=' . config('app.name')) }}" 
+                                <img src="{{ $qrCodeUrl }}" 
                                      alt="QR Code" class="img-fluid">
                             </div>
                             

@@ -94,7 +94,7 @@
                     @endif
                 </div>
                 <div>
-                    <span>{{ config('app.name', 'AdminLicence') }} v{{ config('version.number', '1.0.0') }}</span>
+                    <span>{{ config('app.name', 'AdminLicence') }} v{{ config('version.full')() }}</span>
                 </div>
             </div>
         </div>

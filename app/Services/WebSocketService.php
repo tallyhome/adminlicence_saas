@@ -91,6 +91,20 @@ class WebSocketService
      */
     public function notifyNewPayment(Invoice $invoice): void
     {
-        // À implémenter dans une future version
+        try {
+            // Envoyer des notifications par email aux administrateurs
+            $admins = Admin::all();
+            
+            foreach ($admins as $admin) {
+                $admin->notify(new \App\Notifications\NewPayment($invoice));
+            }
+            
+            // Diffuser l'événement via WebSocket
+            Event::dispatch(new \App\Events\NewPayment($invoice));
+            
+            Log::info('Notification WebSocket envoyée pour le nouveau paiement de la facture #' . $invoice->number);
+        } catch (\Exception $e) {
+            Log::error("Erreur lors de l'envoi de la notification WebSocket: " . $e->getMessage());
+        }
     }
 }

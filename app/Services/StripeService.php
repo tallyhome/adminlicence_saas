@@ -7,6 +7,7 @@ use App\Models\InvoiceItem;
 use App\Models\PaymentMethod;
 use App\Models\Subscription;
 use App\Models\Tenant;
+use App\Services\WebSocketService;
 use Exception;
 use Illuminate\Support\Facades\Log;
 use Stripe\StripeClient;
@@ -274,6 +275,9 @@ class StripeService
                     'type' => $item->type === 'subscription' ? InvoiceItem::TYPE_SUBSCRIPTION : InvoiceItem::TYPE_INVOICE_ITEM,
                 ]);
             }
+            
+            // Envoyer une notification pour le nouveau paiement
+            app(WebSocketService::class)->notifyNewPayment($invoice);
             
             return true;
         } catch (Exception $e) {

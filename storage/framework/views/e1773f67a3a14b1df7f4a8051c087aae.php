@@ -30,13 +30,14 @@
 
                     <div class="mb-3">
                         <h5>URL du QR Code</h5>
-                        <textarea class="form-control" rows="3" readonly><?php echo e($qrCodeUrl); ?></textarea>
+                        <textarea class="form-control" rows="3" readonly><?php echo e($otpauthUrl); ?></textarea>
                     </div>
 
                     <div class="mb-3">
                         <h5>QR Code</h5>
                         <div class="text-center p-3 bg-light rounded">
-                            <img src="<?php echo e($googleChartUrl); ?>" alt="QR Code" class="img-fluid">
+                            <?php echo $qrCode; ?>
+
                         </div>
                     </div>
                 </div>

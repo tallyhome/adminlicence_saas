@@ -37,6 +37,7 @@ class SerialKeyController extends Controller
         $domainFilter = $request->input('domain');
         $ipFilter = $request->input('ip_address');
         $statusFilter = $request->input('status');
+        $usedFilter = $request->input('used');
         
         // Construire la requête
         $query = SerialKey::with(['project']);
@@ -70,6 +71,22 @@ class SerialKeyController extends Controller
             });
         }
         
+        // Ajouter une logique pour détecter les clés expirées
+        if ($request->input('status') === 'expired') {
+            $query->where(function($q) {
+                $q->whereNotNull('expires_at')
+                  ->where('expires_at', '<', now());
+            });
+        }
+        
+        // Ajouter une logique pour détecter les clés utilisées
+        if ($usedFilter === 'true') {
+            $query->where(function($q) {
+                $q->whereNotNull('domain')
+                  ->orWhereNotNull('ip_address');
+            });
+        }
+        
         // Récupérer les résultats
         $serialKeys = $query->latest()->paginate($validPerPage)->appends(request()->query());
         
@@ -85,22 +102,6 @@ class SerialKeyController extends Controller
             'used' => 'Utilisé'
         ];
         
-        // Ajouter une logique pour détecter les clés expirées
-        if ($request->input('status') === 'expired') {
-            $query->where(function($q) {
-                $q->whereNotNull('expires_at')
-                  ->where('expires_at', '<', now());
-            });
-        }
-        
-        // Ajouter une logique pour détecter les clés utilisées
-        if ($request->input('status') === 'used') {
-            $query->where(function($q) {
-                $q->whereNotNull('domain')
-                  ->orWhereNotNull('ip_address');
-            });
-        }
-
         return view('admin.serial-keys.index', compact('serialKeys', 'projects', 'statuses'));
     }
 

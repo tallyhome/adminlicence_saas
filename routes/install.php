@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware(['web'])->group(function () {
     // Page d'accueil du wizard d'installation
-    Route::get('/install', [InstallController::class, 'index'])->name('install.index');
+    Route::get('/install', [InstallController::class, 'index'])->name('install.welcome');
     
     // Étape 1: Configuration de la base de données
     Route::get('/install/database', [InstallController::class, 'database'])->name('install.database');

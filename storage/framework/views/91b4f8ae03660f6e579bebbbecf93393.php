@@ -66,6 +66,13 @@
                         <i class="fas fa-tachometer-alt me-2"></i> Tableau de bord
                     </a>
                 </li>
+
+                <!-- Gestion des licences -->
+                <li class="nav-item">
+                    <a class="nav-link <?php echo e(request()->routeIs('admin.projects.*') ? 'active' : ''); ?>" href="<?php echo e(route('admin.projects.index')); ?>">
+                        <i class="fas fa-project-diagram me-2"></i> Projets
+                    </a>
+                </li>
                 <li class="nav-item">
                     <a class="nav-link <?php echo e(request()->routeIs('admin.serial-keys.*') ? 'active' : ''); ?>" href="<?php echo e(route('admin.serial-keys.index')); ?>">
                         <i class="fas fa-key me-2"></i> Clés de licence
@@ -76,16 +83,76 @@
                         <i class="fas fa-code me-2"></i> Clés API
                     </a>
                 </li>
+
+                <!-- Gestion des emails -->
                 <li class="nav-item">
-                    <a class="nav-link <?php echo e(request()->routeIs('admin.projects.*') ? 'active' : ''); ?>" href="<?php echo e(route('admin.projects.index')); ?>">
-                        <i class="fas fa-project-diagram me-2"></i> Projets
+                    <a class="nav-link" data-bs-toggle="collapse" href="#emailSubmenu" role="button">
+                        <i class="fas fa-envelope me-2"></i> Emails
                     </a>
+                    <div class="collapse <?php echo e(request()->routeIs('admin.mail.*') || request()->routeIs('admin.email.*') ? 'show' : ''); ?>" id="emailSubmenu">
+                        <ul class="nav flex-column ms-3">
+                            <li class="nav-item">
+                                <a class="nav-link <?php echo e(request()->routeIs('admin.mail.settings') ? 'active' : ''); ?>" href="<?php echo e(route('admin.mail.settings')); ?>">
+                                    <i class="fas fa-cog me-2"></i> Configuration SMTP
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link <?php echo e(request()->routeIs('admin.mail.providers.index') ? 'active' : ''); ?>" href="<?php echo e(route('admin.mail.providers.index')); ?>">
+                                    <i class="fas fa-envelope"></i>
+                                    <span>Fournisseurs d'email</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link <?php echo e(request()->routeIs('admin.mail.providers.phpmail.*') ? 'active' : ''); ?>" href="<?php echo e(route('admin.mail.providers.phpmail.index')); ?>">
+                                    <i class="fas fa-envelope"></i>
+                                    <span>PHPMail</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link <?php echo e(request()->routeIs('admin.mail.providers.mailchimp.*') ? 'active' : ''); ?>" href="<?php echo e(route('admin.mail.providers.mailchimp.index')); ?>">
+                                    <i class="fas fa-envelope"></i>
+                                    <span>Mailchimp</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link <?php echo e(request()->routeIs('admin.mail.providers.rapidmail.*') ? 'active' : ''); ?>" href="<?php echo e(route('admin.mail.providers.rapidmail.index')); ?>">
+                                    <i class="fas fa-envelope"></i>
+                                    <span>Rapidmail</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link <?php echo e(request()->routeIs('admin.email.templates.*') ? 'active' : ''); ?>" href="<?php echo e(route('admin.email.templates.index')); ?>">
+                                    <i class="fas fa-file-alt me-2"></i> Templates
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
                 </li>
+
+                <!-- Support -->
                 <li class="nav-item">
-                    <a class="nav-link <?php echo e(request()->routeIs('admin.mail.*') ? 'active' : ''); ?>" href="<?php echo e(route('admin.mail.settings')); ?>">
-                        <i class="fas fa-envelope me-2"></i> Configuration email
+                    <a class="nav-link" data-bs-toggle="collapse" href="#supportSubmenu" role="button">
+                        <i class="fas fa-headset me-2"></i> Support
                     </a>
+                    <div class="collapse <?php echo e(request()->routeIs('admin.tickets.*') || request()->routeIs('admin.super.tickets.*') ? 'show' : ''); ?>" id="supportSubmenu">
+                        <ul class="nav flex-column ms-3">
+                            <li class="nav-item">
+                                <a class="nav-link <?php echo e(request()->routeIs('admin.tickets.*') && !request()->routeIs('admin.super.tickets.*') ? 'active' : ''); ?>" href="<?php echo e(route('admin.tickets.index')); ?>">
+                                    <i class="fas fa-ticket-alt me-2"></i> Tickets
+                                </a>
+                            </li>
+                            <?php if(auth()->guard('admin')->user()->is_super_admin): ?>
+                            <li class="nav-item">
+                                <a class="nav-link <?php echo e(request()->routeIs('admin.super.tickets.*') ? 'active' : ''); ?>" href="<?php echo e(route('admin.super.tickets.index')); ?>">
+                                    <i class="fas fa-user-shield me-2"></i> Super Admin Tickets
+                                </a>
+                            </li>
+                            <?php endif; ?>
+                        </ul>
+                    </div>
                 </li>
+
+                <!-- Documentation et Version -->
                 <li class="nav-item">
                     <a class="nav-link <?php echo e(request()->routeIs('admin.api.documentation') ? 'active' : ''); ?>" href="<?php echo e(route('admin.api.documentation')); ?>">
                         <i class="fas fa-book me-2"></i> Documentation API
@@ -96,10 +163,26 @@
                         <i class="fas fa-code-branch me-2"></i> Informations de version
                     </a>
                 </li>
+
+                <!-- Paramètres -->
                 <li class="nav-item">
-                    <a class="nav-link <?php echo e(request()->routeIs('admin.settings.*') ? 'active' : ''); ?>" href="<?php echo e(route('admin.settings.index')); ?>">
+                    <a class="nav-link" data-bs-toggle="collapse" href="#settingsSubmenu" role="button">
                         <i class="fas fa-cog me-2"></i> Paramètres
                     </a>
+                    <div class="collapse <?php echo e(request()->routeIs('admin.settings.*') ? 'show' : ''); ?>" id="settingsSubmenu">
+                        <ul class="nav flex-column ms-3">
+                            <li class="nav-item">
+                                <a class="nav-link <?php echo e(request()->routeIs('admin.settings.index') ? 'active' : ''); ?>" href="<?php echo e(route('admin.settings.index')); ?>">
+                                    <i class="fas fa-sliders-h me-2"></i> Général
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link <?php echo e(request()->routeIs('admin.settings.two-factor') ? 'active' : ''); ?>" href="<?php echo e(route('admin.settings.two-factor')); ?>">
+                                    <i class="fas fa-shield-alt me-2"></i> 2FA
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
                 </li>
             </ul>
         </div>
@@ -164,11 +247,6 @@
             <?php echo $__env->make('admin.layouts.partials.footer', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
         </div>
     </div>
-    <footer class="footer mt-auto py-3 bg-light">
-        <div class="container text-center">
-            <span class="text-muted">© <?php echo e(date('Y')); ?> <?php echo e(config('app.name')); ?> - v<?php echo e(config('version.full')()); ?></span>
-        </div>
-    </footer>
 
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>

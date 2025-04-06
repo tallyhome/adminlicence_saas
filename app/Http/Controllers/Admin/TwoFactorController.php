@@ -7,6 +7,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use PragmaRX\Google2FA\Google2FA;
 use Illuminate\Support\Str;
+use BaconQrCode\Renderer\ImageRenderer;
+use BaconQrCode\Renderer\Image\SvgImageBackEnd;
+use BaconQrCode\Renderer\RendererStyle\RendererStyle;
+use BaconQrCode\Writer;
 
 class TwoFactorController extends Controller
 {
@@ -29,13 +33,21 @@ class TwoFactorController extends Controller
             $secret
         );
         
-        // URL pour l'API Google Chart
-        $googleChartUrl = 'https://chart.googleapis.com/chart?chs=200x200&chld=M|0&cht=qr&chl=' . urlencode($qrCodeUrl);
+        // Générer le QR code en SVG
+        $renderer = new ImageRenderer(
+            new RendererStyle(200),
+            new SvgImageBackEnd()
+        );
+        $writer = new Writer($renderer);
+        $qrCode = $writer->writeString($qrCodeUrl);
+        
+        // Convertir le SVG en URL data pour l'affichage dans une balise img
+        $qrCodeUrl = 'data:image/svg+xml;base64,' . base64_encode($qrCode);
         
         return view('admin.settings.test-google2fa', [
             'secret' => $secret,
-            'qrCodeUrl' => $qrCodeUrl,
-            'googleChartUrl' => $googleChartUrl
+            'otpauthUrl' => $qrCodeUrl,
+            'qrCode' => $qrCode
         ]);
     }
     

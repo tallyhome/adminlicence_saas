@@ -2,94 +2,122 @@
 
 @section('title', __('Tableau de bord'))
 
+@section('styles')
+<style>
+    .card-link {
+        transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    }
+    .card-link:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+    }
+    .card-link .card {
+        transition: border-color 0.2s ease-in-out;
+    }
+    .card-link:hover .card {
+        border-color: #007bff;
+    }
+</style>
+@endsection
+
 @section('content')
 <div class="container-fluid">
 
     <!-- Cartes de statistiques -->
     <div class="row">
         <div class="col-xl col-lg-4 col-md-6 mb-4">
-            <div class="card border-left-primary shadow h-100 py-2">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                {{ __('Clés totales') }}</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $stats['total_keys'] }}</div>
-                        </div>
-                        <div class="col-auto">
-                            <i class="fas fa-key fa-2x text-gray-300"></i>
+            <a href="{{ route('admin.serial-keys.index') }}" class="text-decoration-none card-link">
+                <div class="card border-left-primary shadow h-100 py-2">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                    {{ __('Clés totales') }}</div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $stats['total_keys'] }}</div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fas fa-key fa-2x text-gray-300"></i>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            </a>
         </div>
 
         <div class="col-xl col-lg-4 col-md-6 mb-4">
-            <div class="card border-left-success shadow h-100 py-2">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                                {{ __('Clés actives') }}</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $stats['active_keys'] }}</div>
-                        </div>
-                        <div class="col-auto">
-                            <i class="fas fa-check-circle fa-2x text-gray-300"></i>
+            <a href="{{ route('admin.serial-keys.index', ['status' => 'active']) }}" class="text-decoration-none card-link">
+                <div class="card border-left-success shadow h-100 py-2">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                    {{ __('Clés actives') }}</div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $stats['active_keys'] }}</div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fas fa-check-circle fa-2x text-gray-300"></i>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            </a>
         </div>
 
         <div class="col-xl col-lg-4 col-md-6 mb-4">
-            <div class="card border-left-info shadow h-100 py-2">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
-                                {{ __('Clés utilisées') }}</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $stats['used_keys'] }}</div>
-                        </div>
-                        <div class="col-auto">
-                            <i class="fas fa-laptop fa-2x text-gray-300"></i>
+            <a href="{{ route('admin.serial-keys.index', ['used' => 'true']) }}" class="text-decoration-none card-link">
+                <div class="card border-left-info shadow h-100 py-2">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                                    {{ __('Clés utilisées') }}</div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $stats['used_keys'] }}</div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fas fa-laptop fa-2x text-gray-300"></i>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            </a>
         </div>
 
         <div class="col-xl col-lg-6 col-md-6 mb-4">
-            <div class="card border-left-warning shadow h-100 py-2">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
-                                {{ __('Clés suspendues') }}</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $stats['suspended_keys'] }}</div>
-                        </div>
-                        <div class="col-auto">
-                            <i class="fas fa-pause-circle fa-2x text-gray-300"></i>
+            <a href="{{ route('admin.serial-keys.index', ['status' => 'suspended']) }}" class="text-decoration-none card-link">
+                <div class="card border-left-warning shadow h-100 py-2">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                                    {{ __('Clés suspendues') }}</div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $stats['suspended_keys'] }}</div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fas fa-pause-circle fa-2x text-gray-300"></i>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            </a>
         </div>
 
         <div class="col-xl col-lg-6 col-md-6 mb-4">
-            <div class="card border-left-danger shadow h-100 py-2">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
-                                {{ __('Clés révoquées') }}</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $stats['revoked_keys'] }}</div>
-                        </div>
-                        <div class="col-auto">
-                            <i class="fas fa-ban fa-2x text-gray-300"></i>
+            <a href="{{ route('admin.serial-keys.index', ['status' => 'revoked']) }}" class="text-decoration-none card-link">
+                <div class="card border-left-danger shadow h-100 py-2">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
+                                    {{ __('Clés révoquées') }}</div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $stats['revoked_keys'] }}</div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fas fa-ban fa-2x text-gray-300"></i>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            </a>
         </div>
     </div>
 
