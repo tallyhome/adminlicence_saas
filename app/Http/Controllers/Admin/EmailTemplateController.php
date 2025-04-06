@@ -19,7 +19,7 @@ class EmailTemplateController extends Controller
 
     public function index()
     {
-        $templates = EmailTemplate::all();
+        $templates = EmailTemplate::paginate(10);
         $languages = $this->translationService->getAvailableLanguages();
         return view('admin.email.templates.index', compact('templates', 'languages'));
     }

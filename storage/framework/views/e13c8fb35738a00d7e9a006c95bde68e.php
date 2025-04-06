@@ -1,15 +1,15 @@
-@extends('admin.layouts.app')
 
-@section('title', 'Gestion des templates')
 
-@section('content')
+<?php $__env->startSection('title', 'Gestion des templates'); ?>
+
+<?php $__env->startSection('content'); ?>
 <div class="container-fluid">
     <!-- En-tête -->
     <div class="row mb-4">
         <div class="col">
             <div class="d-flex justify-content-between align-items-center">
                 <h1 class="h3">Templates d'email</h1>
-                <a href="{{ route('admin.email.templates.create') }}" class="btn btn-primary">
+                <a href="<?php echo e(route('admin.email.templates.create')); ?>" class="btn btn-primary">
                     <i class="fas fa-plus me-2"></i>Nouveau template
                 </a>
             </div>
@@ -32,26 +32,26 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach($templates as $template)
+                                <?php $__currentLoopData = $templates; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $template): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                 <tr>
-                                    <td>{{ $template->name }}</td>
-                                    <td>{{ $template->subject }}</td>
-                                    <td>{{ $template->description }}</td>
+                                    <td><?php echo e($template->name); ?></td>
+                                    <td><?php echo e($template->subject); ?></td>
+                                    <td><?php echo e($template->description); ?></td>
                                     <td>
                                         <div class="btn-group">
-                                            <a href="{{ route('admin.email.templates.edit', $template) }}" class="btn btn-sm btn-primary">
+                                            <a href="<?php echo e(route('admin.email.templates.edit', $template)); ?>" class="btn btn-sm btn-primary">
                                                 <i class="fas fa-edit"></i>
                                             </a>
-                                            <a href="{{ route('admin.email.templates.preview', $template) }}" class="btn btn-sm btn-info">
+                                            <a href="<?php echo e(route('admin.email.templates.preview', $template)); ?>" class="btn btn-sm btn-info">
                                                 <i class="fas fa-eye"></i>
                                             </a>
-                                            <button type="button" class="btn btn-sm btn-danger" onclick="deleteTemplate({{ $template->id }})">
+                                            <button type="button" class="btn btn-sm btn-danger" onclick="deleteTemplate(<?php echo e($template->id); ?>)">
                                                 <i class="fas fa-trash"></i>
                                             </button>
                                         </div>
                                     </td>
                                 </tr>
-                                @endforeach
+                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                             </tbody>
                         </table>
                     </div>
@@ -166,9 +166,9 @@
     </div>
 </div>
 
-@endsection
+<?php $__env->stopSection(); ?>
 
-@push('scripts')
+<?php $__env->startPush('scripts'); ?>
 <script>
 function deleteTemplate(templateId) {
     if (!confirm('Êtes-vous sûr de vouloir supprimer ce template ?')) {
@@ -177,7 +177,7 @@ function deleteTemplate(templateId) {
 
     const form = document.createElement('form');
     form.method = 'POST';
-    form.action = `{{ route('admin.email.templates.index') }}/${templateId}`;
+    form.action = `<?php echo e(route('admin.email.templates.index')); ?>/${templateId}`;
     form.style.display = 'none';
 
     const csrfToken = document.createElement('input');
@@ -252,7 +252,7 @@ function saveVariable(btn) {
     };
 
     if (isNew) {
-        fetch('{{ route("admin.email.variables.store") }}', {
+        fetch('<?php echo e(route("admin.email.variables.store")); ?>', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -270,7 +270,7 @@ function saveVariable(btn) {
         });
     } else {
         const variableId = row.dataset.id;
-        fetch(`{{ route("admin.email.variables.index") }}/${variableId}`, {
+        fetch(`<?php echo e(route("admin.email.variables.index")); ?>/${variableId}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
@@ -297,7 +297,7 @@ function deleteVariable(btn) {
     const row = btn.closest('tr');
     const variableId = row.dataset.id;
 
-    fetch(`{{ route("admin.email.variables.index") }}/${variableId}`, {
+    fetch(`<?php echo e(route("admin.email.variables.index")); ?>/${variableId}`, {
         method: 'DELETE',
         headers: {
             'Content-Type': 'application/json',
@@ -322,4 +322,5 @@ function cancelEdit(btn) {
     location.reload();
 }
 </script>
-@endpush
+<?php $__env->stopPush(); ?>
+<?php echo $__env->make('admin.layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH R:\Adev\200  -  test\adminlicence\resources\views/admin/email/templates/index.blade.php ENDPATH**/ ?>

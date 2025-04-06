@@ -11,7 +11,13 @@ class RapidmailController extends Controller
     public function index()
     {
         $config = MailConfig::where('provider', 'rapidmail')->first();
-        return view('admin.mail.providers.rapidmail.index', compact('config'));
+        $pageTitle = 'Configuration Rapidmail';
+        $breadcrumbs = [
+            ['name' => 'Dashboard', 'url' => route('admin.dashboard')],
+            ['name' => 'Email', 'url' => route('admin.mail.settings')],
+            ['name' => 'Rapidmail', 'url' => '#']
+        ];
+        return view('admin.mail.providers.rapidmail.index', compact('config', 'pageTitle', 'breadcrumbs'));
     }
 
     public function update(Request $request)

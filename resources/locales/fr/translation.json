@@ -112,7 +112,9 @@
     "zh": "Chinois",
     "ja": "Japonais",
     "tr": "Turc",
-    "ar": "Arabe"
+    "ar": "Arabe",
+    "changed_successfully": "La langue a été changée avec succès",
+    "invalid_locale": "La langue sélectionnée n'est pas disponible"
   },
   "install": {
     "title": "Assistant d'installation",

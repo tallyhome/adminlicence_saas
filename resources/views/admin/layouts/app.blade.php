@@ -16,6 +16,9 @@
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
 
+    <!-- Flag Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/6.6.6/css/flag-icons.min.css" rel="stylesheet">
+
     <!-- Styles -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
@@ -50,6 +53,57 @@
             margin-left: 250px;
             width: calc(100% - 250px);
         }
+        /* Styles pour le sélecteur de langue */
+        .navbar .nav-item.dropdown .nav-link {
+            color: white !important;
+            padding: 0.5rem;
+            display: flex;
+            align-items: center;
+            font-size: 0.875rem;
+        }
+        .navbar .dropdown-menu {
+            min-width: 120px;
+            max-width: 120px;
+            padding: 0.25rem 0;
+        }
+        .navbar .dropdown-item {
+            padding: 0.4rem 1rem;
+            font-size: 0.875rem;
+            display: flex;
+            align-items: center;
+        }
+        .navbar .dropdown-item.active {
+            background-color: #f8f9fa;
+            color: #333;
+        }
+        .navbar .dropdown-item:hover {
+            background-color: #e9ecef;
+        }
+        /* Styles pour les drapeaux */
+        .flag-icon {
+            display: inline-block;
+            width: 1.2em;
+            height: 0.9em;
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            margin-right: 0.5em;
+            vertical-align: middle;
+            box-shadow: 0 0 1px rgba(0,0,0,0.2);
+            border-radius: 2px;
+        }
+        .flag-icon-fr { background-image: url(https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/6.6.6/flags/4x3/fr.svg); }
+        .flag-icon-gb { background-image: url(https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/6.6.6/flags/4x3/gb.svg); }
+        .flag-icon-es { background-image: url(https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/6.6.6/flags/4x3/es.svg); }
+        .flag-icon-de { background-image: url(https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/6.6.6/flags/4x3/de.svg); }
+        .flag-icon-it { background-image: url(https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/6.6.6/flags/4x3/it.svg); }
+        .flag-icon-pt { background-image: url(https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/6.6.6/flags/4x3/pt.svg); }
+        .flag-icon-nl { background-image: url(https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/6.6.6/flags/4x3/nl.svg); }
+        .flag-icon-ru { background-image: url(https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/6.6.6/flags/4x3/ru.svg); }
+        .flag-icon-cn { background-image: url(https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/6.6.6/flags/4x3/cn.svg); }
+        .flag-icon-jp { background-image: url(https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/6.6.6/flags/4x3/jp.svg); }
+        .flag-icon-tr { background-image: url(https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/6.6.6/flags/4x3/tr.svg); }
+        .flag-icon-sa { background-image: url(https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/6.6.6/flags/4x3/sa.svg); }
     </style>
     @stack('styles')
 </head>
@@ -86,43 +140,39 @@
 
                 <!-- Gestion des emails -->
                 <li class="nav-item">
-                    <a class="nav-link" data-bs-toggle="collapse" href="#emailSubmenu" role="button">
-                        <i class="fas fa-envelope me-2"></i> Emails
+                    <a href="#" class="nav-link" data-bs-toggle="collapse" data-bs-target="#emailSubmenu">
+                        <i class="fas fa-envelope me-2"></i>Email
                     </a>
-                    <div class="collapse {{ request()->routeIs('admin.mail.*') || request()->routeIs('admin.email.*') ? 'show' : '' }}" id="emailSubmenu">
+                    <div class="collapse" id="emailSubmenu">
                         <ul class="nav flex-column ms-3">
                             <li class="nav-item">
-                                <a class="nav-link {{ request()->routeIs('admin.mail.settings') ? 'active' : '' }}" href="{{ route('admin.mail.settings') }}">
-                                    <i class="fas fa-cog me-2"></i> Configuration SMTP
+                                <a class="nav-link" href="{{ route('admin.mail.settings') }}">
+                                    <i class="fas fa-cog me-2"></i>Paramètres
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link {{ request()->routeIs('admin.mail.providers.index') ? 'active' : '' }}" href="{{ route('admin.mail.providers.index') }}">
-                                    <i class="fas fa-envelope"></i>
-                                    <span>Fournisseurs d'email</span>
+                                <a class="nav-link" href="{{ route('admin.mail.providers.phpmail.index') }}">
+                                    <i class="fas fa-mail-bulk me-2"></i>PHPMail
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link {{ request()->routeIs('admin.mail.providers.phpmail.*') ? 'active' : '' }}" href="{{ route('admin.mail.providers.phpmail.index') }}">
-                                    <i class="fas fa-envelope"></i>
-                                    <span>PHPMail</span>
+                                <a class="nav-link" href="{{ route('admin.mail.providers.mailgun.index') }}">
+                                    <i class="fas fa-mail-bulk me-2"></i>Mailgun
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link {{ request()->routeIs('admin.mail.providers.mailchimp.*') ? 'active' : '' }}" href="{{ route('admin.mail.providers.mailchimp.index') }}">
-                                    <i class="fas fa-envelope"></i>
-                                    <span>Mailchimp</span>
+                                <a class="nav-link" href="{{ route('admin.mail.providers.mailchimp.index') }}">
+                                    <i class="fas fa-mail-bulk me-2"></i>Mailchimp
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link {{ request()->routeIs('admin.mail.providers.rapidmail.*') ? 'active' : '' }}" href="{{ route('admin.mail.providers.rapidmail.index') }}">
-                                    <i class="fas fa-envelope"></i>
-                                    <span>Rapidmail</span>
+                                <a class="nav-link" href="{{ route('admin.mail.providers.rapidmail.index') }}">
+                                    <i class="fas fa-mail-bulk me-2"></i>Rapidmail
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link {{ request()->routeIs('admin.email.templates.*') ? 'active' : '' }}" href="{{ route('admin.email.templates.index') }}">
-                                    <i class="fas fa-file-alt me-2"></i> Templates
+                                <a class="nav-link" href="{{ route('admin.email.templates.index') }}">
+                                    <i class="fas fa-file-alt me-2"></i>Templates
                                 </a>
                             </li>
                         </ul>
@@ -152,11 +202,25 @@
                     </div>
                 </li>
 
-                <!-- Documentation et Version -->
+                <!-- Documentation -->
                 <li class="nav-item">
-                    <a class="nav-link {{ request()->routeIs('admin.api.documentation') ? 'active' : '' }}" href="{{ route('admin.api.documentation') }}">
-                        <i class="fas fa-book me-2"></i> Documentation API
+                    <a class="nav-link" data-bs-toggle="collapse" href="#documentationSubmenu" role="button">
+                        <i class="fas fa-book me-2"></i> Documentation
                     </a>
+                    <div class="collapse {{ request()->routeIs('admin.api.documentation') || request()->routeIs('admin.licence.documentation') ? 'show' : '' }}" id="documentationSubmenu">
+                        <ul class="nav flex-column ms-3">
+                            <li class="nav-item">
+                                <a class="nav-link {{ request()->routeIs('admin.api.documentation') ? 'active' : '' }}" href="http://localhost:8050/api-documentation">
+                                    <i class="fas fa-code me-2"></i> Documentation API
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link {{ request()->routeIs('admin.licence.documentation') ? 'active' : '' }}" href="{{ route('admin.licence.documentation') }}">
+                                    <i class="fas fa-key me-2"></i> Documentation des clés
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link {{ request()->routeIs('admin.version') ? 'active' : '' }}" href="{{ route('admin.version') }}">
@@ -197,6 +261,10 @@
                     </button>
                     <div class="collapse navbar-collapse" id="navbarNav">
                         <ul class="navbar-nav ms-auto">
+                            <!-- Language Selector -->
+                            <li class="nav-item">
+                                @include('admin.layouts.partials.language-selector')
+                            </li>
                             <!-- Composant de notifications -->
                             <li class="nav-item">
                                 @include('admin.layouts.partials.notifications')

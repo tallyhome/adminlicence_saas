@@ -6,6 +6,8 @@ use App\Services\TranslationService;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Session;
 
 class LocaleMiddleware
 {
@@ -36,19 +38,35 @@ class LocaleMiddleware
         // Vérifier si une langue est spécifiée dans l'URL
         if ($request->has('lang')) {
             $locale = $request->get('lang');
-            
-            // Vérifier si la langue demandée est disponible et la définir
-            $this->translationService->setLocale($locale);
-        } 
-        // Sinon, utiliser la détection automatique de langue via le service
-        else {
-            // Si aucune langue n'est définie en session, essayer de détecter celle du navigateur
-            if (!session()->has('locale')) {
-                $browserLocale = substr($request->server('HTTP_ACCEPT_LANGUAGE') ?? '', 0, 2);
-                $this->translationService->setLocale($browserLocale);
+            if (in_array($locale, config('app.available_locales', []))) {
+                app()->setLocale($locale);
+                session()->put('locale', $locale);
+                session()->save();
             }
         }
-        
+        // Sinon, utiliser la langue de la session
+        else if (session()->has('locale')) {
+            $locale = session()->get('locale');
+            if (in_array($locale, config('app.available_locales', []))) {
+                app()->setLocale($locale);
+            }
+        }
+        // Sinon, essayer de détecter la langue du navigateur
+        else {
+            $locale = $request->getPreferredLanguage(config('app.available_locales', []));
+            if ($locale) {
+                app()->setLocale($locale);
+                session()->put('locale', $locale);
+                session()->save();
+            }
+        }
+
+        // S'assurer que la langue est appliquée
+        $currentLocale = app()->getLocale();
+        if ($currentLocale !== session()->get('locale')) {
+            app()->setLocale(session()->get('locale', $currentLocale));
+        }
+
         return $next($request);
     }
 }

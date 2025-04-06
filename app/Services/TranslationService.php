@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Config;
 
 class TranslationService
 {
@@ -14,20 +15,12 @@ class TranslationService
      *
      * @var array
      */
-    protected $availableLocales = [
-        'en', // Anglais
-        'fr', // Français
-        'es', // Espagnol
-        'de', // Allemand
-        'it', // Italien
-        'pt', // Portugais
-        'nl', // Néerlandais
-        'ru', // Russe
-        'zh', // Chinois
-        'ja', // Japonais
-        'tr', // Turc
-        'ar'  // Arabe
-    ];
+    protected $availableLocales;
+
+    public function __construct()
+    {
+        $this->availableLocales = config('app.available_locales', ['en', 'fr']);
+    }
 
     /**
      * Obtenir la liste des langues disponibles
@@ -59,8 +52,21 @@ class TranslationService
     public function setLocale(string $locale): bool
     {
         if ($this->isLocaleAvailable($locale)) {
+            // Stocker la langue en session
             Session::put('locale', $locale);
+            
+            // Définir la langue de l'application
             App::setLocale($locale);
+            
+            // Mettre à jour la configuration
+            Config::set('app.locale', $locale);
+            
+            // Vider le cache des traductions
+            Cache::forget('translations.' . $locale);
+            
+            // Forcer la mise à jour de la session
+            Session::save();
+            
             return true;
         }
         
@@ -68,12 +74,22 @@ class TranslationService
     }
 
     /**
-     * Obtenir la langue active
+     * Obtenir la langue actuelle de l'application
      *
      * @return string
      */
     public function getLocale(): string
     {
+        // D'abord vérifier la session
+        if (Session::has('locale')) {
+            $locale = Session::get('locale');
+            if ($this->isLocaleAvailable($locale)) {
+                App::setLocale($locale);
+                return $locale;
+            }
+        }
+        
+        // Sinon, utiliser la langue de l'application
         return App::getLocale();
     }
 
@@ -113,10 +129,10 @@ class TranslationService
     {
         $locale = $locale ?? $this->getLocale();
         
-        // Utiliser le cache pour améliorer les performances
-        $cacheKey = 'translations_' . $locale;
+        // Récupérer les traductions du cache ou les charger
+        $cacheKey = 'translations.' . $locale;
         
-        return Cache::remember($cacheKey, now()->addDay(), function () use ($locale) {
+        return Cache::remember($cacheKey, 60 * 24, function () use ($locale) {
             $path = resource_path('locales/' . $locale . '/translation.json');
             
             if (File::exists($path)) {
@@ -144,30 +160,48 @@ class TranslationService
      */
     public function translate(string $key, array $replace = [], ?string $locale = null): string
     {
+        $locale = $locale ?? $this->getLocale();
+        
+        // Récupérer les traductions du cache ou les charger
         $translations = $this->getTranslations($locale);
         
+        // Gérer les clés imbriquées avec la notation point
         $keys = explode('.', $key);
-        $value = $translations;
+        $translation = $translations;
         
-        foreach ($keys as $segment) {
-            if (isset($value[$segment])) {
-                $value = $value[$segment];
-            } else {
-                // Clé non trouvée, retourner la clé elle-même
+        foreach ($keys as $k) {
+            if (!isset($translation[$k])) {
                 return $key;
             }
+            $translation = $translation[$k];
         }
         
-        if (is_string($value)) {
-            // Remplacer les variables dans la traduction
-            foreach ($replace as $key => $replacement) {
-                $value = str_replace(':' . $key, $replacement, $value);
+        // Si la traduction est un tableau, retourner la clé
+        if (is_array($translation)) {
+            return $key;
+        }
+        
+        // Remplacer les variables
+        if (!empty($replace)) {
+            foreach ($replace as $key => $value) {
+                $translation = str_replace(':' . $key, $value, $translation);
             }
-            
-            return $value;
         }
         
-        // Si la valeur n'est pas une chaîne, retourner la clé
-        return $key;
+        return $translation;
+    }
+
+    /**
+     * Obtenir la liste des langues disponibles avec leurs noms natifs
+     *
+     * @return array
+     */
+    public function getAvailableLanguages(): array
+    {
+        $languages = [];
+        foreach ($this->availableLocales as $locale) {
+            $languages[$locale] = $this->getLocaleName($locale);
+        }
+        return $languages;
     }
 }

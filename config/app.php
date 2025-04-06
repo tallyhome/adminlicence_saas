@@ -78,11 +78,37 @@ return [
     |
     */
 
-    'locale' => env('APP_LOCALE', 'en'),
+    'locale' => env('APP_LOCALE', 'fr'),
 
     'fallback_locale' => env('APP_FALLBACK_LOCALE', 'en'),
 
-    'faker_locale' => env('APP_FAKER_LOCALE', 'en_US'),
+    'faker_locale' => env('APP_FAKER_LOCALE', 'fr_FR'),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Available Locales
+    |--------------------------------------------------------------------------
+    |
+    | This array contains all the available locales for the application.
+    | Each locale should have a corresponding translation file in the
+    | resources/locales directory.
+    |
+    */
+
+    'available_locales' => [
+        'en', // Anglais
+        'fr', // Français
+        'es', // Espagnol
+        'de', // Allemand
+        'it', // Italien
+        'pt', // Portugais
+        'nl', // Néerlandais
+        'ru', // Russe
+        'zh', // Chinois
+        'ja', // Japonais
+        'tr', // Turc
+        'ar'  // Arabe
+    ],
 
     /*
     |--------------------------------------------------------------------------
@@ -135,9 +161,6 @@ return [
     */
 
     'providers' => [
-        /*
-         * Application Service Providers...
-         */
         /*
          * Application Service Providers...
          */

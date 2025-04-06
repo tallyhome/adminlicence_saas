@@ -16,6 +16,9 @@ use App\Http\Controllers\Admin\TwoFactorAuthController;
 use App\Http\Controllers\Admin\TwoFactorController;
 use App\Http\Controllers\Admin\VersionController;
 use App\Http\Controllers\Admin\ApiDocumentationController;
+use App\Http\Controllers\Admin\LanguageController;
+use App\Http\Controllers\Admin\ClientExampleController;
+use App\Http\Controllers\Admin\EmailVariableController;
 use Illuminate\Support\Facades\Route;
 
 // Routes d'authentification
@@ -41,8 +44,13 @@ Route::middleware('auth:admin')->group(function () {
     // Informations de version
     Route::get('/version', [VersionController::class, 'index'])->name('admin.version');
 
-    // API Documentation Example
-    Route::get('/api-documentation', [ApiDocumentationController::class, 'index'])->name('admin.client-example');
+    // Documentation
+    Route::get('/api-documentation', [ApiDocumentationController::class, 'index'])->name('admin.api.documentation');
+    
+    Route::get('/licence-documentation', [ApiDocumentationController::class, 'licenceDocumentation'])->name('admin.licence.documentation');
+
+    // Exemples d'intégration client
+    Route::get('/client-example', [ClientExampleController::class, 'index'])->name('admin.client-example');
 
     // Gestion des projets
     Route::resource('projects', ProjectController::class)
@@ -108,29 +116,38 @@ Route::middleware('auth:admin')->group(function () {
                 Route::post('/logs/clear', [PHPMailController::class, 'clearLogs'])->name('logs.clear');
             });
 
+            // Mailgun
+            Route::prefix('mailgun')->name('mailgun.')->group(function () {
+                Route::get('/', [App\Http\Controllers\Admin\Mail\Providers\MailgunController::class, 'index'])->name('index');
+                Route::put('/', [App\Http\Controllers\Admin\Mail\Providers\MailgunController::class, 'update'])->name('update');
+                Route::post('/test', [App\Http\Controllers\Admin\Mail\Providers\MailgunController::class, 'test'])->name('test');
+                Route::get('/logs', [App\Http\Controllers\Admin\Mail\Providers\MailgunController::class, 'logs'])->name('logs');
+                Route::post('/logs/clear', [App\Http\Controllers\Admin\Mail\Providers\MailgunController::class, 'clearLogs'])->name('logs.clear');
+            });
+
             // Mailchimp
             Route::prefix('mailchimp')->name('mailchimp.')->group(function () {
-                Route::get('/', [Providers\MailchimpController::class, 'index'])->name('index');
-                Route::put('/', [Providers\MailchimpController::class, 'update'])->name('update');
-                Route::post('/test', [Providers\MailchimpController::class, 'test'])->name('test');
-                Route::post('/sync-lists', [Providers\MailchimpController::class, 'syncLists'])->name('sync-lists');
-                Route::post('/sync-templates', [Providers\MailchimpController::class, 'syncTemplates'])->name('sync-templates');
-                Route::get('/campaigns', [Providers\MailchimpController::class, 'campaigns'])->name('campaigns');
-                Route::post('/campaigns', [Providers\MailchimpController::class, 'createCampaign'])->name('campaigns.create');
-                Route::post('/campaigns/{campaign}/send', [Providers\MailchimpController::class, 'sendCampaign'])->name('campaigns.send');
+                Route::get('/', [App\Http\Controllers\Admin\Mail\Providers\MailchimpController::class, 'index'])->name('index');
+                Route::put('/', [App\Http\Controllers\Admin\Mail\Providers\MailchimpController::class, 'update'])->name('update');
+                Route::post('/test', [App\Http\Controllers\Admin\Mail\Providers\MailchimpController::class, 'test'])->name('test');
+                Route::post('/sync-lists', [App\Http\Controllers\Admin\Mail\Providers\MailchimpController::class, 'syncLists'])->name('sync-lists');
+                Route::post('/sync-templates', [App\Http\Controllers\Admin\Mail\Providers\MailchimpController::class, 'syncTemplates'])->name('sync-templates');
+                Route::get('/campaigns', [App\Http\Controllers\Admin\Mail\Providers\MailchimpController::class, 'campaigns'])->name('campaigns');
+                Route::post('/campaigns', [App\Http\Controllers\Admin\Mail\Providers\MailchimpController::class, 'createCampaign'])->name('campaigns.create');
+                Route::post('/campaigns/{campaign}/send', [App\Http\Controllers\Admin\Mail\Providers\MailchimpController::class, 'sendCampaign'])->name('campaigns.send');
             });
 
             // Rapidmail
             Route::prefix('rapidmail')->name('rapidmail.')->group(function () {
-                Route::get('/', [Providers\RapidmailController::class, 'index'])->name('index');
-                Route::put('/', [Providers\RapidmailController::class, 'update'])->name('update');
-                Route::post('/test', [Providers\RapidmailController::class, 'test'])->name('test');
-                Route::get('/lists', [Providers\RapidmailController::class, 'recipientLists'])->name('lists');
-                Route::post('/lists', [Providers\RapidmailController::class, 'createRecipientList'])->name('lists.create');
-                Route::get('/mailings', [Providers\RapidmailController::class, 'mailings'])->name('mailings');
-                Route::post('/mailings', [Providers\RapidmailController::class, 'createMailing'])->name('mailings.create');
-                Route::post('/mailings/{mailing}/send', [Providers\RapidmailController::class, 'sendMailing'])->name('mailings.send');
-                Route::get('/mailings/{mailing}/stats', [Providers\RapidmailController::class, 'statistics'])->name('mailings.stats');
+                Route::get('/', [App\Http\Controllers\Admin\Mail\Providers\RapidmailController::class, 'index'])->name('index');
+                Route::put('/', [App\Http\Controllers\Admin\Mail\Providers\RapidmailController::class, 'update'])->name('update');
+                Route::post('/test', [App\Http\Controllers\Admin\Mail\Providers\RapidmailController::class, 'test'])->name('test');
+                Route::get('/lists', [App\Http\Controllers\Admin\Mail\Providers\RapidmailController::class, 'recipientLists'])->name('lists');
+                Route::post('/lists', [App\Http\Controllers\Admin\Mail\Providers\RapidmailController::class, 'createRecipientList'])->name('lists.create');
+                Route::get('/mailings', [App\Http\Controllers\Admin\Mail\Providers\RapidmailController::class, 'mailings'])->name('mailings');
+                Route::post('/mailings', [App\Http\Controllers\Admin\Mail\Providers\RapidmailController::class, 'createMailing'])->name('mailings.create');
+                Route::post('/mailings/{mailing}/send', [App\Http\Controllers\Admin\Mail\Providers\RapidmailController::class, 'sendMailing'])->name('mailings.send');
+                Route::get('/mailings/{mailing}/stats', [App\Http\Controllers\Admin\Mail\Providers\RapidmailController::class, 'statistics'])->name('mailings.stats');
             });
         });
     });
@@ -145,6 +162,17 @@ Route::middleware('auth:admin')->group(function () {
         Route::delete('/{template}', [EmailTemplateController::class, 'destroy'])->name('destroy');
         Route::get('/{template}/preview', [EmailTemplateController::class, 'preview'])->name('preview');
     });
+
+    // Routes pour la gestion des variables d'email
+    Route::prefix('email/variables')->name('admin.email.variables.')->group(function () {
+        Route::get('/', [EmailVariableController::class, 'index'])->name('index');
+        Route::post('/', [EmailVariableController::class, 'store'])->name('store');
+        Route::put('/{variable}', [EmailVariableController::class, 'update'])->name('update');
+        Route::delete('/{variable}', [EmailVariableController::class, 'destroy'])->name('destroy');
+    });
+
+    // Route pour le changement de langue
+    Route::post('set-language', [LanguageController::class, 'setLanguage'])->name('admin.set.language');
 
     // Routes pour les paramètres généraux
     Route::get('settings', [SettingsController::class, 'index'])->name('admin.settings.index');
