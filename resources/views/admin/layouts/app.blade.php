@@ -114,6 +114,10 @@
                     </button>
                     <div class="collapse navbar-collapse" id="navbarNav">
                         <ul class="navbar-nav ms-auto">
+                            <!-- Composant de notifications -->
+                            <li class="nav-item">
+                                @include('admin.layouts.partials.notifications')
+                            </li>
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
                                     {{ Auth::guard('admin')->user()->name }}
@@ -157,6 +161,11 @@
             @include('admin.layouts.partials.footer')
         </div>
     </div>
+    <footer class="footer mt-auto py-3 bg-light">
+        <div class="container text-center">
+            <span class="text-muted">© {{ date('Y') }} {{ config('app.name') }} - v{{ config('version.full')() }}</span>
+        </div>
+    </footer>
 
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>

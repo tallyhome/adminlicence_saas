@@ -231,6 +231,37 @@ unset($__errorArgs, $__bag); ?>
                 </div>
             </div>
         </div>
+        
+        <!-- Authentification à deux facteurs -->
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Authentification à deux facteurs</h3>
+                </div>
+                <div class="card-body">
+                    <p class="mb-3">
+                        L'authentification à deux facteurs ajoute une couche de sécurité supplémentaire à votre compte.
+                        Une fois activée, vous devrez fournir un code d'authentification en plus de votre mot de passe pour vous connecter.
+                    </p>
+                    
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="me-3">
+                            <?php if(auth()->guard('admin')->user()->two_factor_enabled): ?>
+                                <span class="badge bg-success">Activée</span>
+                            <?php else: ?>
+                                <span class="badge bg-warning">Désactivée</span>
+                            <?php endif; ?>
+                        </div>
+                        <a href="<?php echo e(route('admin.settings.two-factor')); ?>" class="btn btn-primary me-2">
+                            <i class="fas fa-shield-alt"></i> Configurer
+                        </a>
+                        <a href="<?php echo e(route('admin.settings.test-google2fa')); ?>" class="btn btn-outline-secondary">
+                            <i class="fas fa-vial"></i> Tester Google2FA
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 <?php $__env->stopSection(); ?>

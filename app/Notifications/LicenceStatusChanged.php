@@ -38,7 +38,7 @@ class LicenceStatusChanged extends Notification implements ShouldQueue
      */
     public function via(object $notifiable): array
     {
-        return ['mail'];
+        return ['mail', 'broadcast', 'database'];
     }
 
     /**
@@ -75,7 +75,45 @@ class LicenceStatusChanged extends Notification implements ShouldQueue
         return [
             'serial_key_id' => $this->serialKey->id,
             'action' => $this->action,
-            'project_id' => $this->serialKey->project_id
+            'project_id' => $this->serialKey->project_id,
+            'serial_key' => $this->serialKey->serial_key,
+            'project_name' => $this->serialKey->project->name,
+            'domain' => $this->serialKey->domain,
+            'timestamp' => now()->format('d/m/Y H:i')
+        ];
+    }
+    
+    /**
+     * Get the broadcastable representation of the notification.
+     *
+     * @param  mixed  $notifiable
+     * @return array
+     */
+    public function toBroadcast($notifiable)
+    {
+        $statusMessages = [
+            'revoked' => 'révoquée',
+            'suspended' => 'suspendue',
+            'expired' => 'expirée',
+            'activated' => 'activée',
+            'renewed' => 'renouvelée'
+        ];
+
+        $status = $statusMessages[$this->action] ?? $this->action;
+        
+        return [
+            'id' => $this->id,
+            'serial_key_id' => $this->serialKey->id,
+            'serial_key' => $this->serialKey->serial_key,
+            'action' => $this->action,
+            'status_text' => $status,
+            'project_id' => $this->serialKey->project_id,
+            'project_name' => $this->serialKey->project->name,
+            'domain' => $this->serialKey->domain,
+            'timestamp' => now()->format('d/m/Y H:i'),
+            'read' => false,
+            'title' => 'Changement de statut de licence',
+            'message' => 'La licence ' . $this->serialKey->serial_key . ' a été ' . $status
         ];
     }
 }

@@ -58,12 +58,33 @@
                                     </div>
                                     <div class="col-md-9">
                                         <p><strong><?php echo e($item['description']); ?></strong></p>
-                                        <?php if(isset($item['changes']) && count($item['changes']) > 0): ?>
-                                            <ul>
-                                                <?php $__currentLoopData = $item['changes']; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $change): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                                    <li><?php echo e($change); ?></li>
-                                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                                            </ul>
+                                        <?php if(isset($item['categories'])): ?>
+                                            <?php if(isset($item['categories']['Ajouts']) && count($item['categories']['Ajouts']) > 0): ?>
+                                                <h6 class="mt-3 text-success">Ajouts</h6>
+                                                <ul>
+                                                    <?php $__currentLoopData = $item['categories']['Ajouts']; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $change): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                        <li><?php echo e($change); ?></li>
+                                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                                </ul>
+                                            <?php endif; ?>
+                                            
+                                            <?php if(isset($item['categories']['Améliorations']) && count($item['categories']['Améliorations']) > 0): ?>
+                                                <h6 class="mt-3 text-primary">Améliorations</h6>
+                                                <ul>
+                                                    <?php $__currentLoopData = $item['categories']['Améliorations']; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $change): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                        <li><?php echo e($change); ?></li>
+                                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                                </ul>
+                                            <?php endif; ?>
+                                            
+                                            <?php if(isset($item['categories']['Corrections de bugs']) && count($item['categories']['Corrections de bugs']) > 0): ?>
+                                                <h6 class="mt-3 text-danger">Corrections de bugs</h6>
+                                                <ul>
+                                                    <?php $__currentLoopData = $item['categories']['Corrections de bugs']; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $change): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                        <li><?php echo e($change); ?></li>
+                                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                                </ul>
+                                            <?php endif; ?>
                                         <?php endif; ?>
                                     </div>
                                 </div>

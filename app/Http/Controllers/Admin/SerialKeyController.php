@@ -81,7 +81,8 @@ class SerialKeyController extends Controller
             'active' => 'Active',
             'suspended' => 'Suspendue',
             'revoked' => 'Révoquée',
-            'expired' => 'Expirée'
+            'expired' => 'Expirée',
+            'used' => 'Utilisé'
         ];
         
         // Ajouter une logique pour détecter les clés expirées
@@ -89,6 +90,14 @@ class SerialKeyController extends Controller
             $query->where(function($q) {
                 $q->whereNotNull('expires_at')
                   ->where('expires_at', '<', now());
+            });
+        }
+        
+        // Ajouter une logique pour détecter les clés utilisées
+        if ($request->input('status') === 'used') {
+            $query->where(function($q) {
+                $q->whereNotNull('domain')
+                  ->orWhereNotNull('ip_address');
             });
         }
 

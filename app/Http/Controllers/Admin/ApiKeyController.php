@@ -51,6 +51,9 @@ class ApiKeyController extends Controller
                         ->where('expires_at', '<=', now())
                         ->whereNull('revoked_at');
                     break;
+                case 'used':
+                    $query->whereNotNull('last_used_at');
+                    break;
             }
         }
 
@@ -170,4 +173,4 @@ class ApiKeyController extends Controller
         return redirect()->route('admin.api-keys.index')
             ->with('success', __('Clé API supprimée avec succès.'));
     }
-} 
+}

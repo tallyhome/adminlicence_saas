@@ -58,12 +58,33 @@
                                     </div>
                                     <div class="col-md-9">
                                         <p><strong>{{ $item['description'] }}</strong></p>
-                                        @if(isset($item['changes']) && count($item['changes']) > 0)
-                                            <ul>
-                                                @foreach($item['changes'] as $change)
-                                                    <li>{{ $change }}</li>
-                                                @endforeach
-                                            </ul>
+                                        @if(isset($item['categories']))
+                                            @if(isset($item['categories']['Ajouts']) && count($item['categories']['Ajouts']) > 0)
+                                                <h6 class="mt-3 text-success">Ajouts</h6>
+                                                <ul>
+                                                    @foreach($item['categories']['Ajouts'] as $change)
+                                                        <li>{{ $change }}</li>
+                                                    @endforeach
+                                                </ul>
+                                            @endif
+                                            
+                                            @if(isset($item['categories']['Améliorations']) && count($item['categories']['Améliorations']) > 0)
+                                                <h6 class="mt-3 text-primary">Améliorations</h6>
+                                                <ul>
+                                                    @foreach($item['categories']['Améliorations'] as $change)
+                                                        <li>{{ $change }}</li>
+                                                    @endforeach
+                                                </ul>
+                                            @endif
+                                            
+                                            @if(isset($item['categories']['Corrections de bugs']) && count($item['categories']['Corrections de bugs']) > 0)
+                                                <h6 class="mt-3 text-danger">Corrections de bugs</h6>
+                                                <ul>
+                                                    @foreach($item['categories']['Corrections de bugs'] as $change)
+                                                        <li>{{ $change }}</li>
+                                                    @endforeach
+                                                </ul>
+                                            @endif
                                         @endif
                                     </div>
                                 </div>

@@ -305,6 +305,7 @@ class InstallController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:admins',
             'password' => ['required', 'confirmed', Password::defaults()],
+            'enable_2fa' => 'nullable|boolean',
         ]);
 
         if ($validator->fails()) {
@@ -312,12 +313,19 @@ class InstallController extends Controller
         }
 
         // Créer le compte administrateur
-        Admin::create([
+        $admin = Admin::create([
             'name' => $request->input('name'),
             'email' => $request->input('email'),
             'password' => Hash::make($request->input('password')),
             'is_super_admin' => true,
+            'two_factor_enabled' => $request->has('enable_2fa'),
         ]);
+        
+        // Si l'authentification à deux facteurs est activée, générer les codes de récupération
+        if ($request->has('enable_2fa')) {
+            // Nous initialiserons les secrets 2FA lors de la première connexion
+            // Pour l'instant, nous marquons simplement que 2FA est activé
+        }
 
         // Marquer l'installation comme terminée
         $this->updateEnvironmentFile([

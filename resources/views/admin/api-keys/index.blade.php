@@ -1,5 +1,9 @@
 @extends('admin.layouts.app')
 
+@php
+use Illuminate\Support\Str;
+@endphp
+
 @section('title', __('Gestion des clés API'))
 
 @section('content')
@@ -33,6 +37,7 @@
                         <option value="active" {{ request('status') == 'active' ? 'selected' : '' }}>{{ __('Actives') }}</option>
                         <option value="revoked" {{ request('status') == 'revoked' ? 'selected' : '' }}>{{ __('Révoquées') }}</option>
                         <option value="expired" {{ request('status') == 'expired' ? 'selected' : '' }}>{{ __('Expirées') }}</option>
+                        <option value="used" {{ request('status') == 'used' ? 'selected' : '' }}>{{ __('Utilisées') }}</option>
                     </select>
                 </div>
                 <div class="col-md-4 d-flex align-items-end">
@@ -125,4 +130,4 @@
         </div>
     </div>
 </div>
-@endsection 
+@endsection

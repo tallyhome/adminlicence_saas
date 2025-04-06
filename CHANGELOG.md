@@ -1,6 +1,115 @@
-# Changelog AdminLicence
+# Changelog
 
-Toutes les modifications notables apportées à ce projet seront documentées dans ce fichier.
+Toutes les modifications notables de ce projet seront documentées dans ce fichier.
+
+Le format est basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/),
+et ce projet adhère à [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [1.9.5] - 06/04/2025
+
+### Ajouts
+- Intégration de l'authentification à double facteur Google
+- Support multilingue complet (EN, FR, ZH, TR)
+- Nouveau système de documentation intégré avec DocumentationController
+- Documentation autonome accessible via /public/api-docs.php
+
+### Améliorations
+- Migration vers Laravel 12
+- Optimisation du système de routage API
+- Interface de documentation plus intuitive
+- Amélioration de la sécurité avec 2FA
+
+### Corrections de bugs
+- Correction des commandes artisan pour Laravel 12
+- Résolution du problème "Target class [files]"
+- Correction du problème package:discover
+- Mise en place d'une alternative à artisan serve avec serve.php
+
+## [1.9.4] - 05/04/2025
+
+### Ajouts
+- Système de notifications par email
+- Interface de gestion des clés API
+- Système de journalisation des actions
+- Support multilingue (FR, EN)
+
+### Améliorations
+- Refonte de l'interface utilisateur
+- Optimisation des performances
+- Amélioration de la sécurité
+
+### Corrections de bugs
+- Correction des problèmes de validation des licences
+- Résolution des problèmes de cache
+- Correction des erreurs d'affichage
+
+## [1.9.3] - 04/04/2025
+
+### Ajouts
+- Système de gestion des projets
+- Interface de configuration des emails
+- Système de backup automatique
+
+### Améliorations
+- Optimisation de la base de données
+- Amélioration de l'API
+- Interface responsive
+
+### Corrections de bugs
+- Correction des problèmes de timezone
+- Résolution des conflits de routes
+- Correction des erreurs de validation
+
+## [1.9.2] - 03/04/2025
+
+### Ajouts
+- Système de gestion des licences
+- Interface d'administration
+- API de vérification des licences
+
+### Améliorations
+- Optimisation du code
+- Amélioration de la sécurité
+- Interface utilisateur améliorée
+
+### Corrections de bugs
+- Correction des problèmes de cache
+- Résolution des erreurs de validation
+- Correction des problèmes d'affichage
+
+## [1.9.1] - 02/04/2025
+
+### Ajouts
+- Système de gestion des utilisateurs
+- Interface de configuration
+- Système de logs
+
+### Améliorations
+- Optimisation des performances
+- Amélioration de la sécurité
+- Interface responsive
+
+### Corrections de bugs
+- Correction des problèmes de timezone
+- Résolution des conflits de routes
+- Correction des erreurs de validation
+
+## [1.9.0] - 01/04/2025
+
+### Ajouts
+- Version initiale du système
+- Interface d'administration de base
+- API de base
+
+### Améliorations
+- Optimisation initiale
+- Sécurité de base
+- Interface utilisateur de base
+
+### Corrections de bugs
+- Corrections initiales
+- Résolution des problèmes de base
+- Correction des erreurs de base
 
 ## [1.8.0] - 05/04/2025
 

@@ -3,12 +3,27 @@
 namespace App\Services;
 
 use App\Models\SerialKey;
+use App\Models\Admin;
 use App\Notifications\LicenceStatusChanged;
+use App\Services\WebSocketService;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 class LicenceService
 {
+    /**
+     * @var WebSocketService
+     */
+    protected $webSocketService;
+    
+    /**
+     * Constructeur du service de licence
+     */
+    public function __construct(WebSocketService $webSocketService)
+    {
+        $this->webSocketService = $webSocketService;
+    }
     /**
      * Vérifie si une clé de série est valide.
      *
@@ -95,6 +110,9 @@ class LicenceService
         if ($serialKey->project->user) {
             $serialKey->project->user->notify(new LicenceStatusChanged($serialKey, 'suspended'));
         }
+        
+        // Envoyer une notification WebSocket aux administrateurs
+        $this->webSocketService->notifyLicenceStatusChange($serialKey, 'suspended');
     }
 
     /**
@@ -113,6 +131,9 @@ class LicenceService
         if ($serialKey->project->user) {
             $serialKey->project->user->notify(new LicenceStatusChanged($serialKey, 'revoked'));
         }
+        
+        // Envoyer une notification WebSocket aux administrateurs
+        $this->webSocketService->notifyLicenceStatusChange($serialKey, 'revoked');
     }
 
     /**
@@ -135,6 +156,9 @@ class LicenceService
         if ($serialKey->project->user) {
             $serialKey->project->user->notify(new LicenceStatusChanged($serialKey, 'active'));
         }
+        
+        // Envoyer une notification WebSocket aux administrateurs
+        $this->webSocketService->notifyLicenceStatusChange($serialKey, 'activated');
 
         return true;
     }

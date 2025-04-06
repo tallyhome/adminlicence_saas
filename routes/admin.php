@@ -7,6 +7,8 @@ use App\Http\Controllers\Admin\MailController;
 use App\Http\Controllers\Admin\ProjectController;
 use App\Http\Controllers\Admin\SerialKeyController;
 use App\Http\Controllers\Admin\SettingsController;
+use App\Http\Controllers\Admin\TwoFactorAuthController;
+use App\Http\Controllers\Admin\TwoFactorController;
 use App\Http\Controllers\Admin\VersionController;
 use Illuminate\Support\Facades\Route;
 
@@ -14,6 +16,12 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('guest:admin')->group(function () {
     Route::get('login', [AdminAuthController::class, 'showLoginForm'])->name('admin.login');
     Route::post('login', [AdminAuthController::class, 'login']);
+    
+    // Routes pour l'authentification à deux facteurs
+    Route::get('2fa/verify', [AdminAuthController::class, 'showTwoFactorForm'])->name('admin.2fa.verify');
+    Route::post('2fa/verify', [AdminAuthController::class, 'verifyTwoFactor']);
+    Route::get('2fa/recovery', function () { return view('auth.admin-2fa-recovery'); })->name('admin.2fa.recovery');
+    Route::post('2fa/recovery', [TwoFactorAuthController::class, 'useRecoveryCode']);
 });
 
 // Routes protégées
@@ -82,6 +90,13 @@ Route::middleware('auth:admin')->group(function () {
     Route::put('settings/favicon', [SettingsController::class, 'updateFavicon'])->name('admin.settings.update-favicon');
     Route::put('settings/dark-mode', [SettingsController::class, 'toggleDarkMode'])->name('admin.settings.toggle-dark-mode');
     
+    // Routes pour l'authentification à deux facteurs
+    Route::get('settings/two-factor', [TwoFactorAuthController::class, 'index'])->name('admin.settings.two-factor');
+    Route::post('settings/two-factor/enable', [TwoFactorAuthController::class, 'enable'])->name('admin.settings.two-factor.enable');
+    Route::post('settings/two-factor/disable', [TwoFactorAuthController::class, 'disable'])->name('admin.settings.two-factor.disable');
+    Route::post('settings/two-factor/regenerate-recovery-codes', [TwoFactorAuthController::class, 'regenerateRecoveryCodes'])->name('admin.settings.two-factor.regenerate-recovery-codes');
+    Route::get('settings/test-google2fa', [TwoFactorController::class, 'testGoogle2FA'])->name('admin.settings.test-google2fa');
+    
     // Documentation API
     Route::get('api/documentation', function () {
         return view('admin.api-documentation');
@@ -104,5 +119,15 @@ Route::middleware('auth:admin')->group(function () {
         Route::post('/{ticket}/reply', [\App\Http\Controllers\Admin\SuperAdminTicketController::class, 'reply'])->name('admin.super.tickets.reply');
         Route::post('/{ticket}/return-to-admin', [\App\Http\Controllers\Admin\SuperAdminTicketController::class, 'returnToAdmin'])->name('admin.super.tickets.return-to-admin');
         Route::post('/{ticket}/assign-to-admin', [\App\Http\Controllers\Admin\SuperAdminTicketController::class, 'assignToAdmin'])->name('admin.super.tickets.assign-to-admin');
+    });
+    
+    // Routes pour les notifications
+    Route::prefix('notifications')->group(function () {
+        Route::get('/', [\App\Http\Controllers\NotificationController::class, 'index'])->name('admin.notifications.index');
+        Route::get('/unread', [\App\Http\Controllers\NotificationController::class, 'getUnread'])->name('admin.notifications.unread');
+        Route::post('/{id}/read', [\App\Http\Controllers\NotificationController::class, 'markAsRead'])->name('admin.notifications.mark-as-read');
+        Route::post('/mark-all-as-read', [\App\Http\Controllers\NotificationController::class, 'markAllAsRead'])->name('admin.notifications.mark-all-as-read');
+        Route::delete('/{id}', [\App\Http\Controllers\NotificationController::class, 'destroy'])->name('admin.notifications.destroy');
+        Route::put('/preferences', [\App\Http\Controllers\NotificationController::class, 'updatePreferences'])->name('admin.notifications.update-preferences');
     });
 });
