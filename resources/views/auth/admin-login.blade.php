@@ -18,8 +18,8 @@
     <div class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 bg-gray-100">
         <div class="w-full sm:max-w-md mt-6 px-6 py-4 bg-white shadow-md overflow-hidden sm:rounded-lg">
             <div class="mb-6 text-center">
-                <h1 class="text-2xl font-bold text-indigo-600">AdminLicence</h1>
-                <p class="text-gray-600">Système de gestion de licences</p>
+                <h1 class="text-2xl font-bold text-gray-900">AdminLicence</h1>
+                <p class="text-gray-700">Système de gestion de licences</p>
             </div>
 
             @if ($errors->any())
@@ -35,30 +35,28 @@
             <form method="POST" action="{{ route('admin.login') }}">
                 @csrf
 
-                <!-- Email Address -->
                 <div class="mb-4">
-                    <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
-                    <input id="email" type="email" name="email" value="{{ old('email') }}" required autofocus
-                        class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                    <label for="email" class="block text-sm font-medium text-gray-700">Adresse email</label>
+                    <input type="email" name="email" id="email" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" required autofocus>
                 </div>
 
-                <!-- Password -->
                 <div class="mb-4">
                     <label for="password" class="block text-sm font-medium text-gray-700">Mot de passe</label>
-                    <input id="password" type="password" name="password" required
-                        class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                    <input type="password" name="password" id="password" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" required>
                 </div>
 
-                <!-- Remember Me -->
-                <div class="mb-4">
-                    <label for="remember_me" class="inline-flex items-center">
-                        <input id="remember_me" type="checkbox" name="remember" class="rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
-                        <span class="ml-2 text-sm text-gray-600">Se souvenir de moi</span>
+                <div class="flex items-center justify-between mb-4">
+                    <label class="inline-flex items-center">
+                        <input type="checkbox" name="remember" class="rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                        <span class="ml-2 text-sm text-gray-700">Se souvenir de moi</span>
                     </label>
+                    <a href="{{ route('admin.password.request') }}" class="text-sm text-indigo-600 hover:text-indigo-500">
+                        Mot de passe oublié ?
+                    </a>
                 </div>
 
-                <div class="flex items-center justify-end mt-4">
-                    <button type="submit" class="w-full inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                <div>
+                    <button type="submit" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                         Se connecter
                     </button>
                 </div>

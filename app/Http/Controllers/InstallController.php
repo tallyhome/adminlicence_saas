@@ -34,6 +34,60 @@ class InstallController extends Controller
     }
 
     /**
+     * Détecter si l'application est sur cPanel
+     *
+     * @return bool
+     */
+    private function isCpanel()
+    {
+        // Vérifier les indicateurs de cPanel
+        $cpanelIndicators = [
+            '/home',
+            '/public_html',
+            'cpanel',
+            '.cpanel',
+            'cgi-bin'
+        ];
+
+        $serverPath = $_SERVER['DOCUMENT_ROOT'] ?? '';
+        $requestUri = $_SERVER['REQUEST_URI'] ?? '';
+
+        foreach ($cpanelIndicators as $indicator) {
+            if (str_contains($serverPath, $indicator) || str_contains($requestUri, $indicator)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Générer le fichier .env
+     *
+     * @return bool
+     */
+    private function generateEnvFile()
+    {
+        // Copier le fichier .env.example vers .env
+        if (file_exists(base_path('.env.example'))) {
+            copy(base_path('.env.example'), base_path('.env'));
+        }
+
+        // Générer une clé d'application sécurisée
+        $key = 'base64:' . base64_encode(random_bytes(32));
+        
+        // Mettre à jour le fichier .env
+        $envContent = file_get_contents(base_path('.env'));
+        $envContent = preg_replace('/^APP_KEY=.*$/m', 'APP_KEY=' . $key, $envContent);
+        file_put_contents(base_path('.env'), $envContent);
+
+        // Définir les permissions du fichier .env
+        chmod(base_path('.env'), 0644);
+
+        return true;
+    }
+
+    /**
      * Afficher la page d'accueil du wizard d'installation
      *
      * @return \Illuminate\View\View
@@ -42,10 +96,25 @@ class InstallController extends Controller
     {
         // Vérifier si l'application est déjà installée
         if ($this->isInstalled()) {
-            return redirect('/')->with('error', t('install.already_installed'));
+            return redirect('/');
         }
 
-        return view('install.welcome');
+        // Générer le fichier .env s'il n'existe pas
+        if (!file_exists(base_path('.env'))) {
+            $this->generateEnvFile();
+        }
+
+        // Détecter si nous sommes sur cPanel
+        $isCpanel = $this->isCpanel();
+        
+        // Rediriger vers le bon chemin d'installation
+        if ($isCpanel && !str_contains(request()->path(), 'public/install')) {
+            return redirect('/public/install');
+        }
+
+        return view('install.welcome', [
+            'isCpanel' => $isCpanel
+        ]);
     }
 
     /**

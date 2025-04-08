@@ -55,11 +55,15 @@
         }
         /* Styles pour le sélecteur de langue */
         .navbar .nav-item.dropdown .nav-link {
-            color: white !important;
+            color: #333 !important;
             padding: 0.5rem;
             display: flex;
             align-items: center;
             font-size: 0.875rem;
+        }
+        /* Ajout du décalage pour le sélecteur de langue */
+        .navbar .nav-item:last-child {
+            margin-left: 50px;
         }
         .navbar .dropdown-menu {
             min-width: 120px;
@@ -104,6 +108,40 @@
         .flag-icon-jp { background-image: url(https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/6.6.6/flags/4x3/jp.svg); }
         .flag-icon-tr { background-image: url(https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/6.6.6/flags/4x3/tr.svg); }
         .flag-icon-sa { background-image: url(https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/6.6.6/flags/4x3/sa.svg); }
+        /* Styles spécifiques pour le sélecteur de langue */
+        .navbar .language-selector.dropdown .nav-link {
+            color: #333 !important;
+            padding: 0.5rem;
+            display: flex;
+            align-items: center;
+            font-size: 0.875rem;
+        }
+        .navbar .language-selector .dropdown-menu {
+            min-width: 120px;
+            max-width: 120px;
+            padding: 0.25rem 0;
+        }
+        .navbar .language-selector .dropdown-item {
+            padding: 0.4rem 1rem;
+            font-size: 0.875rem;
+            display: flex;
+            align-items: center;
+            color: #333;
+        }
+        .navbar .language-selector .dropdown-item.active {
+            background-color: #f8f9fa;
+            color: #333;
+        }
+        .navbar .language-selector .dropdown-item:hover {
+            background-color: #e9ecef;
+        }
+
+        /* Styles spécifiques pour les notifications */
+        #notification-list.dropdown-menu {
+            width: 400px !important;
+            max-height: 600px !important;
+            min-width: 400px !important;
+        }
     </style>
     @stack('styles')
 </head>
@@ -210,13 +248,23 @@
                     <div class="collapse {{ request()->routeIs('admin.api.documentation') || request()->routeIs('admin.licence.documentation') ? 'show' : '' }}" id="documentationSubmenu">
                         <ul class="nav flex-column ms-3">
                             <li class="nav-item">
-                                <a class="nav-link {{ request()->routeIs('admin.api.documentation') ? 'active' : '' }}" href="http://localhost:8050/api-documentation">
+                                <a class="nav-link {{ request()->routeIs('admin.api.documentation') ? 'active' : '' }}" href="{{ route('admin.api.documentation') }}">
                                     <i class="fas fa-code me-2"></i> Documentation API
                                 </a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link {{ request()->routeIs('admin.licence.documentation') ? 'active' : '' }}" href="{{ route('admin.licence.documentation') }}">
                                     <i class="fas fa-key me-2"></i> Documentation des clés
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link {{ request()->routeIs('admin.email.documentation') ? 'active' : '' }}" href="{{ route('admin.email.documentation') }}">
+                                    <i class="fas fa-envelope me-2"></i> Documentation des fournisseurs d'email
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link {{ request()->routeIs('admin.saas.documentation') ? 'active' : '' }}" href="{{ route('admin.saas.documentation') }}">
+                                    <i class="fas fa-users me-2"></i> Documentation SaaS multiutilisateur
                                 </a>
                             </li>
                         </ul>

@@ -15,16 +15,41 @@ class VersionController extends Controller
     public function index()
     {
         $version = [
-            'major' => config('version.major'),
-            'minor' => config('version.minor'),
-            'patch' => config('version.patch'),
-            'release' => config('version.release'),
+            'major' => 3,
+            'minor' => 0,
+            'patch' => 0,
+            'release' => null,
             'full' => config('version.full')(),
-            'last_update' => config('version.last_update'),
+            'last_update' => '20/03/2024',
         ];
         
         // Historique des versions
         $history = [
+            [
+                'version' => '2.0.0',
+                'date' => '20/03/2024',
+                'description' => 'Refonte majeure du système de gestion des emails',
+                'categories' => [
+                    'Ajouts' => [
+                        'Nouveau système de gestion des emails avec support multi-fournisseurs',
+                        'Système de templates d\'emails avec variables dynamiques',
+                        'Interface de gestion des variables d\'email',
+                        'Support multilingue pour les templates',
+                        'Configuration avancée des fournisseurs d\'email (PHPMail, Mailgun, Mailchimp, Rapidmail)',
+                    ],
+                    'Améliorations' => [
+                        'Refonte du menu de navigation avec nouvelle section Email',
+                        'Design plus moderne et cohérent',
+                        'Meilleure ergonomie des formulaires',
+                        'Optimisation des performances',
+                    ],
+                    'Corrections de bugs' => [
+                        'Correction des problèmes de routage pour les sections email',
+                        'Amélioration de la gestion des erreurs',
+                        'Optimisation des performances de chargement',
+                    ],
+                ],
+            ],
             [
                 'version' => '1.9.5',
                 'date' => '06/04/2025',

@@ -26,6 +26,12 @@ Route::middleware('guest:admin')->group(function () {
     Route::get('login', [AdminAuthController::class, 'showLoginForm'])->name('admin.login');
     Route::post('login', [AdminAuthController::class, 'login']);
     
+    // Routes de réinitialisation de mot de passe
+    Route::get('password/reset', [AdminAuthController::class, 'showLinkRequestForm'])->name('admin.password.request');
+    Route::post('password/email', [AdminAuthController::class, 'sendResetLinkEmail'])->name('admin.password.email');
+    Route::get('password/reset/{token}', [AdminAuthController::class, 'showResetForm'])->name('admin.password.reset');
+    Route::post('password/reset', [AdminAuthController::class, 'reset'])->name('admin.password.update');
+    
     // Routes pour l'authentification à deux facteurs
     Route::get('2fa/verify', [AdminAuthController::class, 'showTwoFactorForm'])->name('admin.2fa.verify');
     Route::post('2fa/verify', [AdminAuthController::class, 'verifyTwoFactor']);
@@ -48,6 +54,10 @@ Route::middleware('auth:admin')->group(function () {
     Route::get('/api-documentation', [ApiDocumentationController::class, 'index'])->name('admin.api.documentation');
     
     Route::get('/licence-documentation', [ApiDocumentationController::class, 'licenceDocumentation'])->name('admin.licence.documentation');
+    
+    Route::get('/email-documentation', [ApiDocumentationController::class, 'emailDocumentation'])->name('admin.email.documentation');
+    
+    Route::get('/saas-documentation', [ApiDocumentationController::class, 'saasDocumentation'])->name('admin.saas.documentation');
 
     // Exemples d'intégration client
     Route::get('/client-example', [ClientExampleController::class, 'index'])->name('admin.client-example');
@@ -189,10 +199,8 @@ Route::middleware('auth:admin')->group(function () {
     Route::post('settings/verify-code', [TwoFactorAuthController::class, 'verifyCode'])->name('admin.settings.verify-code');
     Route::get('settings/test-google2fa', [TwoFactorController::class, 'testGoogle2FA'])->name('admin.settings.test-google2fa');
     
-    // Documentation API
-    Route::get('api/documentation', function () {
-        return view('admin.api-documentation');
-    })->name('admin.api.documentation');
+    // Documentation API - Route déjà définie à la ligne 54
+    // Route supprimée pour éviter les conflits de redirection
     
     // Routes pour les tickets de support (admin standard)
     Route::prefix('tickets')->group(function () {

@@ -12,13 +12,13 @@ return [
     |
     */
 
-    'major' => 1,      // Changements majeurs/incompatibles
-    'minor' => 9,      // Nouvelles fonctionnalités compatibles
-    'patch' => 5,      // Corrections de bugs compatibles
+    'major' => 2,      // Changements majeurs/incompatibles
+    'minor' => 0,      // Nouvelles fonctionnalités compatibles
+    'patch' => 0,      // Corrections de bugs compatibles
     'release' => null, // Suffixe de version (alpha, beta, rc, etc.),
      
     // Date de la dernière mise à jour
-    'last_update' => '06/04/2025',
+    'last_update' => '20/03/2024',
     
     // Fonction pour obtenir la version complète formatée
     'full' => function () {

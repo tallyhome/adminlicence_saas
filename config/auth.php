@@ -105,6 +105,12 @@ return [
             'expire' => 60,
             'throttle' => 60,
         ],
+        'admins' => [
+            'provider' => 'admins',
+            'table' => 'admin_password_reset_tokens',
+            'expire' => 60,
+            'throttle' => 60,
+        ],
     ],
 
     /*
@@ -135,10 +141,10 @@ return [
         'login' => 'admin.login',
         'logout' => 'admin.logout',
         'register' => null,
-        'password.request' => null,
-        'password.reset' => null,
-        'password.email' => null,
-        'password.update' => null,
+        'password.request' => 'admin.password.request',
+        'password.reset' => 'admin.password.reset',
+        'password.email' => 'admin.password.email',
+        'password.update' => 'admin.password.update',
         'verification.notice' => null,
         'verification.verify' => null,
         'verification.send' => null,

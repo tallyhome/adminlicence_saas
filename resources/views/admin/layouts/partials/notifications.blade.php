@@ -4,7 +4,7 @@
         <i class="fas fa-bell"></i>
         <span id="notification-counter" class="badge bg-danger rounded-pill position-absolute top-0 start-100 translate-middle {{ $unreadNotificationsCount ?? 0 > 0 ? '' : 'hidden' }}">0</span>
     </button>
-    <ul id="notification-list" class="dropdown-menu dropdown-menu-end" aria-labelledby="notificationDropdown" style="width: 300px; max-height: 400px; overflow-y: auto;">
+    <ul id="notification-list" class="dropdown-menu dropdown-menu-end" aria-labelledby="notificationDropdown" style="width: 400px; max-height: 600px; overflow-y: auto;">
         <li class="dropdown-header d-flex justify-content-between align-items-center">
             <span>Notifications</span>
             <button id="mark-all-as-read" class="btn btn-sm btn-link text-decoration-none">Tout marquer comme lu</button>

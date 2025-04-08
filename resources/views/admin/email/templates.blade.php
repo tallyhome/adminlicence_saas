@@ -53,7 +53,12 @@
                 </div>
 
                 <div class="mb-3">
-                    <label for="preview" class="form-label">Aperçu du template</label>
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <label for="preview" class="form-label mb-0">Aperçu du template</label>
+                        <button type="button" id="previewBtn" class="btn btn-info btn-sm">
+                            <i class="fas fa-eye me-1"></i> Prévisualiser
+                        </button>
+                    </div>
                     <div id="preview" class="border p-3 bg-light">
                         <!-- L'aperçu sera affiché ici -->
                     </div>
@@ -115,10 +120,61 @@ document.addEventListener('DOMContentLoaded', function() {
     // Prévisualisation du template
     const contentInput = document.getElementById('content');
     const preview = document.getElementById('preview');
+    const previewBtn = document.getElementById('previewBtn');
 
     contentInput.addEventListener('input', function() {
         preview.innerHTML = this.value;
     });
+    
+    // Ouvrir la prévisualisation complète dans une nouvelle fenêtre
+    previewBtn.addEventListener('click', function() {
+        // Récupérer les valeurs du formulaire
+        const content = contentInput.value;
+        const name = document.getElementById('name').value;
+        
+        // Créer une fenêtre temporaire avec le contenu
+        const previewWindow = window.open('', '_blank', 'width=800,height=600');
+        previewWindow.document.write(`
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <title>Prévisualisation: ${name || 'Template d\'email'}</title>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+                <style>
+                    body { padding: 20px; }
+                    .email-container { max-width: 800px; margin: 0 auto; border: 1px solid #ddd; border-radius: 5px; overflow: hidden; }
+                    .email-header { background-color: #f8f9fa; padding: 15px; border-bottom: 1px solid #ddd; }
+                    .email-body { padding: 20px; }
+                </style>
+            </head>
+            <body>
+                <div class="container">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h2>Prévisualisation du template</h2>
+                        <button class="btn btn-secondary" onclick="window.close()">Fermer</button>
+                    </div>
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle"></i> Ceci est une prévisualisation simple. Les variables ne sont pas remplacées.
+                    </div>
+                    <div class="email-container">
+                        <div class="email-header">
+                            <div><strong>De:</strong> Votre Application &lt;noreply@example.com&gt;</div>
+                            <div><strong>À:</strong> Destinataire &lt;destinataire@example.com&gt;</div>
+                            <div><strong>Sujet:</strong> ${name || 'Template d\'email'}</div>
+                        </div>
+                        <div class="email-body">
+                            ${content}
+                        </div>
+                    </div>
+                </div>
+            </body>
+            </html>
+        `);
+        previewWindow.document.close();
+    });
+
 });
 </script>
 @endpush

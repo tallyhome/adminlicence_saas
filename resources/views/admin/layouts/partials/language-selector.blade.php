@@ -3,7 +3,7 @@ use Illuminate\Support\Facades\Session;
 @endphp
 
 <!-- Language Selector -->
-<div class="nav-item dropdown">
+<div class="nav-item dropdown language-selector">
     <button class="nav-link dropdown-toggle d-flex align-items-center" type="button" id="languageDropdown" data-bs-toggle="dropdown" aria-expanded="false" style="min-width: 70px;">
         @php
             $locale = Session::get('locale', app()->getLocale());

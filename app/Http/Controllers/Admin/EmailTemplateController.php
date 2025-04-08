@@ -43,8 +43,20 @@ class EmailTemplateController extends Controller
 
         $template = new EmailTemplate();
         $template->name = $validated['name'];
-        $template->subject = $validated['subject'];
-        $template->content = $validated['content'];
+        $template->subject = json_encode($validated['subject']);
+        $template->content = json_encode($validated['content']);
+        
+        // Récupérer le contenu HTML de la première langue non vide
+        $htmlContent = '';
+        foreach ($validated['content'] as $langContent) {
+            if (!empty($langContent)) {
+                $htmlContent = $langContent;
+                break;
+            }
+        }
+        $template->html_content = $htmlContent;
+        $template->text_content = strip_tags($htmlContent);
+        
         $template->variables = $validated['variables'] ?? '[]';
         $template->description = $validated['description'] ?? null;
         $template->is_system = $validated['is_system'] ?? false;
@@ -71,10 +83,21 @@ class EmailTemplateController extends Controller
             'is_system' => 'boolean'
         ]);
 
+        // Récupérer le contenu HTML de la première langue non vide
+        $htmlContent = '';
+        foreach ($validated['content'] as $langContent) {
+            if (!empty($langContent)) {
+                $htmlContent = $langContent;
+                break;
+            }
+        }
+
         $template->update([
             'name' => $validated['name'],
-            'subject' => $validated['subject'],
-            'content' => $validated['content'],
+            'subject' => json_encode($validated['subject']),
+            'content' => json_encode($validated['content']),
+            'html_content' => $htmlContent,
+            'text_content' => strip_tags($htmlContent),
             'variables' => $validated['variables'] ?? '[]',
             'description' => $validated['description'] ?? null,
             'is_system' => $validated['is_system'] ?? false
@@ -100,17 +123,48 @@ class EmailTemplateController extends Controller
     {
         $language = $request->get('language', app()->getLocale());
         $variables = json_decode($template->variables, true) ?? [];
-        $testData = array_combine(
-            array_map(function ($var) { return '{' . $var . '}'; }, array_keys($variables)),
-            array_map(function ($var) { return '[' . $var . ']'; }, array_keys($variables))
-        );
+        
+        // Créer des données de test plus réalistes
+        $testData = [];
+        foreach (array_keys($variables) as $var) {
+            $placeholder = '{' . $var . '}';
+            
+            // Générer des valeurs d'exemple selon le nom de la variable
+            switch (strtolower($var)) {
+                case 'nom':
+                case 'name':
+                    $testData[$placeholder] = 'Jean Dupont';
+                    break;
+                case 'email':
+                    $testData[$placeholder] = 'exemple@domaine.com';
+                    break;
+                case 'date':
+                    $testData[$placeholder] = date('d/m/Y');
+                    break;
+                case 'licence':
+                case 'license':
+                    $testData[$placeholder] = 'XXXX-XXXX-XXXX-XXXX';
+                    break;
+                case 'entreprise':
+                case 'company':
+                    $testData[$placeholder] = 'Entreprise SAS';
+                    break;
+                default:
+                    $testData[$placeholder] = '[' . $var . ']';
+            }
+        }
 
-        $subject = $template->subject[$language] ?? $template->subject['en'];
-        $content = $template->content[$language] ?? $template->content['en'];
+        // Décoder les champs JSON avant d'accéder aux éléments
+        $subjectData = json_decode($template->subject, true);
+        $contentData = json_decode($template->content, true);
+        
+        $subject = $subjectData[$language] ?? ($subjectData['en'] ?? '');
+        $content = $contentData[$language] ?? ($contentData['en'] ?? '');
 
         // Remplacer les variables par des valeurs de test
         $content = strtr($content, $testData);
+        $subject = strtr($subject, $testData);
 
-        return view('admin.email.templates.preview', compact('subject', 'content'));
+        return view('admin.email.templates.preview', compact('subject', 'content', 'testData'));
     }
 }

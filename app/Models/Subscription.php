@@ -16,18 +16,18 @@ class Subscription extends Model
      */
     protected $fillable = [
         'tenant_id',
-        'name',
-        'stripe_id',
-        'stripe_status',
-        'stripe_price',
-        'paypal_id',
-        'paypal_status',
-        'paypal_plan',
-        'quantity',
+        'plan_id',
+        'status',
         'trial_ends_at',
+        'starts_at',
         'ends_at',
-        'payment_method_id',
-        'payment_method_type'
+        'canceled_at',
+        'stripe_subscription_id',
+        'paypal_subscription_id',
+        'payment_method',
+        'renewal_price',
+        'billing_cycle',
+        'auto_renew'
     ];
 
     /**
@@ -37,7 +37,11 @@ class Subscription extends Model
      */
     protected $casts = [
         'trial_ends_at' => 'datetime',
+        'starts_at' => 'datetime',
         'ends_at' => 'datetime',
+        'canceled_at' => 'datetime',
+        'renewal_price' => 'decimal:2',
+        'auto_renew' => 'boolean'
     ];
 
     /**
@@ -47,11 +51,19 @@ class Subscription extends Model
     const PAYMENT_METHOD_PAYPAL = 'paypal';
 
     /**
-     * Get the tenant that owns the subscription.
+     * Get the tenant that owns the subscription
      */
     public function tenant()
     {
         return $this->belongsTo(Tenant::class);
+    }
+
+    /**
+     * Get the plan that the subscription belongs to
+     */
+    public function plan()
+    {
+        return $this->belongsTo(Plan::class);
     }
 
     /**
@@ -71,34 +83,54 @@ class Subscription extends Model
     }
 
     /**
-     * Determine if the subscription is active.
+     * Check if the subscription is active
      */
-    public function isActive()
+    public function isActive(): bool
     {
-        return $this->stripe_status === 'active' || $this->onTrial();
+        return $this->status === 'active' || $this->onTrial();
     }
 
     /**
-     * Determine if the subscription is on trial.
+     * Check if the subscription is on trial
      */
-    public function onTrial()
+    public function onTrial(): bool
     {
-        return $this->trial_ends_at && $this->trial_ends_at->isFuture();
+        return $this->trial_ends_at && now()->lt($this->trial_ends_at);
     }
 
     /**
-     * Determine if the subscription is canceled.
+     * Check if the subscription has expired
      */
-    public function canceled()
+    public function hasExpired(): bool
     {
-        return $this->ends_at !== null;
+        return $this->ends_at && now()->gte($this->ends_at);
     }
 
     /**
-     * Determine if the subscription has ended.
+     * Check if the subscription is canceled
      */
-    public function ended()
+    public function isCanceled(): bool
     {
-        return $this->canceled() && $this->ends_at->isPast();
+        return $this->canceled_at !== null;
+    }
+
+    /**
+     * Cancel the subscription
+     */
+    public function cancel(): void
+    {
+        $this->canceled_at = now();
+        $this->auto_renew = false;
+        $this->save();
+    }
+
+    /**
+     * Resume the subscription
+     */
+    public function resume(): void
+    {
+        $this->canceled_at = null;
+        $this->auto_renew = true;
+        $this->save();
     }
 }

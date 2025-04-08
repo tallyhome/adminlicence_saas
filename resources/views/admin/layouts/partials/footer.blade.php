@@ -6,7 +6,7 @@
             </div>
             <div>
                 <a href="{{ route('admin.version') }}" class="text-decoration-none">
-                    Version {{ config('version.full')() }}
+                    Version 3.0.0
                 </a>
             </div>
         </div>

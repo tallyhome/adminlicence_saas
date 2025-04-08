@@ -15,13 +15,15 @@ use Stripe\StripeClient;
 class StripeService
 {
     protected $stripe;
+    protected $webSocketService;
     
     /**
      * Create a new Stripe service instance.
      */
-    public function __construct()
+    public function __construct(WebSocketService $webSocketService)
     {
         $this->stripe = new StripeClient(config('services.stripe.secret'));
+        $this->webSocketService = $webSocketService;
     }
     
     /**
@@ -39,6 +41,24 @@ class StripeService
                 'metadata' => [
                     'tenant_id' => $tenant->id,
                 ],
+                'invoice_settings' => [
+                    'default_payment_method' => $tenant->defaultPaymentMethod?->provider_id
+                ]
+            ]);
+            
+            // Créer une configuration de facturation automatique
+            $this->stripe->subscriptionSchedules->create([
+                'customer' => $customer->id,
+                'start_date' => 'now',
+                'end_behavior' => 'release',
+                'phases' => [
+                    [
+                        'collection_method' => 'charge_automatically',
+                        'invoice_settings' => [
+                            'days_until_due' => 30
+                        ]
+                    ]
+                ]
             ]);
             
             return $customer->id;

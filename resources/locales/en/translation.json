@@ -110,7 +110,9 @@
     "zh": "Chinese",
     "ja": "Japanese",
     "tr": "Turkish",
-    "ar": "Arabic"
+    "ar": "Arabic",
+    "changed_successfully": "Language has been changed successfully",
+    "invalid_locale": "The selected language is not available"
   },
   "install": {
     "title": "Installation Wizard",

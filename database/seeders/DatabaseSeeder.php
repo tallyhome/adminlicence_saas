@@ -15,12 +15,19 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        // Exécuter le seeder des rôles et permissions en premier
+        $this->call(RolesAndPermissionsSeeder::class);
+        
+        // Exécuter le seeder des utilisateurs
+        $this->call(UsersSeeder::class);
         // Créer l'administrateur
-        Admin::create([
-            'name' => 'Administrateur',
-            'email' => 'admin@example.com',
-            'password' => Hash::make('password'),
-        ]);
+        Admin::firstOrCreate(
+            ['email' => 'admin@example.com'],
+            [
+                'name' => 'Administrateur',
+                'password' => Hash::make('password'),
+            ]
+        );
 
         // Créer des projets de test
         $projects = [
