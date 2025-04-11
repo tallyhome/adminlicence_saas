@@ -10,10 +10,42 @@
             <p class="lead">Cette documentation vous aidera à intégrer l'API de validation des licences dans vos applications.</p>
         </div>
     </div>
+    
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Table des matières</h5>
+                </div>
+                <div class="card-body">
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="#introduction">Introduction</a></li>
+                        <li class="mb-2"><a href="#authentification">Authentification</a></li>
+                        <li class="mb-2"><a href="#endpoints">Endpoints disponibles</a>
+                            <ul>
+                                <li><a href="#endpoint-check-serial">Vérification d'une clé de série</a></li>
+                                <li><a href="#endpoint-secure-code">Récupération du code dynamique sécurisé</a></li>
+                            </ul>
+                        </li>
+                        <li class="mb-2"><a href="#approches">Approches d'intégration</a></li>
+                        <li class="mb-2"><a href="#exemples">Exemples d'intégration</a>
+                            <ul>
+                                <li><a href="#exemple-php">PHP Standard</a></li>
+                                <li><a href="#exemple-laravel">Laravel</a></li>
+                                <li><a href="#exemple-javascript">JavaScript</a></li>
+                                <li><a href="#exemple-flutter">Flutter/Dart</a></li>
+                            </ul>
+                        </li>
+                        <li class="mb-2"><a href="#bonnes-pratiques">Bonnes pratiques</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <div class="row">
         <div class="col-12">
-            <div class="card mb-4">
+            <div class="card mb-4" id="introduction">
                 <div class="card-header bg-primary text-white">
                     <h5 class="mb-0">Introduction</h5>
                 </div>
@@ -23,7 +55,7 @@
                 </div>
             </div>
 
-            <div class="card mb-4">
+            <div class="card mb-4" id="authentification">
                 <div class="card-header bg-primary text-white">
                     <h5 class="mb-0">Authentification</h5>
                 </div>
@@ -34,12 +66,12 @@
                 </div>
             </div>
 
-            <div class="card mb-4">
+            <div class="card mb-4" id="endpoints">
                 <div class="card-header bg-primary text-white">
                     <h5 class="mb-0">Endpoints disponibles</h5>
                 </div>
                 <div class="card-body">
-                    <h6 class="mt-3">1. Vérification d'une clé de série</h6>
+                    <h6 class="mt-3" id="endpoint-check-serial">1. Vérification d'une clé de série</h6>
                     <div class="table-responsive">
                         <table class="table table-bordered">
                             <tbody>
@@ -89,7 +121,7 @@
                         </table>
                     </div>
 
-                    <h6 class="mt-4">2. Récupération du code dynamique sécurisé</h6>
+                    <h6 class="mt-4" id="endpoint-secure-code">2. Récupération du code dynamique sécurisé</h6>
                     <div class="table-responsive">
                         <table class="table table-bordered">
                             <tbody>
@@ -138,7 +170,7 @@
                 </div>
             </div>
 
-            <div class="card mb-4">
+            <div class="card mb-4" id="approches">
                 <div class="card-header bg-primary text-white">
                     <h5 class="mb-0">Approches d'intégration</h5>
                 </div>
@@ -194,12 +226,12 @@
                 </div>
             </div>
 
-            <div class="card mb-4">
+            <div class="card mb-4" id="exemples">
                 <div class="card-header bg-primary text-white">
                     <h5 class="mb-0">Exemples d'intégration</h5>
                 </div>
                 <div class="card-body">
-                    <h6>Approche 1: PHP Standard (Compatible avec tous les projets)</h6>
+                    <h6 id="exemple-php">Approche 1: PHP Standard (Compatible avec tous les projets)</h6>
                     <p class="text-muted mb-2">Cette approche utilise les fonctions PHP natives et est compatible avec n'importe quel projet PHP, indépendamment du framework utilisé.</p>
                     <pre><code>/**
  * Exemple d'intégration du système de licence avec PHP standard
@@ -311,7 +343,7 @@ if ($validator->verifyLicence('monsite.com')) {
     }
 }</code></pre>
 
-                    <h6 class="mt-4">Approche 2: Laravel (Intégration simplifiée)</h6>
+                    <h6 class="mt-4" id="exemple-laravel">Approche 2: Laravel (Intégration simplifiée)</h6>
                     <p class="text-muted mb-2">Cette approche utilise le client HTTP de Laravel pour une intégration plus simple et élégante dans les projets Laravel.</p>
                     <pre><code>use Illuminate\Support\Facades\Http;
 
@@ -341,7 +373,7 @@ if ($response->successful()) {
     }
 }</code></pre>
 
-                    <h6 class="mt-4">JavaScript</h6>
+                    <h6 class="mt-4" id="exemple-javascript">JavaScript</h6>
                     <pre><code>// Vérification de la clé de série
 async function validateLicence(serialKey, domain) {
     try {
@@ -379,7 +411,7 @@ async function validateLicence(serialKey, domain) {
     }
 }</code></pre>
 
-                    <h6 class="mt-4">Flutter/Dart (Applications mobiles)</h6>
+                    <h6 class="mt-4" id="exemple-flutter">Flutter/Dart (Applications mobiles)</h6>
                     <p class="text-muted mb-2">Cette approche permet d'intégrer le système de licence dans des applications mobiles développées avec Flutter.</p>
                     <pre><code>import 'dart:convert';
 import 'package:http/http.dart' as http;
@@ -505,7 +537,7 @@ void main() async {
                 </div>
             </div>
 
-            <div class="card mb-4">
+            <div class="card mb-4" id="bonnes-pratiques">
                 <div class="card-header bg-primary text-white">
                     <h5 class="mb-0">Bonnes pratiques</h5>
                 </div>
@@ -552,4 +584,8 @@ void main() async {
         margin-bottom: 0;
     }
 </style>
+@endpush
+
+@push('scripts')
+<script src="{{ asset('js/anchor-scroll.js') }}"></script>
 @endpush

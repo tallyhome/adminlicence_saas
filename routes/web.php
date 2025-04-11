@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\AdminAuthController;
 use App\Http\Controllers\DocumentationController;
 use App\Http\Controllers\SubscriptionController;
 use App\Http\Controllers\WebhookController;
+use App\Http\Controllers\Admin\VersionController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -21,6 +22,14 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return redirect()->route('admin.login');
 });
+
+// Route pour l'installation
+Route::get('/install', function () {
+    return redirect('/install.php');
+})->name('install');
+
+// Route publique pour la page de version
+Route::get('/version', [VersionController::class, 'index'])->name('version');
 
 // Define the login route that redirects to admin login
 Route::get('/login', function () {
@@ -63,6 +72,3 @@ Route::get('/documentation/api', [DocumentationController::class, 'apiIntegratio
 
 // Inclure les routes admin
 require __DIR__.'/admin.php';
-
-// Inclure les routes d'installation
-require __DIR__.'/install.php';

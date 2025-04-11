@@ -58,3 +58,7 @@
     .markdown-content pre code { padding: 0; background-color: transparent; }
 </style>
 @endpush
+
+@push('scripts')
+<script src="{{ asset('js/anchor-scroll.js') }}"></script>
+@endpush

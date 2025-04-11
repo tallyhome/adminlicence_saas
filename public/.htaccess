@@ -14,15 +14,35 @@
     RewriteCond %{REQUEST_URI} (.+)/$
     RewriteRule ^ %1 [L,R=301]
 
+    # Permettre l'accès direct aux fichiers d'installation
+    RewriteCond %{REQUEST_URI} ^/install\.php$ [OR]
+    RewriteCond %{REQUEST_URI} ^/install/ [OR]
+    RewriteCond %{REQUEST_URI} ^/public/install/
+    RewriteRule ^ - [L]
+    
+    # Autoriser toutes les méthodes HTTP pour les routes d'installation
+    <IfModule mod_headers.c>
+        <FilesMatch "^(install\.php|install/.*)$">
+            Header set Access-Control-Allow-Methods "GET, POST, OPTIONS"
+        </FilesMatch>
+    </IfModule>
+
     # Send Requests To Front Controller...
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteRule ^ index.php [L]
 </IfModule>
 
-# Protection contre les attaques XSS
+# Protection XSS
 <IfModule mod_headers.c>
     Header set X-XSS-Protection "1; mode=block"
     Header set X-Content-Type-Options "nosniff"
     Header set X-Frame-Options "SAMEORIGIN"
 </IfModule>
+
+# Permettre l'accès au dossier d'installation
+<Directory "/install">
+    Options +FollowSymLinks
+    AllowOverride All
+    Require all granted
+</Directory>

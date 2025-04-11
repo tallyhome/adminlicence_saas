@@ -20,11 +20,41 @@ class VersionController extends Controller
             'patch' => 0,
             'release' => null,
             'full' => config('version.full')(),
-            'last_update' => '20/03/2024',
+            'last_update' => '08/04/2025',
         ];
         
         // Historique des versions
         $history = [
+            [
+                'version' => '3.0.0',
+                'date' => '08/04/2025',
+                'description' => 'Ajout du système de gestion des administrateurs et réinitialisation de mot de passe',
+                'categories' => [
+                    'Ajouts' => [
+                        'Système de réinitialisation de mot de passe sécurisé',
+                        'Gestion des tokens de réinitialisation',
+                        'Interface d\'administration des comptes',
+                        'Système de gestion des emails avec support multi-fournisseurs',
+                        'Système de templates d\'emails avec variables dynamiques',
+                        'Interface de gestion des variables d\'email',
+                        'Support multilingue pour les templates',
+                        'Configuration avancée des fournisseurs d\'email (PHPMail, Mailgun, Mailchimp, Rapidmail)',
+                    ],
+                    'Améliorations' => [
+                        'Sécurité renforcée pour la gestion des mots de passe',
+                        'Optimisation de la base de données',
+                        'Refonte du menu de navigation avec nouvelle section Email',
+                        'Design plus moderne et cohérent',
+                        'Meilleure ergonomie des formulaires',
+                        'Optimisation des performances',
+                    ],
+                    'Corrections de bugs' => [
+                        'Correction des problèmes de routage pour les sections email',
+                        'Amélioration de la gestion des erreurs',
+                        'Optimisation des performances de chargement',
+                    ],
+                ],
+            ],
             [
                 'version' => '2.0.0',
                 'date' => '20/03/2024',
