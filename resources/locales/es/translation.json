@@ -111,5 +111,10 @@
     "ja": "Japonés",
     "tr": "Turco",
     "ar": "Árabe"
+  },
+  "install": {
+    "title": "Asistente de instalación",
+    "installation_complete": "¡Instalación completada con éxito!",
+    "go_to_site": "Ir al sitio"
   }
 }

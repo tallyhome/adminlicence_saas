@@ -7,15 +7,24 @@
  * et l'exécution des commandes nécessaires pour finaliser l'installation.
  */
 
-// Désactiver l'affichage des erreurs pour la production
-ini_set('display_errors', 0);
+// Désactiver l affichage des erreurs pour la production
+ini_set('display_errors', 1);
 error_reporting(E_ALL);
 
 // Définir le fuseau horaire par défaut
 date_default_timezone_set('UTC');
 
-// Définir le chemin racine du projet (deux niveaux au-dessus du dossier install)
+// Définir le chemin racine du projet (un niveau au-dessus du dossier public)
 define('ROOT_PATH', dirname(dirname(__DIR__)));
+
+// Vérifiez si le fichier languages.php existe
+if (!file_exists(__DIR__ . '/languages.php')) {
+    echo "Erreur : Le fichier languages.php est manquant.";
+    exit;
+}
+
+// Inclure le système de gestion des langues
+// require_once __DIR__ . '/languages.php';
 
 // Fonction pour s'assurer que le dossier de logs existe
 function ensureLogDirectoryExists() {
@@ -48,13 +57,14 @@ function ensureLogDirectoryExists() {
 
 // Fonction pour afficher les erreurs de manière sécurisée
 function showError($message, $details = null) {
+    $lang = getCurrentLanguage();
     header('Content-Type: text/html; charset=utf-8');
     echo '<!DOCTYPE html>
-    <html>
+    <html lang="' . $lang . '">
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Erreur d\'installation</title>
+        <title>' . t('installation_error') . '</title>
         <style>
             body { font-family: Arial, sans-serif; line-height: 1.6; margin: 0; padding: 20px; color: #333; }
             .container { max-width: 800px; margin: 0 auto; background: #f9f9f9; padding: 20px; border-radius: 5px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
@@ -62,18 +72,24 @@ function showError($message, $details = null) {
             .error { background: #f8d7da; color: #721c24; padding: 10px; border-radius: 4px; margin-bottom: 20px; }
             .details { background: #f8f9fa; padding: 10px; border-radius: 4px; margin-bottom: 20px; font-family: monospace; }
             .btn { display: inline-block; background: #007bff; color: white; padding: 10px 15px; text-decoration: none; border-radius: 4px; }
+            .language-selector { text-align: right; margin-bottom: 20px; }
+            .language-selector a { margin-left: 10px; text-decoration: none; }
+            .language-selector a.active { font-weight: bold; }
         </style>
     </head>
     <body>
         <div class="container">
-            <h1>Erreur d\'installation</h1>
+            <div class="language-selector">
+                ' . getLanguageLinks() . '
+            </div>
+            <h1>' . t('installation_error') . '</h1>
             <div class="error">' . htmlspecialchars($message) . '</div>';
     
     if ($details) {
         echo '<div class="details">' . htmlspecialchars($details) . '</div>';
     }
     
-    echo '<a href="install.php" class="btn">Réessayer</a>
+    echo '<a href="install.php" class="btn">' . t('retry') . '</a>
         </div>
     </body>
     </html>';
@@ -333,6 +349,34 @@ function updateEnvFile($data) {
     return true;
 }
 
+// Fonction pour tester la connexion à la base de données
+function testDatabaseConnection($host, $port, $database, $username, $password) {
+    try {
+        $dsn = "mysql:host={$host};port={$port};charset=utf8mb4";
+        $options = [
+            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+            PDO::ATTR_TIMEOUT => 5
+        ];
+
+        // Test de connexion au serveur
+        $pdo = new PDO($dsn, $username, $password, $options);
+
+        // Test de création de base de données si elle n'existe pas
+        $pdo->exec("CREATE DATABASE IF NOT EXISTS `{$database}` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci");
+
+        // Test de connexion à la base de données
+        $pdo = new PDO($dsn . ";dbname={$database}", $username, $password, $options);
+
+        // Test des permissions
+        $pdo->exec("CREATE TABLE IF NOT EXISTS `test_permissions` (id INT);");
+        $pdo->exec("DROP TABLE `test_permissions`;");
+
+        return true;
+    } catch (PDOException $e) {
+        throw new Exception('Erreur de connexion à la base de données : ' . $e->getMessage());
+    }
+}
+
 // Fonction pour exécuter une commande
 function runCommand($command) {
     try {
@@ -342,6 +386,43 @@ function runCommand($command) {
                 throw new Exception("Le fichier batch d'installation n'existe pas");
             }
             exec("cmd /c $batchFile 2>&1", $output, $returnVar);
+
+            // Exécuter les migrations et les seeds
+            chdir(ROOT_PATH);
+            exec("php artisan migrate --force 2>&1", $migrateOutput, $migrateReturn);
+            if ($migrateReturn !== 0) {
+                throw new Exception("Erreur lors de l'exécution des migrations : " . implode("\n", $migrateOutput));
+            }
+            
+            // Créer l'administrateur
+            $adminData = [
+                'firstname' => $_POST['admin_firstname'],
+                'lastname' => $_POST['admin_lastname'],
+                'email' => $_POST['admin_email'],
+                'username' => $_POST['admin_username'],
+                'password' => password_hash($_POST['admin_password'], PASSWORD_DEFAULT),
+                'role' => 'admin',
+                'status' => 'active'
+            ];
+            
+            try {
+                $pdo = new PDO("mysql:host={$_POST['db_host']};port={$_POST['db_port']};dbname={$_POST['db_database']}",
+                    $_POST['db_username'],
+                    $_POST['db_password'],
+                    [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]
+                );
+                
+                $stmt = $pdo->prepare("INSERT INTO admins (firstname, lastname, email, username, password, role, status, created_at, updated_at)
+                    VALUES (:firstname, :lastname, :email, :username, :password, :role, :status, NOW(), NOW())");
+                $stmt->execute($adminData);
+            } catch (PDOException $e) {
+                throw new Exception("Erreur lors de la création de l'administrateur : " . $e->getMessage());
+            }
+            
+            exec("php artisan db:seed --force 2>&1", $seedOutput, $seedReturn);
+            if ($seedReturn !== 0) {
+                throw new Exception("Erreur lors de l'exécution des seeds : " . implode("\n", $seedOutput));
+            }
         } else {
             $shellScript = __DIR__ . '/install.sh';
             if (!file_exists($shellScript)) {
@@ -350,15 +431,52 @@ function runCommand($command) {
             // Rendre le script exécutable
             chmod($shellScript, 0755);
             exec("bash $shellScript 2>&1", $output, $returnVar);
+
+            // Exécuter les migrations et les seeds
+            chdir(ROOT_PATH);
+            exec("php artisan migrate --force 2>&1", $migrateOutput, $migrateReturn);
+            if ($migrateReturn !== 0) {
+                throw new Exception("Erreur lors de l'exécution des migrations : " . implode("\n", $migrateOutput));
+            }
+            
+            // Créer l'administrateur
+            $adminData = [
+                'firstname' => $_POST['admin_firstname'],
+                'lastname' => $_POST['admin_lastname'],
+                'email' => $_POST['admin_email'],
+                'username' => $_POST['admin_username'],
+                'password' => password_hash($_POST['admin_password'], PASSWORD_DEFAULT),
+                'role' => 'admin',
+                'status' => 'active'
+            ];
+            
+            try {
+                $pdo = new PDO("mysql:host={$_POST['db_host']};port={$_POST['db_port']};dbname={$_POST['db_database']}",
+                    $_POST['db_username'],
+                    $_POST['db_password'],
+                    [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]
+                );
+                
+                $stmt = $pdo->prepare("INSERT INTO admins (firstname, lastname, email, username, password, role, status, created_at, updated_at)
+                    VALUES (:firstname, :lastname, :email, :username, :password, :role, :status, NOW(), NOW())");
+                $stmt->execute($adminData);
+            } catch (PDOException $e) {
+                throw new Exception("Erreur lors de la création de l'administrateur : " . $e->getMessage());
+            }
+            
+            exec("php artisan db:seed --force 2>&1", $seedOutput, $seedReturn);
+            if ($seedReturn !== 0) {
+                throw new Exception("Erreur lors de l'exécution des seeds : " . implode("\n", $seedOutput));
+            }
         }
     
-    if ($returnVar !== 0) {
+        if ($returnVar !== 0) {
             throw new Exception("Erreur lors de l'exécution de la commande : " . implode("\n", $output));
         }
 
         return implode("\n", $output);
     } catch (Exception $e) {
-        Log::error("Erreur lors de l'exécution de la commande : " . $e->getMessage());
+        error_log("Erreur lors de l'exécution de la commande : " . $e->getMessage());
         throw $e;
     }
 }
@@ -480,6 +598,18 @@ function t($key, $locale = 'fr') {
             'app_name' => 'Nom de l\'application',
             'app_env' => 'Environnement',
             'app_url' => 'URL de l\'application',
+            'admin_config' => 'Configuration du compte administrateur',
+            'admin_firstname' => 'Prénom',
+            'admin_lastname' => 'Nom',
+            'admin_email' => 'Email',
+            'admin_username' => 'Nom d\'utilisateur',
+            'admin_password' => 'Mot de passe',
+            'admin_password_confirmation' => 'Confirmation du mot de passe',
+            'logo' => 'Logo',
+            'logo_help' => 'Taille recommandée: 200x50px',
+            'use_https' => 'Utiliser HTTPS',
+            'yes' => 'Oui',
+            'no' => 'Non',
             'install' => 'Installer',
             'installing' => 'Installation en cours...',
             'installation_complete' => 'Installation terminée avec succès !',
@@ -488,7 +618,7 @@ function t($key, $locale = 'fr') {
             'retry' => 'Réessayer',
         ],
         'en' => [
-            'title' => 'Laravel Installation',
+            'title' => 'AdminLicence Installation',
             'already_installed' => 'The project is already installed.',
             'choose_language' => 'Choose your language',
             'continue' => 'Continue',
@@ -501,6 +631,18 @@ function t($key, $locale = 'fr') {
             'app_name' => 'Application Name',
             'app_env' => 'Environment',
             'app_url' => 'Application URL',
+            'admin_config' => 'Admin Account Configuration',
+            'admin_firstname' => 'First Name',
+            'admin_lastname' => 'Last Name',
+            'admin_email' => 'Email',
+            'admin_username' => 'Username',
+            'admin_password' => 'Password',
+            'admin_password_confirmation' => 'Confirm Password',
+            'logo' => 'Logo',
+            'logo_help' => 'Recommended size: 200x50px',
+            'use_https' => 'Use HTTPS',
+            'yes' => 'Yes',
+            'no' => 'No',
             'install' => 'Install',
             'installing' => 'Installing...',
             'installation_complete' => 'Installation completed successfully!',
@@ -536,6 +678,13 @@ function t($key, $locale = 'fr') {
 
 // Fonction pour afficher l'en-tête HTML
 function showHeader($title, $locale = 'fr') {
+    // Vérifier si le logo existe
+    $logoPath = __DIR__ . '/logo.png';
+    $logoHtml = '';
+    if (file_exists($logoPath)) {
+        $logoHtml = '<div class="logo-container"><img src="logo.png" alt="Logo" class="logo"></div>';
+    }
+    
     echo '<!DOCTYPE html>
     <html lang="' . $locale . '">
     <head>
@@ -550,17 +699,26 @@ function showHeader($title, $locale = 'fr') {
             label { display: block; margin-bottom: 5px; font-weight: bold; }
             input, select { width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; }
             .btn { display: inline-block; background: #007bff; color: white; padding: 10px 15px; text-decoration: none; border-radius: 4px; border: none; cursor: pointer; }
-            .btn:hover { background: #0056b3; }
+            .btn-secondary { background: #6c757d; }
+            .btn-info { background: #17a2b8; }
+            .btn:hover { opacity: 0.9; }
             .alert { padding: 10px; border-radius: 4px; margin-bottom: 20px; }
             .alert-success { background: #d4edda; color: #155724; }
             .alert-danger { background: #f8d7da; color: #721c24; }
+            .alert-info { background: #d1ecf1; color: #0c5460; }
             .language-selector { margin-bottom: 20px; }
             .language-selector a { margin-right: 10px; text-decoration: none; color: #007bff; }
             .language-selector a.active { font-weight: bold; }
+            .logo-container { text-align: center; margin-bottom: 20px; }
+            .logo { max-width: 200px; max-height: 50px; }
+            .button-group { display: flex; justify-content: space-between; margin-top: 20px; }
+            .button-group .btn { margin-right: 10px; }
+            .button-group .btn:last-child { margin-right: 0; }
         </style>
     </head>
     <body>
         <div class="container">
+            ' . $logoHtml . '
             <h1>' . htmlspecialchars($title) . '</h1>';
 }
 
@@ -612,8 +770,8 @@ function showDatabasePage() {
     showLanguageSelector($locale);
     
     echo '<h2>' . t('database_config', $locale) . '</h2>
-    <form action="install.php" method="post">
-        <input type="hidden" name="step" value="install">
+    <form action="install.php" method="post" enctype="multipart/form-data" id="database-form">
+        <input type="hidden" name="step" value="admin_config">
         <input type="hidden" name="locale" value="' . $locale . '">
         
         <div class="form-group">
@@ -659,7 +817,121 @@ function showDatabasePage() {
             <input type="text" id="app_url" name="app_url" value="http://localhost" required>
         </div>
         
-        <button type="submit" class="btn">' . t('install', $locale) . '</button>
+        <div id="connection-test-result" class="alert" style="display: none;"></div>
+        
+        <div class="button-group">
+            <button type="button" class="btn btn-secondary" onclick="window.location.href=\'install.php?step=language&locale=' . $locale . '\'">' . t('back', $locale) . '</button>
+            <button type="button" class="btn btn-info" id="test-connection">' . t('test_connection', $locale) . '</button>
+            <button type="submit" class="btn">' . t('continue', $locale) . '</button>
+        </div>
+    </form>
+    
+    <script>
+    document.getElementById("test-connection").addEventListener("click", function() {
+        const resultDiv = document.getElementById("connection-test-result");
+        resultDiv.style.display = "block";
+        resultDiv.className = "alert alert-info";
+        resultDiv.textContent = "' . t('testing_connection', $locale) . '";
+        
+        const formData = new FormData();
+        formData.append("db_host", document.getElementById("db_host").value);
+        formData.append("db_port", document.getElementById("db_port").value);
+        formData.append("db_database", document.getElementById("db_database").value);
+        formData.append("db_username", document.getElementById("db_username").value);
+        formData.append("db_password", document.getElementById("db_password").value);
+        formData.append("action", "test_connection");
+        
+        fetch("install.php", {
+            method: "POST",
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                resultDiv.className = "alert alert-success";
+                resultDiv.textContent = data.message;
+            } else {
+                resultDiv.className = "alert alert-danger";
+                resultDiv.textContent = data.message;
+            }
+        })
+        .catch(error => {
+            resultDiv.className = "alert alert-danger";
+            resultDiv.textContent = "' . t('connection_test_error', $locale) . '";
+            console.error(error);
+        });
+    });
+    </script>';
+    
+    showFooter();
+}
+
+// Fonction pour afficher la page de configuration de l'administrateur
+function showAdminConfigPage() {
+    $locale = $_POST['locale'] ?? $_GET['locale'] ?? 'fr';
+    
+    showHeader(t('title', $locale), $locale);
+    showLanguageSelector($locale);
+    
+    echo '<h2>' . t('admin_config', $locale) . '</h2>
+    <form action="install.php" method="post" enctype="multipart/form-data">
+        <input type="hidden" name="step" value="install">
+        <input type="hidden" name="locale" value="' . $locale . '">
+        
+        <!-- Champs de la base de données -->
+        <input type="hidden" name="db_host" value="' . htmlspecialchars($_POST['db_host']) . '">
+        <input type="hidden" name="db_port" value="' . htmlspecialchars($_POST['db_port']) . '">
+        <input type="hidden" name="db_database" value="' . htmlspecialchars($_POST['db_database']) . '">
+        <input type="hidden" name="db_username" value="' . htmlspecialchars($_POST['db_username']) . '">
+        <input type="hidden" name="db_password" value="' . htmlspecialchars($_POST['db_password']) . '">
+        <input type="hidden" name="app_name" value="' . htmlspecialchars($_POST['app_name']) . '">
+        <input type="hidden" name="app_env" value="' . htmlspecialchars($_POST['app_env']) . '">
+        <input type="hidden" name="app_url" value="' . htmlspecialchars($_POST['app_url']) . '">
+        
+        <!-- Configuration HTTPS -->
+        <div class="form-group">
+            <label for="use_https">' . t('use_https', $locale) . '</label>
+            <select id="use_https" name="use_https" required>
+                <option value="0">' . t('no', $locale) . '</option>
+                <option value="1">' . t('yes', $locale) . '</option>
+            </select>
+        </div>
+        
+        <!-- Informations de l\'administrateur -->
+        <div class="form-group">
+            <label for="admin_firstname">' . t('admin_firstname', $locale) . '</label>
+            <input type="text" id="admin_firstname" name="admin_firstname" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="admin_lastname">' . t('admin_lastname', $locale) . '</label>
+            <input type="text" id="admin_lastname" name="admin_lastname" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="admin_email">' . t('admin_email', $locale) . '</label>
+            <input type="email" id="admin_email" name="admin_email" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="admin_username">' . t('admin_username', $locale) . '</label>
+            <input type="text" id="admin_username" name="admin_username" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="admin_password">' . t('admin_password', $locale) . '</label>
+            <input type="password" id="admin_password" name="admin_password" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="admin_password_confirmation">' . t('admin_password_confirmation', $locale) . '</label>
+            <input type="password" id="admin_password_confirmation" name="admin_password_confirmation" required>
+        </div>
+        
+        <div class="button-group">
+            <button type="button" class="btn btn-secondary" onclick="window.location.href=\'install.php?step=database&locale=\' + encodeURIComponent(\''. $locale .'\')">'. t('back', $locale) .'</button>
+            <button type="submit" class="btn">'. t('install', $locale) .'</button>
+        </div>
     </form>';
     
     showFooter();
@@ -769,13 +1041,13 @@ function showInstallingPage($locale) {
         const stepElement = document.getElementById("step" + step);
         const logContainer = document.getElementById("step-log");
         
-   //  Mettre à jour la barre de progression
+// Update step
         const progress = (step / 5) * 100;
         progressBar.style.width = progress + "%";
         progressBar.setAttribute("aria-valuenow", progress);
         progressBar.textContent = Math.round(progress) + "%";
         
-        // Mettre a jour letape
+// update etape
         stepElement.classList.add("active");
         if (step > 1) {
             document.getElementById("step" + (step - 1)).classList.add("completed");
@@ -821,11 +1093,27 @@ function showCompletePage($locale) {
     showHeader(t('title', $locale), $locale);
     showLanguageSelector($locale);
     
+    // Récupérer la traduction de "go_to_site" depuis les fichiers de traduction
+    $goToSiteText = '';
+    $translationFile = ROOT_PATH . '/resources/locales/' . $locale . '/translation.json';
+    
+    if (file_exists($translationFile)) {
+        $translations = json_decode(file_get_contents($translationFile), true);
+        if (isset($translations['install']['go_to_login'])) {
+            $goToSiteText = $translations['install']['go_to_login'];
+        }
+    }
+    
+    // Si la traduction n'est pas trouvée, utiliser la traduction par défaut
+    if (empty($goToSiteText)) {
+        $goToSiteText = t('go_to_site', $locale);
+    }
+    
     echo '<h2>' . t('installation_complete', $locale) . '</h2>
     <div class="alert alert-success">
         <p>' . t('installation_complete', $locale) . '</p>
     </div>
-    <a href="../" class="btn">' . t('go_to_site', $locale) . '</a>';
+    <a href="../" class="btn">' . $goToSiteText . '</a>';
     
     showFooter();
 }
@@ -835,10 +1123,26 @@ function showAlreadyInstalledPage($locale) {
     showHeader(t('title', $locale), $locale);
     showLanguageSelector($locale);
     
+    // Récupérer la traduction de "go_to_site" depuis les fichiers de traduction
+    $goToSiteText = '';
+    $translationFile = ROOT_PATH . '/resources/locales/' . $locale . '/translation.json';
+    
+    if (file_exists($translationFile)) {
+        $translations = json_decode(file_get_contents($translationFile), true);
+        if (isset($translations['install']['go_to_login'])) {
+            $goToSiteText = $translations['install']['go_to_login'];
+        }
+    }
+    
+    // Si la traduction n'est pas trouvée, utiliser la traduction par défaut
+    if (empty($goToSiteText)) {
+        $goToSiteText = t('go_to_site', $locale);
+    }
+    
     echo '<div class="alert alert-info">
         <p>' . t('already_installed', $locale) . '</p>
     </div>
-    <a href="../" class="btn">' . t('go_to_site', $locale) . '</a>';
+    <a href="../" class="btn">' . $goToSiteText . '</a>';
     
     showFooter();
 }
@@ -919,6 +1223,40 @@ try {
     $step = validateInput($_GET['step'] ?? $_POST['step'] ?? 'language');
     $locale = validateInput($_GET['locale'] ?? $_POST['locale'] ?? 'fr');
     
+    // Charger les traductions depuis les fichiers JSON si disponibles
+    $translationsFromFile = [];
+    $translationFile = ROOT_PATH . '/resources/locales/' . $locale . '/translation.json';
+    
+    if (file_exists($translationFile)) {
+        $translationsFromFile = json_decode(file_get_contents($translationFile), true);
+    }
+    
+    // Traiter l'action de test de connexion à la base de données
+    if (isset($_POST['action']) && $_POST['action'] === 'test_connection') {
+        header('Content-Type: application/json');
+        try {
+            $host = $_POST['db_host'] ?? '';
+            $port = $_POST['db_port'] ?? '3306';
+            $database = $_POST['db_database'] ?? '';
+            $username = $_POST['db_username'] ?? '';
+            $password = $_POST['db_password'] ?? '';
+            
+            // Tester la connexion
+            testDatabaseConnection($host, $port, $database, $username, $password);
+            
+            echo json_encode([
+                'success' => true,
+                'message' => t('connection_successful', $locale)
+            ]);
+        } catch (Exception $e) {
+            echo json_encode([
+                'success' => false,
+                'message' => $e->getMessage()
+            ]);
+        }
+        exit;
+    }
+
     // Traiter les etapes
     switch ($step) {
         case 'language':
@@ -933,10 +1271,59 @@ try {
             showDatabasePage();
             break;
             
+        case 'admin_config':
+            // Vérifier si tous les champs de base de données sont présents
+            $requiredFields = ['db_host', 'db_port', 'db_database', 'db_username', 'locale'];
+            foreach ($requiredFields as $field) {
+                if (!isset($_POST[$field])) {
+                    showError('Tous les champs requis doivent être remplis.');
+                }
+            }
+            showAdminConfigPage();
+            break;
+            
         case 'install':
             // Créer le fichier .env s'il n'existe pas
             if (!file_exists(ROOT_PATH . '/.env')) {
                 createEnvFile();
+            }
+            
+            // Valider les données de l'administrateur
+            $adminFirstname = $_POST['admin_firstname'] ?? '';
+            $adminLastname = $_POST['admin_lastname'] ?? '';
+            $adminEmail = $_POST['admin_email'] ?? '';
+            $adminUsername = $_POST['admin_username'] ?? '';
+            $adminPassword = $_POST['admin_password'] ?? '';
+            $adminPasswordConfirmation = $_POST['admin_password_confirmation'] ?? '';
+            
+            // Vérifier que les mots de passe correspondent
+            if ($adminPassword !== $adminPasswordConfirmation) {
+                throw new Exception('Les mots de passe ne correspondent pas');
+            }
+            
+            // Traiter le logo si fourni
+            $logoPath = '';
+            if (isset($_FILES['logo']) && $_FILES['logo']['error'] === UPLOAD_ERR_OK) {
+                $uploadDir = ROOT_PATH . '/public/images/';
+                if (!is_dir($uploadDir)) {
+                    mkdir($uploadDir, 0755, true);
+                }
+                
+                $fileInfo = getimagesize($_FILES['logo']['tmp_name']);
+                if ($fileInfo === false) {
+                    throw new Exception('Le fichier uploadé n\'est pas une image valide');
+                }
+                
+                $extension = pathinfo($_FILES['logo']['name'], PATHINFO_EXTENSION);
+                $logoFilename = 'logo.' . $extension;
+                $logoPath = $uploadDir . $logoFilename;
+                
+                if (!move_uploaded_file($_FILES['logo']['tmp_name'], $logoPath)) {
+                    throw new Exception('Impossible de sauvegarder le logo');
+                }
+                
+                // Stocker le chemin relatif du logo
+                $logoPath = '/images/' . $logoFilename;
             }
             
             // Mettre à jour le fichier .env avec les données du formulaire
@@ -950,6 +1337,7 @@ try {
                 'APP_ENV' => $_POST['app_env'] ?? 'local',
                 'APP_URL' => $_POST['app_url'] ?? 'http://localhost',
                 'APP_LOCALE' => $locale,
+                'ADMIN_LOGO' => $logoPath
             ];
             
             updateEnvFile($envData);
@@ -962,6 +1350,41 @@ try {
             runCommand('php artisan key:generate --force');
             runCommand('php artisan config:clear');
             runCommand('php artisan migrate --force');
+            
+            // Créer l'administrateur dans la base de données
+            try {
+                $pdo = new PDO("mysql:host={$_POST['db_host']};port={$_POST['db_port']};dbname={$_POST['db_database']}",
+                    $_POST['db_username'],
+                    $_POST['db_password'],
+                    [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]
+                );
+                
+                // Vérifier si la table admins existe
+                $tableExists = $pdo->query("SHOW TABLES LIKE 'admins'")->rowCount() > 0;
+                
+                if ($tableExists) {
+                    // Hasher le mot de passe avec bcrypt
+                    $hashedPassword = password_hash($_POST['admin_password'], PASSWORD_BCRYPT, ['cost' => 12]);
+                    
+                    // Préparer les données de l'administrateur
+                    $name = $_POST['admin_firstname'] . ' ' . $_POST['admin_lastname'];
+                    $email = $_POST['admin_email'];
+                    $now = date('Y-m-d H:i:s');
+                    
+                    // Insérer l'administrateur dans la base de données
+                    $stmt = $pdo->prepare("INSERT INTO admins (name, email, password, is_super_admin, created_at, updated_at) 
+                        VALUES (:name, :email, :password, 1, :created_at, :updated_at)");
+                    $stmt->execute([
+                        'name' => $name,
+                        'email' => $email,
+                        'password' => $hashedPassword,
+                        'created_at' => $now,
+                        'updated_at' => $now
+                    ]);
+                }
+            } catch (PDOException $e) {
+                error_log("Erreur lors de la création de l'administrateur : " . $e->getMessage());
+            }
             
             // Importer le fichier SQL s'il existe
             if (file_exists(ROOT_PATH . '/database/database.sql')) {

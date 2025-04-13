@@ -191,6 +191,8 @@
         "enable_2fa_description": "Renforce la sécurité de votre compte en exigeant un code supplémentaire lors de la connexion.",
         "complete_step": "Installation terminée",
         "complete_message": "AdminLicence a été installé avec succès. Vous pouvez maintenant vous connecter à votre compte administrateur.",
-        "go_to_login": "Aller à la page de connexion"
+        "go_to_login": "Aller à la page de connexion",
+        "installation_complete": "Installation terminée avec succès !",
+        "go_to_site": "Aller au site"
     }
 }
