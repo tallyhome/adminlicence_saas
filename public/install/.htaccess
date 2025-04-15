@@ -1,8 +1,43 @@
-<IfModule mod_rewrite.c>
-    RewriteEngine Off
-</IfModule>
-
-# Autoriser l'exécution directe des scripts PHP
+# Autoriser l'exécution des scripts PHP
 <FilesMatch "\.php$">
+    Require all granted
     SetHandler application/x-httpd-php
 </FilesMatch>
+
+# Configuration du répertoire
+Options +FollowSymLinks
+# Changer AllowOverride None à All pour permettre les configurations locales
+AllowOverride All
+Require all granted
+
+# Autoriser l'accès aux fichiers PHP spécifiques
+<Files "install.php">
+    Require all granted
+</Files>
+
+# Activer le module de réécriture mais désactiver la réécriture pour ce dossier
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    # Ne pas rediriger les requêtes vers index.php
+    RewriteRule .* - [L]
+</IfModule>
+
+# Afficher les erreurs PHP pour le débogage
+<IfModule mod_php7.c>
+    php_flag display_errors On
+    php_flag display_startup_errors On
+    php_value error_reporting E_ALL
+</IfModule>
+
+<IfModule mod_php8.c>
+    php_flag display_errors On
+    php_flag display_startup_errors On
+    php_value error_reporting E_ALL
+</IfModule>
+
+# Augmenter les limites de PHP pour l'installation
+php_value upload_max_filesize 64M
+php_value post_max_size 64M
+php_value max_execution_time 300
+php_value max_input_time 300
+php_value memory_limit 256M

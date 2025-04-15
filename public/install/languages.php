@@ -3,16 +3,26 @@
  * Système de gestion des langues pour l'installateur
  */
 
-// Définir les langues disponibles
-define('AVAILABLE_LANGUAGES', ['fr', 'en']);
+// Définir les langues disponibles avec leurs noms
+define('AVAILABLE_LANGUAGES', [
+    'fr' => 'Français',
+    'en' => 'English',
+    'es' => 'Español',
+    'pt' => 'Português',
+    'ar' => 'العربية',
+    'zh' => '中文',
+    'ru' => 'Русский'
+]);
 define('DEFAULT_LANGUAGE', 'fr');
 
 // Initialiser la langue
 function initLanguage() {
     // Vérifier si une langue est déjà définie en session
-    session_start();
+    if (session_status() === PHP_SESSION_NONE) {
+        session_start();
+    }
     
-    if (isset($_POST['language']) && in_array($_POST['language'], AVAILABLE_LANGUAGES)) {
+    if (isset($_POST['language']) && array_key_exists($_POST['language'], AVAILABLE_LANGUAGES)) {
         $_SESSION['installer_language'] = $_POST['language'];
     } elseif (!isset($_SESSION['installer_language'])) {
         // Détecter la langue du navigateur
@@ -64,29 +74,26 @@ function t($key, $replacements = []) {
 
 // Obtenir la langue actuelle
 function getCurrentLanguage() {
-    session_start();
+    if (session_status() === PHP_SESSION_NONE) {
+        session_start();
+    }
     return $_SESSION['installer_language'] ?? DEFAULT_LANGUAGE;
 }
 
 // Obtenir les langues disponibles avec leurs noms
 function getAvailableLanguages() {
-    $languages = [];
+    return AVAILABLE_LANGUAGES;
+}
+
+// Générer les liens de changement de langue
+function getLanguageLinks() {
+    $currentLang = getCurrentLanguage();
+    $links = [];
     
-    foreach (AVAILABLE_LANGUAGES as $lang) {
-        $langName = '';
-        switch ($lang) {
-            case 'fr':
-                $langName = 'Français';
-                break;
-            case 'en':
-                $langName = 'English';
-                break;
-            default:
-                $langName = ucfirst($lang);
-        }
-        
-        $languages[$lang] = $langName;
+    foreach (AVAILABLE_LANGUAGES as $code => $name) {
+        $active = $code === $currentLang ? ' class="active"' : '';
+        $links[] = sprintf('<a href="?language=%s"%s>%s</a>', $code, $active, $name);
     }
     
-    return $languages;
+    return implode(' ', $links);
 }

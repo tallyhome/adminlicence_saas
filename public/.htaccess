@@ -15,10 +15,10 @@
     RewriteRule ^ %1 [L,R=301]
 
     # Permettre l'accès direct aux fichiers d'installation
-    RewriteCond %{REQUEST_URI} ^/install\.php$ [OR]
-    RewriteCond %{REQUEST_URI} ^/install/ [OR]
-    RewriteCond %{REQUEST_URI} ^/public/install/
-    RewriteRule ^ - [L]
+    RewriteCond %{REQUEST_URI} ^/install\.php [OR]
+    RewriteCond %{REQUEST_URI} ^/install/.* [OR]
+    RewriteCond %{REQUEST_URI} ^/public/install/.*
+    RewriteRule .* - [L]
     
     # Autoriser toutes les méthodes HTTP pour les routes d'installation
     <IfModule mod_headers.c>

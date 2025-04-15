@@ -1,4 +1,19 @@
 <?php
+// Code de débogage d'urgence - sera exécuté avant tout le reste
+try {
+    // Créer un fichier de log dans un répertoire avec des permissions d'écriture garanties
+    $emergency_log = dirname(__FILE__) . '/debug.log';
+    file_put_contents($emergency_log, date('Y-m-d H:i:s') . " - Script démarré\n", FILE_APPEND);
+    
+    // Capturer toutes les variables serveur pour le débogage
+    file_put_contents($emergency_log, date('Y-m-d H:i:s') . " - SERVER: " . json_encode($_SERVER) . "\n", FILE_APPEND);
+    
+    // Vérifier les permissions d'écriture
+    file_put_contents($emergency_log, date('Y-m-d H:i:s') . " - Permissions: " . substr(sprintf('%o', fileperms(dirname(__FILE__))), -4) . "\n", FILE_APPEND);
+} catch (Exception $e) {
+    // Ne rien faire, on ne veut pas que cette partie échoue
+}
+
 /**
  * Wizard d'installation autonome pour Laravel
  * 
@@ -7,24 +22,409 @@
  * et l'exécution des commandes nécessaires pour finaliser l'installation.
  */
 
-// Désactiver l affichage des erreurs pour la production
+// Activer l'affichage des erreurs pour le débogage
 ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
 // Définir le fuseau horaire par défaut
 date_default_timezone_set('UTC');
 
-// Définir le chemin racine du projet (un niveau au-dessus du dossier public)
-define('ROOT_PATH', dirname(dirname(__DIR__)));
+// Définir le chemin racine du projet avec realpath pour une meilleure compatibilité
+define('ROOT_PATH', realpath(dirname(dirname(__DIR__))));
 
-// Vérifiez si le fichier languages.php existe
+// Vérifier les extensions PHP requises
+$required_extensions = ['curl', 'json', 'pdo', 'pdo_mysql', 'mbstring'];
+$missing_extensions = [];
+foreach ($required_extensions as $ext) {
+    if (!extension_loaded($ext)) {
+        $missing_extensions[] = $ext;
+    }
+}
+
+if (!empty($missing_extensions)) {
+    die("Extensions PHP requises manquantes : " . implode(', ', $missing_extensions));
+}
+
+// Vérifier si le fichier languages.php existe
 if (!file_exists(__DIR__ . '/languages.php')) {
-    echo "Erreur : Le fichier languages.php est manquant.";
-    exit;
+    die("Erreur : Le fichier languages.php est manquant.");
+}
+
+// Vérifier si les fonctions nécessaires sont disponibles
+$required_functions = ['curl_init', 'json_encode', 'json_decode'];
+$disabled_functions = explode(',', ini_get('disable_functions'));
+$missing_functions = [];
+
+foreach ($required_functions as $func) {
+    if (!function_exists($func) || in_array($func, $disabled_functions)) {
+        $missing_functions[] = $func;
+    }
+}
+
+if (!empty($missing_functions)) {
+    die("Fonctions PHP requises désactivées : " . implode(', ', $missing_functions));
 }
 
 // Inclure le système de gestion des langues
-// require_once __DIR__ . '/languages.php';
+require_once __DIR__ . '/languages.php';
+
+// Créer un fichier de log pour suivre les erreurs
+function writeToLog($message, $type = 'INFO') {
+    $logFile = __DIR__ . '/install_log.txt';
+    $timestamp = date('Y-m-d H:i:s');
+    $logMessage = "[$timestamp] [$type] $message" . PHP_EOL;
+    file_put_contents($logFile, $logMessage, FILE_APPEND);
+}
+
+// Fonction pour capturer les erreurs fatales
+register_shutdown_function(function() {
+    $error = error_get_last();
+    if ($error !== null && in_array($error['type'], [E_ERROR, E_PARSE, E_CORE_ERROR, E_COMPILE_ERROR])) {
+        writeToLog("ERREUR FATALE: {$error['message']} dans {$error['file']} à la ligne {$error['line']}", 'FATAL');
+    }
+});
+
+// Démarrer la session si elle n'est pas déjà démarrée
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+// Vérifier si Laravel est déjà installé
+if (isLaravelInstalled()) {
+    showError(t('already_installed'));
+    exit;
+}
+
+// Gérer les étapes d'installation
+$step = $_POST['step'] ?? 1;
+$errors = [];
+
+try {
+    // Traitement du formulaire
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        switch ($step) {
+            case 1: // Vérification de la licence
+                if (empty($_POST['serial_key'])) {
+                    $errors[] = t('license_key_required');
+                } else {
+                    $licenseCheck = verifierLicence($_POST['serial_key']);
+                    if (!$licenseCheck['valide']) {
+                        $errors[] = $licenseCheck['message'];
+                    } else {
+                        $_SESSION['serial_key'] = $_POST['serial_key'];
+                        $_SESSION['license_data'] = $licenseCheck['donnees'];
+                        $step = 2;
+                    }
+                }
+                break;
+                
+            case 2: // Configuration de la base de données
+                $requiredFields = ['db_host', 'db_port', 'db_name', 'db_user', 'db_password'];
+                $missingFields = [];
+                
+                foreach ($requiredFields as $field) {
+                    if (empty($_POST[$field]) && $field !== 'db_password') { // Le mot de passe peut être vide
+                        $missingFields[] = $field;
+                    }
+                }
+                
+                if (!empty($missingFields)) {
+                    $errors[] = t('required_fields_missing');
+                } else {
+                    // Tester la connexion à la base de données
+                    try {
+                        $dsn = "mysql:host={$_POST['db_host']};port={$_POST['db_port']}";
+                        $pdo = new PDO($dsn, $_POST['db_user'], $_POST['db_password'], [
+                            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+                            PDO::ATTR_TIMEOUT => 5
+                        ]);
+                        
+                        // Vérifier si la base de données existe
+                        try {
+                            $pdo->query("USE `{$_POST['db_name']}`");
+                        } catch (PDOException $e) {
+                            // La base de données n'existe pas, essayer de la créer
+                            try {
+                                $pdo->exec("CREATE DATABASE IF NOT EXISTS `{$_POST['db_name']}` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci");
+                                writeToLog("Base de données créée: {$_POST['db_name']}");
+                            } catch (PDOException $e) {
+                                $errors[] = t('database_creation_failed');
+                                writeToLog("Erreur lors de la création de la base de données: " . $e->getMessage(), 'ERROR');
+                                break;
+                            }
+                        }
+                        
+                        // Stocker les informations de connexion en session
+                        $_SESSION['db_config'] = [
+                            'host' => $_POST['db_host'],
+                            'port' => $_POST['db_port'],
+                            'database' => $_POST['db_name'],
+                            'username' => $_POST['db_user'],
+                            'password' => $_POST['db_password']
+                        ];
+                        
+                        $step = 3;
+                    } catch (PDOException $e) {
+                        $errors[] = t('database_connection_failed');
+                        writeToLog("Erreur de connexion à la base de données: " . $e->getMessage(), 'ERROR');
+                    }
+                }
+                break;
+                
+            case 3: // Configuration du compte admin
+                $requiredFields = ['admin_name', 'admin_email', 'admin_password', 'admin_password_confirm'];
+                $missingFields = [];
+                
+                foreach ($requiredFields as $field) {
+                    if (empty($_POST[$field])) {
+                        $missingFields[] = $field;
+                    }
+                }
+                
+                if (!empty($missingFields)) {
+                    $errors[] = t('required_fields_missing');
+                } elseif (!filter_var($_POST['admin_email'], FILTER_VALIDATE_EMAIL)) {
+                    $errors[] = t('invalid_email');
+                } elseif (strlen($_POST['admin_password']) < 8) {
+                    $errors[] = t('password_too_short');
+                } elseif ($_POST['admin_password'] !== $_POST['admin_password_confirm']) {
+                    $errors[] = t('passwords_dont_match');
+                } else {
+                    // Stocker les informations de l'administrateur en session
+                    $_SESSION['admin_config'] = [
+                        'name' => $_POST['admin_name'],
+                        'email' => $_POST['admin_email'],
+                        'password' => $_POST['admin_password']
+                    ];
+                    
+                    $step = 4;
+                }
+                break;
+                
+            case 4: // Installation finale
+                try {
+                    // Créer le fichier .env à partir du modèle
+                    if (!createEnvFile()) {
+                        $errors[] = t('env_creation_failed');
+                        break;
+                    }
+                    
+                    // Exécuter les migrations et créer l'administrateur
+                    if (!runMigrations()) {
+                        $errors[] = t('migrations_failed');
+                        break;
+                    }
+                    
+                    if (!createAdminUser()) {
+                        $errors[] = t('admin_creation_failed');
+                        break;
+                    }
+                    
+                    // Marquer l'installation comme terminée
+                    if (!finalizeInstallation()) {
+                        $errors[] = t('installation_finalization_failed');
+                        break;
+                    }
+                    
+                    // Rediriger vers la page de succès
+                    header('Location: install.php?success=1');
+                    exit;
+                } catch (Exception $e) {
+                    $errors[] = t('installation_error');
+                    writeToLog("Erreur lors de l'installation finale: " . $e->getMessage(), 'ERROR');
+                }
+                break;
+        }
+    }
+    
+    // Afficher la page de succès si l'installation est terminée
+    if (isset($_GET['success']) && $_GET['success'] == 1) {
+        displaySuccessPage();
+        exit;
+    }
+} catch (Exception $e) {
+    writeToLog("Erreur lors du traitement du formulaire: " . $e->getMessage());
+    showError(t('installation_error'), $e->getMessage());
+}
+
+// Afficher le formulaire d'installation
+displayInstallationForm($step, $errors);
+
+// Fonction pour afficher la page de succès après l'installation
+function displaySuccessPage() {
+    $currentLang = getCurrentLanguage();
+    
+    header('Content-Type: text/html; charset=utf-8');
+    echo '<!DOCTYPE html>
+    <html lang="' . $currentLang . '">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>' . t('installation_complete') . '</title>
+        <style>
+            body { font-family: Arial, sans-serif; line-height: 1.6; margin: 0; padding: 20px; color: #333; background: #f4f4f4; }
+            .container { max-width: 800px; margin: 0 auto; background: white; padding: 20px; border-radius: 5px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+            h1 { color: #2c3e50; margin-bottom: 30px; text-align: center; }
+            .success-icon { text-align: center; margin-bottom: 30px; font-size: 80px; color: #2ecc71; }
+            .btn { display: inline-block; background: #3498db; color: white; padding: 10px 15px; text-decoration: none; border-radius: 4px; border: none; cursor: pointer; }
+            .btn:hover { background: #2980b9; }
+            .info { background: #d4edda; color: #155724; padding: 15px; border-radius: 4px; margin-bottom: 20px; }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <h1>' . t('installation_complete') . '</h1>
+            <div class="success-icon">✓</div>
+            <div class="info">
+                <p>' . t('installation_success_message') . '</p>
+                <p>' . t('admin_credentials_reminder') . '</p>
+            </div>
+            <div style="text-align: center;">
+                <a href="' . ROOT_PATH . '/admin/login" class="btn">' . t('go_to_admin') . '</a>
+                <a href="' . ROOT_PATH . '" class="btn">' . t('go_to_homepage') . '</a>
+            </div>
+        </div>
+    </body>
+    </html>';
+}
+
+// Fonction pour créer le fichier .env à partir du modèle
+
+
+// Fonction pour exécuter les migrations de la base de données
+function runMigrations() {
+    try {
+        writeToLog("Exécution des migrations");
+        
+        // Vérifier si le fichier artisan existe
+        $artisanPath = ROOT_PATH . '/artisan';
+        if (!file_exists($artisanPath)) {
+            writeToLog("Le fichier artisan n'existe pas", 'ERROR');
+            return false;
+        }
+        
+        // Exécuter la commande de migration
+        $command = 'cd ' . escapeshellarg(ROOT_PATH) . ' && php artisan migrate --force 2>&1';
+        exec($command, $output, $returnCode);
+        
+        if ($returnCode !== 0) {
+            writeToLog("Erreur lors de l'exécution des migrations: " . implode("\n", $output), 'ERROR');
+            return false;
+        }
+        
+        writeToLog("Migrations exécutées avec succès");
+        return true;
+    } catch (Exception $e) {
+        writeToLog("Erreur lors de l'exécution des migrations: " . $e->getMessage(), 'ERROR');
+        return false;
+    }
+}
+
+// Fonction pour créer l'utilisateur administrateur
+function createAdminUser() {
+    try {
+        writeToLog("Création de l'utilisateur administrateur");
+        
+        // Récupérer les informations de l'administrateur depuis la session
+        $adminConfig = $_SESSION['admin_config'] ?? [];
+        if (empty($adminConfig)) {
+            writeToLog("Informations de l'administrateur manquantes", 'ERROR');
+            return false;
+        }
+        
+        // Se connecter à la base de données
+        $dbConfig = $_SESSION['db_config'] ?? [];
+        $dsn = "mysql:host={$dbConfig['host']};port={$dbConfig['port']};dbname={$dbConfig['database']}";
+        $pdo = new PDO($dsn, $dbConfig['username'], $dbConfig['password'], [
+            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
+        ]);
+        
+        // Vérifier si la table admins existe
+        $tables = $pdo->query("SHOW TABLES LIKE 'admins'")->fetchAll();
+        if (empty($tables)) {
+            writeToLog("La table 'admins' n'existe pas", 'ERROR');
+            return false;
+        }
+        
+        // Vérifier si un administrateur existe déjà
+        $stmt = $pdo->prepare("SELECT COUNT(*) FROM admins");
+        $stmt->execute();
+        $adminCount = $stmt->fetchColumn();
+        
+        if ($adminCount > 0) {
+            writeToLog("Un administrateur existe déjà, mise à jour des informations");
+            
+            // Mettre à jour l'administrateur existant
+            $stmt = $pdo->prepare("UPDATE admins SET name = ?, email = ?, password = ?, updated_at = NOW() WHERE id = 1");
+            $stmt->execute([
+                $adminConfig['name'],
+                $adminConfig['email'],
+                password_hash($adminConfig['password'], PASSWORD_BCRYPT, ['cost' => 12])
+            ]);
+        } else {
+            writeToLog("Création d'un nouvel administrateur");
+            
+            // Créer un nouvel administrateur
+            $stmt = $pdo->prepare("INSERT INTO admins (name, email, password, created_at, updated_at) VALUES (?, ?, ?, NOW(), NOW())");
+            $stmt->execute([
+                $adminConfig['name'],
+                $adminConfig['email'],
+                password_hash($adminConfig['password'], PASSWORD_BCRYPT, ['cost' => 12])
+            ]);
+        }
+        
+        writeToLog("Administrateur créé/mis à jour avec succès");
+        return true;
+    } catch (Exception $e) {
+        writeToLog("Erreur lors de la création de l'administrateur: " . $e->getMessage(), 'ERROR');
+        return false;
+    }
+}
+
+// Fonction pour finaliser l'installation
+function finalizeInstallation() {
+    try {
+        writeToLog("Finalisation de l'installation");
+        
+        // Marquer l'application comme installée dans le fichier .env
+        $envPath = ROOT_PATH . '/.env';
+        $envContent = file_get_contents($envPath);
+        
+        if ($envContent === false) {
+            writeToLog("Impossible de lire le fichier .env", 'ERROR');
+            return false;
+        }
+        
+        $envContent = preg_replace('/^APP_INSTALLED=.*$/m', 'APP_INSTALLED=true', $envContent);
+        
+        if (file_put_contents($envPath, $envContent) === false) {
+            writeToLog("Impossible d'écrire dans le fichier .env", 'ERROR');
+            return false;
+        }
+        
+        // Créer un fichier pour indiquer que l'installation est terminée
+        $installLockPath = ROOT_PATH . '/storage/installed';
+        if (!is_dir(dirname($installLockPath))) {
+            mkdir(dirname($installLockPath), 0755, true);
+        }
+        
+        file_put_contents($installLockPath, date('Y-m-d H:i:s'));
+        
+        // Nettoyer la session
+        $_SESSION = [];
+        if (session_status() === PHP_SESSION_ACTIVE) {
+            session_destroy();
+        }
+        
+        writeToLog("Installation finalisée avec succès");
+        return true;
+    } catch (Exception $e) {
+        writeToLog("Erreur lors de la finalisation de l'installation: " . $e->getMessage(), 'ERROR');
+        return false;
+    }
+}
 
 // Fonction pour s'assurer que le dossier de logs existe
 function ensureLogDirectoryExists() {
@@ -71,7 +471,8 @@ function showError($message, $details = null) {
             h1 { color: #d9534f; }
             .error { background: #f8d7da; color: #721c24; padding: 10px; border-radius: 4px; margin-bottom: 20px; }
             .details { background: #f8f9fa; padding: 10px; border-radius: 4px; margin-bottom: 20px; font-family: monospace; }
-            .btn { display: inline-block; background: #007bff; color: white; padding: 10px 15px; text-decoration: none; border-radius: 4px; }
+            .btn { display: inline-block; background: #007bff; color: white; padding: 10px 15px; text-decoration: none; border-radius: 4px; cursor: pointer; }
+            .btn:hover { background: #2980b9; }
             .language-selector { text-align: right; margin-bottom: 20px; }
             .language-selector a { margin-left: 10px; text-decoration: none; }
             .language-selector a.active { font-weight: bold; }
@@ -94,6 +495,187 @@ function showError($message, $details = null) {
     </body>
     </html>';
     exit;
+}
+
+// Afficher le formulaire d'installation
+function displayInstallationForm($step, $errors = []) {
+    $currentLang = getCurrentLanguage();
+    $languages = getAvailableLanguages();
+    
+    header('Content-Type: text/html; charset=utf-8');
+    echo '<!DOCTYPE html>
+    <html lang="' . $currentLang . '">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>' . t('installation_title') . '</title>
+        <style>
+            body { font-family: Arial, sans-serif; line-height: 1.6; margin: 0; padding: 20px; color: #333; background: #f4f4f4; }
+            .container { max-width: 800px; margin: 0 auto; background: white; padding: 20px; border-radius: 5px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+            h1 { color: #2c3e50; margin-bottom: 30px; text-align: center; }
+            .step { text-align: center; margin-bottom: 30px; }
+            .step span { display: inline-block; width: 30px; height: 30px; border-radius: 50%; background: #ddd; color: #666; line-height: 30px; margin: 0 5px; }
+            .step span.active { background: #3498db; color: white; }
+            .step span.completed { background: #2ecc71; color: white; }
+            .form-group { margin-bottom: 20px; }
+            label { display: block; margin-bottom: 5px; color: #666; }
+            input[type="text"], input[type="password"], select { width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; }
+            .btn { display: inline-block; background: #3498db; color: white; padding: 10px 15px; text-decoration: none; border-radius: 4px; border: none; cursor: pointer; }
+            .btn:hover { background: #2980b9; }
+            .error { background: #f8d7da; color: #721c24; padding: 10px; border-radius: 4px; margin-bottom: 20px; }
+            .language-selector { text-align: right; margin-bottom: 20px; }
+            .language-selector a { margin-left: 10px; text-decoration: none; color: #3498db; }
+            .language-selector a.active { font-weight: bold; }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <div class="language-selector">
+                ' . getLanguageLinks() . '
+            </div>
+            <h1>' . t('installation_title') . '</h1>
+            
+            <div class="step">
+                <span class="' . ($step >= 1 ? 'active' : '') . '">1</span>
+                <span class="' . ($step >= 2 ? 'active' : '') . '">2</span>
+                <span class="' . ($step >= 3 ? 'active' : '') . '">3</span>
+                <span class="' . ($step >= 4 ? 'active' : '') . '">4</span>
+            </div>';
+            
+    // Afficher les erreurs s'il y en a
+    if (!empty($errors)) {
+        foreach ($errors as $error) {
+            echo '<div class="error">' . htmlspecialchars($error) . '</div>';
+        }
+    }
+    
+    // Afficher le formulaire en fonction de l'étape
+    switch ($step) {
+        case 1: // Sélection de la langue et vérification de la licence
+            echo '<form method="post" action="">
+                <input type="hidden" name="step" value="1">
+                
+                <div class="form-group">
+                    <label for="serial_key">' . t('license_key') . '</label>
+                    <input type="text" id="serial_key" name="serial_key" required 
+                           placeholder="XXXX-XXXX-XXXX-XXXX" 
+                           pattern="[A-Za-z0-9]{4}-[A-Za-z0-9]{4}-[A-Za-z0-9]{4}-[A-Za-z0-9]{4}" 
+                           value="' . htmlspecialchars($_POST['serial_key'] ?? '') . '">
+                </div>
+                
+                <div style="text-align: right;">
+                    <button type="submit" class="btn">' . t('next') . '</button>
+                </div>
+            </form>';
+            break;
+            
+        case 2: // Configuration de la base de données
+            echo '<form method="post" action="">
+                <input type="hidden" name="step" value="2">
+                
+                <div class="form-group">
+                    <label for="db_host">' . t('database_host') . '</label>
+                    <input type="text" id="db_host" name="db_host" required 
+                           value="' . htmlspecialchars($_POST['db_host'] ?? 'localhost') . '">
+                </div>
+                
+                <div class="form-group">
+                    <label for="db_port">' . t('database_port') . '</label>
+                    <input type="text" id="db_port" name="db_port" required 
+                           value="' . htmlspecialchars($_POST['db_port'] ?? '3306') . '">
+                </div>
+                
+                <div class="form-group">
+                    <label for="db_name">' . t('database_name') . '</label>
+                    <input type="text" id="db_name" name="db_name" required 
+                           value="' . htmlspecialchars($_POST['db_name'] ?? '') . '">
+                </div>
+                
+                <div class="form-group">
+                    <label for="db_user">' . t('database_username') . '</label>
+                    <input type="text" id="db_user" name="db_user" required 
+                           value="' . htmlspecialchars($_POST['db_user'] ?? '') . '">
+                </div>
+                
+                <div class="form-group">
+                    <label for="db_password">' . t('database_password') . '</label>
+                    <input type="password" id="db_password" name="db_password" 
+                           value="' . htmlspecialchars($_POST['db_password'] ?? '') . '">
+                </div>
+                
+                <div style="display: flex; justify-content: space-between;">
+                    <a href="install.php" class="btn">' . t('back') . '</a>
+                    <button type="submit" class="btn">' . t('next') . '</button>
+                </div>
+            </form>';
+            break;
+            
+        case 3: // Configuration du compte admin
+            echo '<form method="post" action="">
+                <input type="hidden" name="step" value="3">
+                
+                <div class="form-group">
+                    <label for="admin_name">' . t('admin_name') . '</label>
+                    <input type="text" id="admin_name" name="admin_name" required 
+                           value="' . htmlspecialchars($_POST['admin_name'] ?? '') . '">
+                </div>
+                
+                <div class="form-group">
+                    <label for="admin_email">' . t('admin_email') . '</label>
+                    <input type="email" id="admin_email" name="admin_email" required 
+                           value="' . htmlspecialchars($_POST['admin_email'] ?? '') . '">
+                </div>
+                
+                <div class="form-group">
+                    <label for="admin_password">' . t('admin_password') . '</label>
+                    <input type="password" id="admin_password" name="admin_password" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="admin_password_confirm">' . t('admin_password_confirm') . '</label>
+                    <input type="password" id="admin_password_confirm" name="admin_password_confirm" required>
+                </div>
+                
+                <div style="display: flex; justify-content: space-between;">
+                    <button type="button" onclick="window.location.href=\'install.php?step=2\'" class="btn">' . t('back') . '</button>
+                    <button type="submit" class="btn">' . t('next') . '</button>
+                </div>
+            </form>';
+            break;
+            
+        case 4: // Installation finale
+            echo '<form method="post" action="">
+                <input type="hidden" name="step" value="4">
+                
+                <div style="margin-bottom: 20px;">
+                    <h3>' . t('installation_summary') . '</h3>
+                    <p>' . t('installation_summary_text') . '</p>
+                    
+                    <div style="background: #f8f9fa; padding: 15px; border-radius: 4px; margin-bottom: 20px;">
+                        <h4>' . t('database_information') . '</h4>
+                        <p><strong>' . t('database_host') . ':</strong> ' . htmlspecialchars($_SESSION['db_config']['host'] ?? '') . '</p>
+                        <p><strong>' . t('database_name') . ':</strong> ' . htmlspecialchars($_SESSION['db_config']['database'] ?? '') . '</p>
+                        <p><strong>' . t('database_username') . ':</strong> ' . htmlspecialchars($_SESSION['db_config']['username'] ?? '') . '</p>
+                        
+                        <h4>' . t('admin_information') . '</h4>
+                        <p><strong>' . t('admin_name') . ':</strong> ' . htmlspecialchars($_SESSION['admin_config']['name'] ?? '') . '</p>
+                        <p><strong>' . t('admin_email') . ':</strong> ' . htmlspecialchars($_SESSION['admin_config']['email'] ?? '') . '</p>
+                    </div>
+                    
+                    <p>' . t('installation_warning') . '</p>
+                </div>
+                
+                <div style="display: flex; justify-content: space-between;">
+                    <button type="button" onclick="window.location.href=\'install.php?step=3\'" class="btn">' . t('back') . '</button>
+                    <button type="submit" class="btn">' . t('install_now') . '</button>
+                </div>
+            </form>';
+            break;
+    }
+    
+    echo '</div>
+    </body>
+    </html>';
 }
 
 // Fonction pour vérifier si Laravel est déjà installé
@@ -211,6 +793,133 @@ function generateAppKey() {
     return 'base64:' . base64_encode(random_bytes(32));
 }
 
+// Fonction pour vérifier la validité de la licence
+function verifierLicence($cleSeriale, $domaine = null, $adresseIP = null) {
+    writeToLog("Début de la vérification de licence - Clé: " . $cleSeriale);
+    
+    if (empty($cleSeriale)) {
+        writeToLog("Erreur: Clé de licence vide");
+        return [
+            'valide' => false,
+            'message' => t('license_key_required'),
+            'donnees' => null
+        ];
+    }
+
+    // Valider le format de la clé de licence (exemple: XXXX-XXXX-XXXX-XXXX)
+    if (!preg_match('/^[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}$/', strtoupper($cleSeriale))) {
+        writeToLog("Erreur: Format de clé invalide");
+        return [
+            'valide' => false,
+            'message' => t('license_key_invalid_format'),
+            'donnees' => null
+        ];
+    }
+
+    // URL de l'API de vérification (utilisation de l'API ultra-simple)
+    $url = "https://licence.myvcard.fr/api/ultra-simple.php";
+    
+    // Données à envoyer
+    $donnees = [
+        'serial_key' => trim(strtoupper($cleSeriale)),
+        'domain' => $domaine ?: (isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : 'localhost'),
+        'ip_address' => $adresseIP ?: (isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : '127.0.0.1')
+    ];
+    
+    writeToLog("Données envoyées à l'API: " . json_encode($donnees));
+    
+    try {
+        // Initialiser cURL
+        $ch = curl_init($url);
+        if ($ch === false) {
+            throw new Exception('Erreur lors de l\'initialisation de la connexion');
+        }
+        
+        // Configurer cURL
+        curl_setopt_array($ch, [
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_POST => true,
+            CURLOPT_POSTFIELDS => json_encode($donnees),
+            CURLOPT_HTTPHEADER => ['Content-Type: application/json'],
+            CURLOPT_TIMEOUT => 10,
+            CURLOPT_SSL_VERIFYPEER => false
+        ]);
+        
+        // Exécuter la requête
+        $reponse = curl_exec($ch);
+        $erreur = curl_error($ch);
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        
+        curl_close($ch);
+        
+        writeToLog("Réponse de l'API - Code HTTP: " . $httpCode);
+        writeToLog("Corps de la réponse: " . $reponse);
+        
+        if ($erreur) {
+            throw new Exception("Erreur cURL: " . $erreur);
+        }
+        
+        if (empty($reponse)) {
+            throw new Exception("Réponse vide du serveur de licences");
+        }
+        
+        // Décoder la réponse JSON
+        $resultat = json_decode($reponse, true);
+        if (json_last_error() !== JSON_ERROR_NONE || !is_array($resultat)) {
+            throw new Exception("Erreur de décodage JSON: " . json_last_error_msg());
+        }
+        
+        // Vérifier le statut de la réponse
+        if (!isset($resultat['status'])) {
+            throw new Exception("Réponse sans statut");
+        }
+        
+        if ($resultat['status'] === 'error') {
+            writeToLog("Erreur API: " . ($resultat['message'] ?? 'non spécifiée'));
+            return [
+                'valide' => false,
+                'message' => t('license_key_invalid'),
+                'donnees' => null
+            ];
+        }
+        
+        // Vérifications supplémentaires des données de licence
+        if (!isset($resultat['data']['plan']) || empty($resultat['data']['plan'])) {
+            return [
+                'valide' => false,
+                'message' => t('license_invalid_plan'),
+                'donnees' => null
+            ];
+        }
+
+        if (!isset($resultat['data']['client']) || empty($resultat['data']['client'])) {
+            return [
+                'valide' => false,
+                'message' => t('license_invalid_client'),
+                'donnees' => null
+            ];
+        }
+
+        // Si toutes les vérifications sont passées, la licence est valide
+        return [
+            'valide' => true,
+            'message' => t('license_valid'),
+            'donnees' => $resultat['data']
+        ];
+        
+    } catch (Exception $e) {
+        writeToLog("Erreur lors de la vérification de licence: " . $e->getMessage());
+        return [
+            'valide' => false,
+            'message' => $e->getMessage(),
+            'donnees' => null
+        ];
+    }
+}
+
+// La fonction t() est définie dans languages.php
+
+
 // Fonction pour créer le fichier .env
 function createEnvFile() {
     try {
@@ -290,13 +999,29 @@ function createEnvFile() {
             'MAIL_FROM_NAME' => '${APP_NAME}'
         ];
 
+        // Vérifier la licence avant de continuer l'installation
+        $cleSeriale = $_POST['licence_key'] ?? '';
+        if (empty($cleSeriale)) {
+            throw new Exception('La clé de licence est requise pour l\'installation');
+        }
+
+        $resultatLicence = verifierLicence($cleSeriale);
+        if (!$resultatLicence['valide']) {
+            throw new Exception('Licence invalide ou inactive : ' . $resultatLicence['message']);
+        }
+
+        // Vérifier si la licence est active dans les données retournées
+        if (!isset($resultatLicence['donnees']['is_active']) || $resultatLicence['donnees']['is_active'] !== true) {
+            throw new Exception('Cette licence n\'est pas active');
+        }
+
         // Mettre à jour ou ajouter chaque configuration
         foreach ($defaultConfigs as $key => $value) {
             $pattern = "/^{$key}=.*$/m";
             if (preg_match($pattern, $envContent)) {
                 // Mettre à jour la valeur existante
                 $envContent = preg_replace($pattern, "{$key}={$value}", $envContent);
-    } else {
+            } else {
                 // Ajouter la nouvelle configuration
                 $envContent .= "\n{$key}={$value}";
             }
@@ -581,75 +1306,25 @@ function importSqlFile($file) {
     }
 }
 
-// Fonction pour traduire le texte
-function t($key, $locale = 'fr') {
-    $translations = [
-        'fr' => [
-            'title' => 'Installation de AdminLicence',
-            'already_installed' => 'Le projet est déjà installé.',
-            'choose_language' => 'Choisissez votre langue',
-            'continue' => 'Continuer',
-            'database_config' => 'Configuration de la base de données',
-            'db_host' => 'Hôte de la base de données',
-            'db_port' => 'Port de la base de données',
-            'db_database' => 'Nom de la base de données',
-            'db_username' => 'Nom d\'utilisateur de la base de données',
-            'db_password' => 'Mot de passe de la base de données',
-            'app_name' => 'Nom de l\'application',
-            'app_env' => 'Environnement',
-            'app_url' => 'URL de l\'application',
-            'admin_config' => 'Configuration du compte administrateur',
-            'admin_firstname' => 'Prénom',
-            'admin_lastname' => 'Nom',
-            'admin_email' => 'Email',
-            'admin_username' => 'Nom d\'utilisateur',
-            'admin_password' => 'Mot de passe',
-            'admin_password_confirmation' => 'Confirmation du mot de passe',
-            'logo' => 'Logo',
-            'logo_help' => 'Taille recommandée: 200x50px',
-            'use_https' => 'Utiliser HTTPS',
-            'yes' => 'Oui',
-            'no' => 'Non',
-            'install' => 'Installer',
-            'installing' => 'Installation en cours...',
-            'installation_complete' => 'Installation terminée avec succès !',
-            'go_to_site' => 'Aller au site',
-            'error' => 'Erreur',
-            'retry' => 'Réessayer',
-        ],
-        'en' => [
-            'title' => 'AdminLicence Installation',
-            'already_installed' => 'The project is already installed.',
-            'choose_language' => 'Choose your language',
-            'continue' => 'Continue',
-            'database_config' => 'Database Configuration',
-            'db_host' => 'Database Host',
-            'db_port' => 'Database Port',
-            'db_database' => 'Database Name',
-            'db_username' => 'Database Username',
-            'db_password' => 'Database Password',
-            'app_name' => 'Application Name',
-            'app_env' => 'Environment',
-            'app_url' => 'Application URL',
-            'admin_config' => 'Admin Account Configuration',
-            'admin_firstname' => 'First Name',
-            'admin_lastname' => 'Last Name',
-            'admin_email' => 'Email',
-            'admin_username' => 'Username',
-            'admin_password' => 'Password',
-            'admin_password_confirmation' => 'Confirm Password',
-            'logo' => 'Logo',
-            'logo_help' => 'Recommended size: 200x50px',
-            'use_https' => 'Use HTTPS',
-            'yes' => 'Yes',
-            'no' => 'No',
-            'install' => 'Install',
-            'installing' => 'Installing...',
-            'installation_complete' => 'Installation completed successfully!',
-            'go_to_site' => 'Go to site',
-            'error' => 'Error',
-            'retry' => 'Retry',
-        ],
+// La fonction t() est définie dans languages.php
+$translations = [
+    'en' => [
+        'logo' => 'Logo',
+        'logo_help' => 'Recommended size: 200x50px',
+        'use_https' => 'Use HTTPS',
+        'yes' => 'Yes',
+        'no' => 'No',
+        'install' => 'Install',
+        'installing' => 'Installing...',
+        'installation_complete' => 'Installation completed successfully!',
+        'go_to_site' => 'Go to site',
+        'error' => 'Error',
+        'retry' => 'Retry',
+        'licence_key' => 'License Key',
+        'licence_key_help' => 'Enter your license key to activate the software',
+        'licence_invalid' => 'Invalid license key',
+        'licence_valid' => 'Valid license key'
+    ],
         'es' => [
             'title' => 'Instalación de Laravel',
             'already_installed' => 'El proyecto ya está instalado.',
@@ -673,8 +1348,9 @@ function t($key, $locale = 'fr') {
         ],
     ];
     
+    $locale = getCurrentLanguage();
+    $key = $key ?? '';
     return $translations[$locale][$key] ?? $key;
-}
 
 // Fonction pour afficher l'en-tête HTML
 function showHeader($title, $locale = 'fr') {
@@ -696,8 +1372,8 @@ function showHeader($title, $locale = 'fr') {
             .container { max-width: 800px; margin: 0 auto; background: #f9f9f9; padding: 20px; border-radius: 5px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
             h1 { color: #333; }
             .form-group { margin-bottom: 15px; }
-            label { display: block; margin-bottom: 5px; font-weight: bold; }
-            input, select { width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; }
+            label { display: block; margin-bottom: 5px; color: #666; }
+            input, select { width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; }
             .btn { display: inline-block; background: #007bff; color: white; padding: 10px 15px; text-decoration: none; border-radius: 4px; border: none; cursor: pointer; }
             .btn-secondary { background: #6c757d; }
             .btn-info { background: #17a2b8; }
@@ -815,6 +1491,12 @@ function showDatabasePage() {
         <div class="form-group">
             <label for="app_url">' . t('app_url', $locale) . '</label>
             <input type="text" id="app_url" name="app_url" value="http://localhost" required>
+        </div>
+
+        <div class="form-group">
+            <label for="licence_key">' . t('licence_key', $locale) . '</label>
+            <input type="text" id="licence_key" name="licence_key" required>
+            <small class="form-text text-muted">' . t('licence_key_help', $locale) . '</small>
         </div>
         
         <div id="connection-test-result" class="alert" style="display: none;"></div>

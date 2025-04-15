@@ -1,16 +1,15 @@
 RewriteEngine On
 
-# Rediriger toutes les requêtes vers public sauf pour install.php
-RewriteCond %{REQUEST_URI} !^/install\.php
-RewriteCond %{REQUEST_URI} !^/install/
-RewriteCond %{REQUEST_URI} !^/public/
-RewriteRule ^(.*)$ public/$1 [L]
+# Permettre l'accès direct aux scripts d'installation
+<FilesMatch "install\.php$">
+    Require all granted
+    SetHandler application/x-httpd-php
+</FilesMatch>
 
-# Permettre l'accès direct à install.php
-<Files "install.php">
-    Order Allow,Deny
-    Allow from all
-</Files>
+# Rediriger toutes les requêtes vers public
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^(.*)$ public/$1 [L,QSA]
 
 # Protection des fichiers sensibles
 <FilesMatch "^\.">
