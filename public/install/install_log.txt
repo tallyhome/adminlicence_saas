@@ -370,3 +370,31 @@ X-Frame-Options: SAMEORIGIN
 [2025-04-15 13:47:40] [INFO] Corps de la réponse: {"status":"success","message":"Cl\u00e9 de licence valide (simulation)","data":{"token":"447813b0345c651336d4292124c42a3c","project":"Test Project","expires_at":"2026-04-15","debug_info":{"serial_key":"MEST-FM7A-BLGA-KLKP","domain":"127.0.0.1:8500","ip_address":"127.0.0.1","server_time":"2025-04-15 13:47:41"}}}
 [2025-04-15 13:47:40] [INFO] Erreur: Plan de licence manquant ou invalide dans la réponse
 [2025-04-15 13:47:40] [INFO] Données reçues: {"token":"447813b0345c651336d4292124c42a3c","project":"Test Project","expires_at":"2026-04-15","debug_info":{"serial_key":"MEST-FM7A-BLGA-KLKP","domain":"127.0.0.1:8500","ip_address":"127.0.0.1","server_time":"2025-04-15 13:47:41"}}
+[2025-04-15 13:50:53] [INFO] Début de la vérification de licence - Clé: MEST-FM7A-BLGA-KLKP
+[2025-04-15 13:50:53] [INFO] Données envoyées à l'API: {"serial_key":"MEST-FM7A-BLGA-KLKP","domain":"127.0.0.1:8500","ip_address":"127.0.0.1"}
+[2025-04-15 13:50:53] [INFO] Réponse de l'API - Code HTTP: 200
+[2025-04-15 13:50:53] [INFO] Corps de la réponse: {"status":"success","message":"Cl\u00e9 de licence valide (simulation)","data":{"token":"6bdcb0c037c034479a79dcefab42f79c","project":"Test Project","expires_at":"2026-04-15","debug_info":{"serial_key":"MEST-FM7A-BLGA-KLKP","domain":"127.0.0.1:8500","ip_address":"127.0.0.1","server_time":"2025-04-15 13:50:53"}}}
+[2025-04-15 13:51:08] [INFO] Début de la vérification de licence - Clé: MEST-FM7A-BLGA-KLKP
+[2025-04-15 13:51:08] [INFO] Données envoyées à l'API: {"serial_key":"MEST-FM7A-BLGA-KLKP","domain":"127.0.0.1:8500","ip_address":"127.0.0.1"}
+[2025-04-15 13:51:08] [INFO] Réponse de l'API - Code HTTP: 200
+[2025-04-15 13:51:08] [INFO] Corps de la réponse: {"status":"success","message":"Cl\u00e9 de licence valide (simulation)","data":{"token":"a9c8acc59dca66e1fcec819453f7a6bc","project":"Test Project","expires_at":"2026-04-15","debug_info":{"serial_key":"MEST-FM7A-BLGA-KLKP","domain":"127.0.0.1:8500","ip_address":"127.0.0.1","server_time":"2025-04-15 13:51:09"}}}
+[2025-04-15 13:51:09] [INFO] Début de la vérification de licence - Clé: MEST-FM7A-BLGA-KLKP
+[2025-04-15 13:51:09] [INFO] Données envoyées à l'API: {"serial_key":"MEST-FM7A-BLGA-KLKP","domain":"127.0.0.1:8500","ip_address":"127.0.0.1"}
+[2025-04-15 13:51:09] [INFO] Réponse de l'API - Code HTTP: 200
+[2025-04-15 13:51:09] [INFO] Corps de la réponse: {"status":"success","message":"Cl\u00e9 de licence valide (simulation)","data":{"token":"13e7e754b6f93ba6cf2df52e434868ce","project":"Test Project","expires_at":"2026-04-15","debug_info":{"serial_key":"MEST-FM7A-BLGA-KLKP","domain":"127.0.0.1:8500","ip_address":"127.0.0.1","server_time":"2025-04-15 13:51:10"}}}
+[2025-04-15 13:51:10] [INFO] Début de la vérification de licence - Clé: MEST-FM7A-BLGA-KLKP
+[2025-04-15 13:51:10] [INFO] Données envoyées à l'API: {"serial_key":"MEST-FM7A-BLGA-KLKP","domain":"127.0.0.1:8500","ip_address":"127.0.0.1"}
+[2025-04-15 13:51:11] [INFO] Réponse de l'API - Code HTTP: 200
+[2025-04-15 13:51:11] [INFO] Corps de la réponse: {"status":"success","message":"Cl\u00e9 de licence valide (simulation)","data":{"token":"7c368c4a7bb07efb67b95a6ea80e3856","project":"Test Project","expires_at":"2026-04-15","debug_info":{"serial_key":"MEST-FM7A-BLGA-KLKP","domain":"127.0.0.1:8500","ip_address":"127.0.0.1","server_time":"2025-04-15 13:51:11"}}}
+[2025-04-15 13:51:32] [INFO] Début de la vérification de licence - Clé: MEST-FM7A-BLGA-KLKP
+[2025-04-15 13:51:32] [INFO] Données envoyées à l'API: {"serial_key":"MEST-FM7A-BLGA-KLKP","domain":"127.0.0.1:8500","ip_address":"127.0.0.1"}
+[2025-04-15 13:51:32] [INFO] Réponse de l'API - Code HTTP: 200
+[2025-04-15 13:51:32] [INFO] Corps de la réponse: {"status":"success","message":"Cl\u00e9 de licence valide (simulation)","data":{"token":"442ea65777e6dd5087f820620a5d750c","project":"Test Project","expires_at":"2026-04-15","debug_info":{"serial_key":"MEST-FM7A-BLGA-KLKP","domain":"127.0.0.1:8500","ip_address":"127.0.0.1","server_time":"2025-04-15 13:51:32"}}}
+[2025-04-15 13:54:55] [INFO] Début de la vérification de licence - Clé: MEST-FM7A-BLGA-KLKP
+[2025-04-15 13:54:55] [INFO] Données envoyées à l'API: {"serial_key":"MEST-FM7A-BLGA-KLKP","domain":"127.0.0.1:8500","ip_address":"127.0.0.1"}
+[2025-04-15 13:54:55] [INFO] Réponse de l'API - Code HTTP: 200
+[2025-04-15 13:54:55] [INFO] Corps de la réponse: {"status":"success","message":"Cl\u00e9 de licence valide (simulation)","data":{"token":"5767b034bc8b3b1b3883b3b3c116b4ac","project":"Test Project","expires_at":"2026-04-15","debug_info":{"serial_key":"MEST-FM7A-BLGA-KLKP","domain":"127.0.0.1:8500","ip_address":"127.0.0.1","server_time":"2025-04-15 13:54:55"}}}
+[2025-04-15 13:55:19] [ERROR] Erreur de connexion à la base de données: SQLSTATE[HY000] [1045] Access denied for user 'fabien_licencetest'@'localhost' (using password: YES)
+[2025-04-15 13:56:27] [ERROR] Erreur de connexion à la base de données: SQLSTATE[HY000] [1045] Access denied for user 'adminlicencetest'@'localhost' (using password: YES)
+[2025-04-15 13:56:29] [ERROR] Erreur de connexion à la base de données: SQLSTATE[HY000] [1045] Access denied for user 'adminlicencetest'@'localhost' (using password: YES)
+[2025-04-15 13:56:49] [ERROR] Erreur de connexion à la base de données: SQLSTATE[HY000] [1045] Access denied for user 'adminlicencetest'@'localhost' (using password: YES)

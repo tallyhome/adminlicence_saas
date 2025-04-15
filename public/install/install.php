@@ -290,7 +290,131 @@ function displaySuccessPage() {
 }
 
 // Fonction pour créer le fichier .env à partir du modèle
+function createEnvFile() {
+    try {
+        // Vérifier si le dossier racine est accessible
+        if (!is_dir(ROOT_PATH) || !is_writable(ROOT_PATH)) {
+            throw new Exception('Le dossier racine n\'est pas accessible en écriture');
+        }
 
+        // Vérifier si .env.example existe et est lisible
+        $envExamplePath = ROOT_PATH . '/.env.example';
+        if (!file_exists($envExamplePath)) {
+            throw new Exception('Le fichier .env.example n\'existe pas');
+        }
+        if (!is_readable($envExamplePath)) {
+            throw new Exception('Le fichier .env.example n\'est pas lisible');
+        }
+
+        // Vérifier si .env existe déjà
+        $envPath = ROOT_PATH . '/.env';
+        if (file_exists($envPath)) {
+            // Faire une sauvegarde si le fichier existe déjà
+            $backupPath = $envPath . '.backup.' . date('Y-m-d-His');
+            if (!copy($envPath, $backupPath)) {
+                throw new Exception('Impossible de créer une sauvegarde du fichier .env existant');
+            }
+        }
+
+        // Copier .env.example vers .env
+        if (!copy($envExamplePath, $envPath)) {
+            throw new Exception('Impossible de copier le fichier .env.example vers .env');
+        }
+
+        // Lire le contenu du fichier .env
+        $envContent = file_get_contents($envPath);
+        if ($envContent === false) {
+            throw new Exception('Impossible de lire le fichier .env');
+        }
+
+        // Générer une nouvelle clé d'application
+        $appKey = generateAppKey();
+        
+        // Configurations par défaut
+        $defaultConfigs = [
+            'APP_NAME' => 'AdminLicence',
+            'APP_ENV' => 'production',
+            'APP_KEY' => $appKey,
+            'APP_DEBUG' => 'false',
+            'APP_URL' => (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https://' : 'http://') . 
+                        ($_SERVER['HTTP_HOST'] ?? 'localhost'),
+            'APP_INSTALLED' => 'false',
+            
+            'LOG_CHANNEL' => 'stack',
+            'LOG_DEPRECATIONS_CHANNEL' => 'null',
+            'LOG_LEVEL' => 'error',
+            
+            'DB_CONNECTION' => 'mysql',
+            'DB_HOST' => 'localhost',
+            'DB_PORT' => '3306',
+            'DB_DATABASE' => '',
+            'DB_USERNAME' => '',
+            'DB_PASSWORD' => '',
+            
+            'BROADCAST_DRIVER' => 'log',
+            'CACHE_DRIVER' => 'file',
+            'FILESYSTEM_DISK' => 'local',
+            'QUEUE_CONNECTION' => 'sync',
+            'SESSION_DRIVER' => 'file',
+            'SESSION_LIFETIME' => '120',
+            
+            'MAIL_MAILER' => 'smtp',
+            'MAIL_HOST' => 'smtp.mailtrap.io',
+            'MAIL_PORT' => '2525',
+            'MAIL_USERNAME' => '',
+            'MAIL_PASSWORD' => '',
+            'MAIL_ENCRYPTION' => 'tls',
+            'MAIL_FROM_ADDRESS' => 'noreply@adminlicence.com',
+            'MAIL_FROM_NAME' => '${APP_NAME}'
+        ];
+
+        // Vérifier la licence avant de continuer l'installation
+        $cleSeriale = $_POST['licence_key'] ?? '';
+        if (empty($cleSeriale)) {
+            throw new Exception('La clé de licence est requise pour l\'installation');
+        }
+
+        $resultatLicence = verifierLicence($cleSeriale);
+        if (!$resultatLicence['valide']) {
+            throw new Exception('Licence invalide ou inactive : ' . $resultatLicence['message']);
+        }
+
+        // Vérifier si la licence est active dans les données retournées
+        if (!isset($resultatLicence['donnees']['is_active']) || $resultatLicence['donnees']['is_active'] !== true) {
+            throw new Exception('Cette licence n\'est pas active');
+        }
+
+        // Mettre à jour ou ajouter chaque configuration
+        foreach ($defaultConfigs as $key => $value) {
+            $pattern = "/^{$key}=.*$/m";
+            if (preg_match($pattern, $envContent)) {
+                // Mettre à jour la valeur existante
+                $envContent = preg_replace($pattern, "{$key}={$value}", $envContent);
+            } else {
+                // Ajouter la nouvelle configuration
+                $envContent .= "\n{$key}={$value}";
+            }
+        }
+
+        // Écrire le contenu mis à jour dans le fichier .env
+        if (file_put_contents($envPath, $envContent) === false) {
+            throw new Exception('Impossible d\'écrire dans le fichier .env');
+        }
+
+        // Vérifier les permissions du fichier .env
+        if (!chmod($envPath, 0644)) {
+            throw new Exception('Impossible de définir les permissions du fichier .env');
+        }
+    
+        return true;
+    } catch (Exception $e) {
+        showError(
+            'Erreur lors de la création du fichier .env',
+            $e->getMessage()
+        );
+        return false;
+    }
+}
 
 // Fonction pour exécuter les migrations de la base de données
 function runMigrations() {
@@ -471,7 +595,7 @@ function showError($message, $details = null) {
             h1 { color: #d9534f; }
             .error { background: #f8d7da; color: #721c24; padding: 10px; border-radius: 4px; margin-bottom: 20px; }
             .details { background: #f8f9fa; padding: 10px; border-radius: 4px; margin-bottom: 20px; font-family: monospace; }
-            .btn { display: inline-block; background: #007bff; color: white; padding: 10px 15px; text-decoration: none; border-radius: 4px; cursor: pointer; }
+            .btn { display: inline-block; background: #007bff; color: white; padding: 10px 15px; text-decoration: none; border-radius: 4px; border: none; cursor: pointer; }
             .btn:hover { background: #2980b9; }
             .language-selector { text-align: right; margin-bottom: 20px; }
             .language-selector a { margin-left: 10px; text-decoration: none; }
@@ -705,7 +829,7 @@ function isLaravelInstalled() {
         // Liste des fichiers et dossiers essentiels de Laravel
         $essentialPaths = [
             // Fichiers de base
-        ROOT_PATH . '/vendor/autoload.php',
+            ROOT_PATH . '/vendor/autoload.php',
             ROOT_PATH . '/artisan',
             ROOT_PATH . '/composer.json',
             
@@ -714,7 +838,7 @@ function isLaravelInstalled() {
             ROOT_PATH . '/bootstrap/cache',
             
             // Dossiers de stockage
-        ROOT_PATH . '/storage/app',
+            ROOT_PATH . '/storage/app',
             ROOT_PATH . '/storage/framework/cache',
             ROOT_PATH . '/storage/framework/sessions',
             ROOT_PATH . '/storage/framework/views',
@@ -883,31 +1007,34 @@ function verifierLicence($cleSeriale, $domaine = null, $adresseIP = null) {
             ];
         }
         
-        // Vérifications supplémentaires des données de licence
-        if (!isset($resultat['data']['plan']) || empty($resultat['data']['plan'])) {
-            writeToLog("Erreur: Plan de licence manquant ou invalide dans la réponse");
-            writeToLog("Données reçues: " . json_encode($resultat['data']));
+        // Vérification adaptée à la structure de réponse actuelle
+        if (!isset($resultat['data']) || empty($resultat['data'])) {
+            writeToLog("Erreur: Données de licence manquantes dans la réponse");
             return [
                 'valide' => false,
-                'message' => t('license_invalid_plan'),
+                'message' => t('license_key_invalid'),
                 'donnees' => null
             ];
         }
         
-        // Vérifier si le plan est actif et valide
-        if (!isset($resultat['data']['plan']['status']) || $resultat['data']['plan']['status'] !== 'active') {
-            writeToLog("Erreur: Plan de licence inactif - Status: " . ($resultat['data']['plan']['status'] ?? 'non défini'));
+        // Vérifier si les champs essentiels sont présents
+        if (!isset($resultat['data']['token']) || !isset($resultat['data']['project']) || !isset($resultat['data']['expires_at'])) {
+            writeToLog("Erreur: Informations de licence incomplètes");
             return [
                 'valide' => false,
-                'message' => t('license_invalid_plan'),
+                'message' => t('license_key_invalid'),
                 'donnees' => null
             ];
         }
-
-        if (!isset($resultat['data']['client']) || empty($resultat['data']['client'])) {
+        
+        // Vérifier si la licence est expirée
+        $expirationDate = new DateTime($resultat['data']['expires_at']);
+        $currentDate = new DateTime();
+        if ($currentDate > $expirationDate) {
+            writeToLog("Erreur: Licence expirée - Date d'expiration: " . $resultat['data']['expires_at']);
             return [
                 'valide' => false,
-                'message' => t('license_invalid_client'),
+                'message' => t('license_expired'),
                 'donnees' => null
             ];
         }
@@ -931,133 +1058,6 @@ function verifierLicence($cleSeriale, $domaine = null, $adresseIP = null) {
 
 // La fonction t() est définie dans languages.php
 
-
-// Fonction pour créer le fichier .env
-function createEnvFile() {
-    try {
-        // Vérifier si le dossier racine est accessible
-        if (!is_dir(ROOT_PATH) || !is_writable(ROOT_PATH)) {
-            throw new Exception('Le dossier racine n\'est pas accessible en écriture');
-        }
-
-        // Vérifier si .env.example existe et est lisible
-        $envExamplePath = ROOT_PATH . '/.env.example';
-        if (!file_exists($envExamplePath)) {
-            throw new Exception('Le fichier .env.example n\'existe pas');
-        }
-        if (!is_readable($envExamplePath)) {
-            throw new Exception('Le fichier .env.example n\'est pas lisible');
-        }
-
-        // Vérifier si .env existe déjà
-        $envPath = ROOT_PATH . '/.env';
-        if (file_exists($envPath)) {
-            // Faire une sauvegarde si le fichier existe déjà
-            $backupPath = $envPath . '.backup.' . date('Y-m-d-His');
-            if (!copy($envPath, $backupPath)) {
-                throw new Exception('Impossible de créer une sauvegarde du fichier .env existant');
-            }
-        }
-
-        // Copier .env.example vers .env
-        if (!copy($envExamplePath, $envPath)) {
-            throw new Exception('Impossible de copier le fichier .env.example vers .env');
-        }
-
-        // Lire le contenu du fichier .env
-        $envContent = file_get_contents($envPath);
-        if ($envContent === false) {
-            throw new Exception('Impossible de lire le fichier .env');
-        }
-
-        // Générer une nouvelle clé d'application
-    $appKey = generateAppKey();
-    
-        // Configurations par défaut
-        $defaultConfigs = [
-            'APP_NAME' => 'AdminLicence',
-            'APP_ENV' => 'production',
-            'APP_KEY' => $appKey,
-            'APP_DEBUG' => 'false',
-            'APP_URL' => (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https://' : 'http://') . 
-                        ($_SERVER['HTTP_HOST'] ?? 'localhost'),
-            'APP_INSTALLED' => 'false',
-            
-            'LOG_CHANNEL' => 'stack',
-            'LOG_DEPRECATIONS_CHANNEL' => 'null',
-            'LOG_LEVEL' => 'error',
-            
-            'DB_CONNECTION' => 'mysql',
-            'DB_HOST' => 'localhost',
-            'DB_PORT' => '3306',
-            'DB_DATABASE' => '',
-            'DB_USERNAME' => '',
-            'DB_PASSWORD' => '',
-            
-            'BROADCAST_DRIVER' => 'log',
-            'CACHE_DRIVER' => 'file',
-            'FILESYSTEM_DISK' => 'local',
-            'QUEUE_CONNECTION' => 'sync',
-            'SESSION_DRIVER' => 'file',
-            'SESSION_LIFETIME' => '120',
-            
-            'MAIL_MAILER' => 'smtp',
-            'MAIL_HOST' => 'smtp.mailtrap.io',
-            'MAIL_PORT' => '2525',
-            'MAIL_USERNAME' => '',
-            'MAIL_PASSWORD' => '',
-            'MAIL_ENCRYPTION' => 'tls',
-            'MAIL_FROM_ADDRESS' => 'noreply@adminlicence.com',
-            'MAIL_FROM_NAME' => '${APP_NAME}'
-        ];
-
-        // Vérifier la licence avant de continuer l'installation
-        $cleSeriale = $_POST['licence_key'] ?? '';
-        if (empty($cleSeriale)) {
-            throw new Exception('La clé de licence est requise pour l\'installation');
-        }
-
-        $resultatLicence = verifierLicence($cleSeriale);
-        if (!$resultatLicence['valide']) {
-            throw new Exception('Licence invalide ou inactive : ' . $resultatLicence['message']);
-        }
-
-        // Vérifier si la licence est active dans les données retournées
-        if (!isset($resultatLicence['donnees']['is_active']) || $resultatLicence['donnees']['is_active'] !== true) {
-            throw new Exception('Cette licence n\'est pas active');
-        }
-
-        // Mettre à jour ou ajouter chaque configuration
-        foreach ($defaultConfigs as $key => $value) {
-            $pattern = "/^{$key}=.*$/m";
-            if (preg_match($pattern, $envContent)) {
-                // Mettre à jour la valeur existante
-                $envContent = preg_replace($pattern, "{$key}={$value}", $envContent);
-            } else {
-                // Ajouter la nouvelle configuration
-                $envContent .= "\n{$key}={$value}";
-            }
-        }
-
-        // Écrire le contenu mis à jour dans le fichier .env
-        if (file_put_contents($envPath, $envContent) === false) {
-            throw new Exception('Impossible d\'écrire dans le fichier .env');
-        }
-
-        // Vérifier les permissions du fichier .env
-        if (!chmod($envPath, 0644)) {
-            throw new Exception('Impossible de définir les permissions du fichier .env');
-    }
-    
-    return true;
-    } catch (Exception $e) {
-        showError(
-            'Erreur lors de la création du fichier .env',
-            $e->getMessage()
-        );
-        return false;
-    }
-}
 
 // Fonction pour mettre à jour le fichier .env
 function updateEnvFile($data) {
@@ -1222,7 +1222,7 @@ function runCommand($command) {
 function importSqlFile($file) {
     try {
         // Vérifier si le fichier existe et est lisible
-    if (!file_exists($file)) {
+        if (!file_exists($file)) {
             throw new Exception('Le fichier SQL n\'existe pas : ' . $file);
         }
 
@@ -1241,7 +1241,7 @@ function importSqlFile($file) {
             throw new Exception('Le fichier .env n\'existe pas');
         }
 
-    $envContent = file_get_contents(ROOT_PATH . '/.env');
+        $envContent = file_get_contents(ROOT_PATH . '/.env');
         if ($envContent === false) {
             throw new Exception('Impossible de lire le fichier .env');
         }
@@ -1337,28 +1337,28 @@ $translations = [
         'licence_invalid' => 'Invalid license key',
         'licence_valid' => 'Valid license key'
     ],
-        'es' => [
-            'title' => 'Instalación de Laravel',
-            'already_installed' => 'El proyecto ya está instalado.',
-            'choose_language' => 'Elige tu idioma',
-            'continue' => 'Continuar',
-            'database_config' => 'Configuración de la base de datos',
-            'db_host' => 'Host de la base de datos',
-            'db_port' => 'Puerto de la base de datos',
-            'db_database' => 'Nombre de la base de datos',
-            'db_username' => 'Nombre de usuario de la base de datos',
-            'db_password' => 'Contraseña de la base de datos',
-            'app_name' => 'Nombre de la aplicación',
-            'app_env' => 'Entorno',
-            'app_url' => 'URL de la aplicación',
-            'install' => 'Instalar',
-            'installing' => 'Instalando...',
-            'installation_complete' => '¡Instalación completada con éxito!',
-            'go_to_site' => 'Ir al sitio',
-            'error' => 'Error',
-            'retry' => 'Reintentar',
-        ],
-    ];
+    'es' => [
+        'title' => 'Instalación de Laravel',
+        'already_installed' => 'El proyecto ya está instalado.',
+        'choose_language' => 'Elige tu idioma',
+        'continue' => 'Continuar',
+        'database_config' => 'Configuración de la base de datos',
+        'db_host' => 'Host de la base de datos',
+        'db_port' => 'Puerto de la base de datos',
+        'db_database' => 'Nombre de la base de datos',
+        'db_username' => 'Nombre de usuario de la base de datos',
+        'db_password' => 'Contraseña de la base de datos',
+        'app_name' => 'Nombre de la aplicación',
+        'app_env' => 'Entorno',
+        'app_url' => 'URL de la aplicación',
+        'install' => 'Instalar',
+        'installing' => 'Instalando...',
+        'installation_complete' => '¡Instalación completada con éxito!',
+        'go_to_site' => 'Ir al sitio',
+        'error' => 'Error',
+        'retry' => 'Reintentar',
+    ],
+];
     
     $locale = getCurrentLanguage();
     $key = $key ?? '';
@@ -1623,8 +1623,8 @@ function showAdminConfigPage() {
         </div>
         
         <div class="button-group">
-            <button type="button" class="btn btn-secondary" onclick="window.location.href=\'install.php?step=database&locale=\' + encodeURIComponent(\''. $locale .'\')">'. t('back', $locale) .'</button>
-            <button type="submit" class="btn">'. t('install', $locale) .'</button>
+            <button type="button" onclick="window.location.href=\'install.php?step=2\'" class="btn">' . t('back', $locale) . '</button>
+            <button type="submit" class="btn">' . t('install', $locale) . '</button>
         </div>
     </form>';
     
@@ -1735,13 +1735,13 @@ function showInstallingPage($locale) {
         const stepElement = document.getElementById("step" + step);
         const logContainer = document.getElementById("step-log");
         
-// Update step
+        // Update step
         const progress = (step / 5) * 100;
         progressBar.style.width = progress + "%";
         progressBar.setAttribute("aria-valuenow", progress);
         progressBar.textContent = Math.round(progress) + "%";
         
-// update etape
+        // update etape
         stepElement.classList.add("active");
         if (step > 1) {
             document.getElementById("step" + (step - 1)).classList.add("completed");
