@@ -360,3 +360,13 @@ X-Frame-Options: SAMEORIGIN
 [2025-04-15 13:35:37] [INFO] Données envoyées à l'API: {"serial_key":"MEST-FM7A-BLGA-KLKP","domain":"127.0.0.1:8500","ip_address":"127.0.0.1"}
 [2025-04-15 13:35:37] [INFO] Réponse de l'API - Code HTTP: 200
 [2025-04-15 13:35:37] [INFO] Corps de la réponse: {"status":"success","message":"Cl\u00e9 de licence valide (simulation)","data":{"token":"22df688125af000df36c2aa63412d6da","project":"Test Project","expires_at":"2026-04-15","debug_info":{"serial_key":"MEST-FM7A-BLGA-KLKP","domain":"127.0.0.1:8500","ip_address":"127.0.0.1","server_time":"2025-04-15 13:35:37"}}}
+[2025-04-15 13:40:36] [INFO] Début de la vérification de licence - Clé: MEST-FM7A-BLGA-KLKP
+[2025-04-15 13:40:36] [INFO] Données envoyées à l'API: {"serial_key":"MEST-FM7A-BLGA-KLKP","domain":"127.0.0.1:8500","ip_address":"127.0.0.1"}
+[2025-04-15 13:40:36] [INFO] Réponse de l'API - Code HTTP: 200
+[2025-04-15 13:40:36] [INFO] Corps de la réponse: {"status":"success","message":"Cl\u00e9 de licence valide (simulation)","data":{"token":"da46e3d508c51efd70e73249e1b25db1","project":"Test Project","expires_at":"2026-04-15","debug_info":{"serial_key":"MEST-FM7A-BLGA-KLKP","domain":"127.0.0.1:8500","ip_address":"127.0.0.1","server_time":"2025-04-15 13:40:36"}}}
+[2025-04-15 13:47:40] [INFO] Début de la vérification de licence - Clé: MEST-FM7A-BLGA-KLKP
+[2025-04-15 13:47:40] [INFO] Données envoyées à l'API: {"serial_key":"MEST-FM7A-BLGA-KLKP","domain":"127.0.0.1:8500","ip_address":"127.0.0.1"}
+[2025-04-15 13:47:40] [INFO] Réponse de l'API - Code HTTP: 200
+[2025-04-15 13:47:40] [INFO] Corps de la réponse: {"status":"success","message":"Cl\u00e9 de licence valide (simulation)","data":{"token":"447813b0345c651336d4292124c42a3c","project":"Test Project","expires_at":"2026-04-15","debug_info":{"serial_key":"MEST-FM7A-BLGA-KLKP","domain":"127.0.0.1:8500","ip_address":"127.0.0.1","server_time":"2025-04-15 13:47:41"}}}
+[2025-04-15 13:47:40] [INFO] Erreur: Plan de licence manquant ou invalide dans la réponse
+[2025-04-15 13:47:40] [INFO] Données reçues: {"token":"447813b0345c651336d4292124c42a3c","project":"Test Project","expires_at":"2026-04-15","debug_info":{"serial_key":"MEST-FM7A-BLGA-KLKP","domain":"127.0.0.1:8500","ip_address":"127.0.0.1","server_time":"2025-04-15 13:47:41"}}

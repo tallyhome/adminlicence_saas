@@ -885,6 +885,18 @@ function verifierLicence($cleSeriale, $domaine = null, $adresseIP = null) {
         
         // Vérifications supplémentaires des données de licence
         if (!isset($resultat['data']['plan']) || empty($resultat['data']['plan'])) {
+            writeToLog("Erreur: Plan de licence manquant ou invalide dans la réponse");
+            writeToLog("Données reçues: " . json_encode($resultat['data']));
+            return [
+                'valide' => false,
+                'message' => t('license_invalid_plan'),
+                'donnees' => null
+            ];
+        }
+        
+        // Vérifier si le plan est actif et valide
+        if (!isset($resultat['data']['plan']['status']) || $resultat['data']['plan']['status'] !== 'active') {
+            writeToLog("Erreur: Plan de licence inactif - Status: " . ($resultat['data']['plan']['status'] ?? 'non défini'));
             return [
                 'valide' => false,
                 'message' => t('license_invalid_plan'),
