@@ -130,7 +130,7 @@ require_once 'includes/functions.php';
 
 // Handle step navigation
 $current_step = isset($_GET['step']) ? (int)$_GET['step'] : $_SESSION['install_step'];
-if ($current_step < 1 || $current_step > 5) {
+if ($current_step < 1 || $current_step > 6) {
     $current_step = 1;
 }
 $_SESSION['install_step'] = $current_step;
@@ -154,6 +154,9 @@ switch ($current_step) {
         break;
     case 5:
         include 'steps/step5.php';
+        break;
+    case 6:
+        include 'steps/step6.php';
         break;
     default:
         include 'steps/step1.php';

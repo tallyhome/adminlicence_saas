@@ -1508,3 +1508,154 @@
     }
 }
 
+{
+    "time": "2025-04-16 03:07:53",
+    "function": "install_start",
+    "data": {
+        "install_step": 5,
+        "project_root": "R:\\Adev\\200  -  test\\adminlicence_saas",
+        "project_type": "laravel",
+        "has_env": true,
+        "has_vendor": true,
+        "license_key": "TNBH-DRDK-K9JG-H4RR",
+        "license_valid": true,
+        "license_expiry": null,
+        "license_token": "009716863b51650d07fc5a4765b96178",
+        "license_project": "",
+        "db_config": {
+            "host": "localhost",
+            "database": "adminlicencetest",
+            "username": "adminlicencetest",
+            "password": "Fab@250872"
+        },
+        "db_tested": true,
+        "admin_config": {
+            "project_url": "http:\/\/127.0.0.1:8000\/",
+            "email": "tally@obione.net",
+            "password": "123"
+        },
+        "admin_saved": true
+    }
+}
+
+{
+    "time": "2025-04-16 03:07:53",
+    "function": "database_recreated",
+    "data": {
+        "database": "adminlicencetest"
+    }
+}
+
+{
+    "time": "2025-04-16 03:07:53",
+    "function": "database_connection",
+    "data": {
+        "success": true
+    }
+}
+
+{
+    "time": "2025-04-16 03:07:55",
+    "function": "migrations_output",
+    "data": {
+        "stdout": "\r\n   INFO  Preparing database.  \n\r\n  Creating migration table .............................................................................. 11.66ms DONE\r\n\r\n   INFO  Running migrations.  \n\r\n  0001_01_01_000000_create_users_table .................................................................. 46.10ms DONE\r\n  0001_01_01_000001_create_cache_table .................................................................. 14.12ms DONE\r\n  0001_01_01_000002_create_jobs_table ................................................................... 36.28ms DONE\r\n  2023_04_01_000001_create_projects_table ................................................................ 7.90ms DONE\r\n  2023_04_02_000002_create_serial_keys_table ............................................................ 40.83ms DONE\r\n  2024_01_09_000001_create_tenants_table ................................................................ 15.81ms DONE\r\n  2024_01_10_000001_create_licence_histories_table ...................................................... 51.89ms DONE\r\n  2024_01_10_000001_create_plans_table .................................................................. 16.19ms DONE\r\n  2024_01_10_000001_create_roles_and_permissions_tables ................................................ 151.99ms DONE\r\n  2024_01_10_000002_create_api_keys_table ............................................................... 36.28ms DONE\r\n  2024_01_10_000002_create_subscriptions_table .......................................................... 76.23ms DONE\r\n  2024_01_15_000001_create_mail_configs_table ............................................................ 7.72ms DONE\r\n  2024_01_17_000001_create_email_templates_table ......................................................... 6.64ms DONE\r\n  2024_03_20_create_email_variables_table ............................................................... 44.41ms DONE\r\n  2024_03_21_000000_create_admins_table ................................................................. 17.66ms DONE\r\n  2024_03_21_000001_create_serial_key_histories_table ................................................... 58.57ms DONE\r\n  2024_03_22_000001_add_provider_to_mail_configs_table ................................................... 6.87ms DONE\r\n  2024_05_01_000002_create_clients_table ................................................................ 35.97ms DONE\r\n  2024_05_01_000003_create_support_tickets_table ........................................................ 27.75ms DONE\r\n  2024_05_01_000004_create_ticket_replies_table ......................................................... 29.12ms DONE\r\n  2024_05_01_000005_create_payment_methods_table ........................................................ 37.11ms DONE\r\n  2024_05_01_000006_create_invoices_table ............................................................... 92.34ms DONE\r\n  2024_05_01_000007_create_invoice_items_table .......................................................... 27.91ms DONE\r\n  2024_05_10_000000_add_two_factor_columns_to_admins_table .............................................. 13.38ms DONE\r\n  2024_05_15_000001_create_notifications_table .......................................................... 13.79ms DONE\r\n  2024_05_20_000001_create_admin_role_table ............................................................. 50.49ms DONE\r\n  2025_04_02_160003_create_personal_access_tokens_table ................................................. 20.15ms DONE\r\n  2025_04_03_054922_make_admin_id_nullable_in_serial_key_histories_table ................................ 43.77ms DONE\r\n  2025_04_07_072637_create_admin_password_reset_tokens_table ............................................. 4.99ms DONE\r\n  2025_04_07_094844_add_content_column_to_email_templates ................................................ 7.11ms DONE\r\n  2025_04_07_110500_add_is_system_column_to_email_templates .............................................. 4.83ms DONE\r\n  2025_04_08_000001_add_is_super_admin_to_admins_table ................................................... 5.60ms DONE\r\n  2025_04_11_223351_create_cache_table ................................................................... 1.02ms DONE\r\n\r\n",
+        "stderr": "",
+        "return_var": 0
+    }
+}
+
+{
+    "time": "2025-04-16 03:07:57",
+    "function": "seeders_output",
+    "data": {
+        "stdout": "\n   INFO  Seeding database.  \n\r\n  Database\\Seeders\\RolesAndPermissionsSeeder ................................................................. RUNNING  \r\n  Database\\Seeders\\RolesAndPermissionsSeeder ............................................................. 216 ms DONE  \r\n\r\n  Database\\Seeders\\UsersSeeder ............................................................................... RUNNING  \r\n  Database\\Seeders\\UsersSeeder ........................................................................... 408 ms DONE  \r\n\r\n",
+        "stderr": "",
+        "return_var": 0
+    }
+}
+
+{
+    "time": "2025-04-16 03:07:57",
+    "function": "admin_creation_start",
+    "data": {
+        "email": "tally@obione.net",
+        "project_url": "http:\/\/127.0.0.1:8000\/"
+    }
+}
+
+{
+    "time": "2025-04-16 03:07:57",
+    "function": "admin_creation_result",
+    "data": {
+        "success": true,
+        "output": [
+            "Admin user created in admins table"
+        ]
+    }
+}
+
+{
+    "time": "2025-04-16 03:07:57",
+    "function": "env_updated",
+    "data": {
+        "project_url": "http:\/\/127.0.0.1:8000\/"
+    }
+}
+
+{
+    "time": "2025-04-16 03:07:58",
+    "function": "optimize_output",
+    "data": {
+        "stdout": "\n   INFO  Clearing cached bootstrap files.  \n\r\n  cache ................................................................................................. 30.41ms DONE\r\n  compiled ............................................................................................... 2.51ms DONE\r\n  config ................................................................................................. 0.78ms DONE\r\n  events ................................................................................................. 1.26ms DONE\r\n  routes ................................................................................................. 1.56ms DONE\r\n  views .................................................................................................. 9.64ms DONE\r\n\r\n",
+        "stderr": "",
+        "return_var": 0
+    }
+}
+
+{
+    "time": "2025-04-16 03:07:58",
+    "function": "installation_completed",
+    "data": {
+        "success": true,
+        "steps": [
+            {
+                "step": "migrations",
+                "status": true,
+                "message": "Database migrations completed successfully",
+                "output": [
+                    "\r\n   INFO  Preparing database.  \n\r\n  Creating migration table .............................................................................. 11.66ms DONE\r\n\r\n   INFO  Running migrations.  \n\r\n  0001_01_01_000000_create_users_table .................................................................. 46.10ms DONE\r\n  0001_01_01_000001_create_cache_table .................................................................. 14.12ms DONE\r\n  0001_01_01_000002_create_jobs_table ................................................................... 36.28ms DONE\r\n  2023_04_01_000001_create_projects_table ................................................................ 7.90ms DONE\r\n  2023_04_02_000002_create_serial_keys_table ............................................................ 40.83ms DONE\r\n  2024_01_09_000001_create_tenants_table ................................................................ 15.81ms DONE\r\n  2024_01_10_000001_create_licence_histories_table ...................................................... 51.89ms DONE\r\n  2024_01_10_000001_create_plans_table .................................................................. 16.19ms DONE\r\n  2024_01_10_000001_create_roles_and_permissions_tables ................................................ 151.99ms DONE\r\n  2024_01_10_000002_create_api_keys_table ............................................................... 36.28ms DONE\r\n  2024_01_10_000002_create_subscriptions_table .......................................................... 76.23ms DONE\r\n  2024_01_15_000001_create_mail_configs_table ............................................................ 7.72ms DONE\r\n  2024_01_17_000001_create_email_templates_table ......................................................... 6.64ms DONE\r\n  2024_03_20_create_email_variables_table ............................................................... 44.41ms DONE\r\n  2024_03_21_000000_create_admins_table ................................................................. 17.66ms DONE\r\n  2024_03_21_000001_create_serial_key_histories_table ................................................... 58.57ms DONE\r\n  2024_03_22_000001_add_provider_to_mail_configs_table ................................................... 6.87ms DONE\r\n  2024_05_01_000002_create_clients_table ................................................................ 35.97ms DONE\r\n  2024_05_01_000003_create_support_tickets_table ........................................................ 27.75ms DONE\r\n  2024_05_01_000004_create_ticket_replies_table ......................................................... 29.12ms DONE\r\n  2024_05_01_000005_create_payment_methods_table ........................................................ 37.11ms DONE\r\n  2024_05_01_000006_create_invoices_table ............................................................... 92.34ms DONE\r\n  2024_05_01_000007_create_invoice_items_table .......................................................... 27.91ms DONE\r\n  2024_05_10_000000_add_two_factor_columns_to_admins_table .............................................. 13.38ms DONE\r\n  2024_05_15_000001_create_notifications_table .......................................................... 13.79ms DONE\r\n  2024_05_20_000001_create_admin_role_table ............................................................. 50.49ms DONE\r\n  2025_04_02_160003_create_personal_access_tokens_table ................................................. 20.15ms DONE\r\n  2025_04_03_054922_make_admin_id_nullable_in_serial_key_histories_table ................................ 43.77ms DONE\r\n  2025_04_07_072637_create_admin_password_reset_tokens_table ............................................. 4.99ms DONE\r\n  2025_04_07_094844_add_content_column_to_email_templates ................................................ 7.11ms DONE\r\n  2025_04_07_110500_add_is_system_column_to_email_templates .............................................. 4.83ms DONE\r\n  2025_04_08_000001_add_is_super_admin_to_admins_table ................................................... 5.60ms DONE\r\n  2025_04_11_223351_create_cache_table ................................................................... 1.02ms DONE\r\n\r\n",
+                    ""
+                ]
+            },
+            {
+                "step": "seeders",
+                "status": true,
+                "message": "Database seeding completed successfully",
+                "output": [
+                    "\n   INFO  Seeding database.  \n\r\n  Database\\Seeders\\RolesAndPermissionsSeeder ................................................................. RUNNING  \r\n  Database\\Seeders\\RolesAndPermissionsSeeder ............................................................. 216 ms DONE  \r\n\r\n  Database\\Seeders\\UsersSeeder ............................................................................... RUNNING  \r\n  Database\\Seeders\\UsersSeeder ........................................................................... 408 ms DONE  \r\n\r\n",
+                    ""
+                ]
+            },
+            {
+                "step": "admin_creation",
+                "status": true,
+                "message": "Admin user created successfully",
+                "output": [
+                    "Admin user created in admins table"
+                ]
+            },
+            {
+                "step": "env_update",
+                "status": true,
+                "message": "Environment file updated with project URL",
+                "output": []
+            },
+            {
+                "step": "installation_completed",
+                "status": true,
+                "message": "Installation completed successfully"
+            }
+        ]
+    }
+}
+

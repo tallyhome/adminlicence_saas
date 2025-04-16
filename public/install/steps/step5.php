@@ -110,7 +110,7 @@
         <a href="?step=4" class="btn btn-secondary"><?php echo $translations['return']; ?></a>
         <div>
             <button type="button" id="start-installation" class="btn btn-success"><?php echo $translations['start_installation']; ?></button>
-            <a href="../" id="go-to-login" class="btn btn-primary d-none"><?php echo $translations['go_to_login']; ?></a>
+            <a href="?step=6" id="go-to-login" class="btn btn-primary d-none"><?php echo isset($translations['access_details']) ? $translations['access_details'] : 'Détails d\'accès'; ?></a>
         </div>
     </div>
 </div>
