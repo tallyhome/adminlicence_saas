@@ -46,7 +46,7 @@
                         <div class="card-body">
                             <p><strong>Email:</strong> <span id="superadmin-email"><?php echo $superAdminEmail; ?></span></p>
                             <p><strong>Mot de passe:</strong> <span id="superadmin-password"><?php echo $superAdminPassword; ?></span></p>
-                            <p><a href="<?php echo $projectUrl; ?>/login" target="_blank" class="btn btn-sm btn-primary">Se connecter</a></p>
+                            <p><a href="<?php echo rtrim($projectUrl, '/') . '/login'; ?>" target="_blank" class="btn btn-sm btn-primary">Se connecter</a></p>
                         </div>
                     </div>
                 </div>
@@ -58,7 +58,7 @@
                         <div class="card-body">
                             <p><strong>Email:</strong> <span id="admin-email"><?php echo $adminEmail; ?></span></p>
                             <p><strong>Mot de passe:</strong> <span id="admin-password"><?php echo $adminPassword; ?></span></p>
-                            <p><a href="<?php echo $projectUrl; ?>/login" target="_blank" class="btn btn-sm btn-info">Se connecter</a></p>
+                            <p><a href="<?php echo rtrim($projectUrl, '/') . '/login'; ?>" target="_blank" class="btn btn-sm btn-info">Se connecter</a></p>
                         </div>
                     </div>
                 </div>
@@ -70,7 +70,7 @@
                         <div class="card-body">
                             <p><strong>Email:</strong> <span id="user-email"><?php echo $userEmail; ?></span></p>
                             <p><strong>Mot de passe:</strong> <span id="user-password"><?php echo $userPassword; ?></span></p>
-                            <p><a href="<?php echo $projectUrl; ?>/login" target="_blank" class="btn btn-sm btn-success">Se connecter</a></p>
+                            <p><a href="<?php echo rtrim($projectUrl, '/') . '/login'; ?>" target="_blank" class="btn btn-sm btn-success">Se connecter</a></p>
                         </div>
                     </div>
                 </div>
