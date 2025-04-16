@@ -262,3 +262,116 @@ ERREUR: SQLSTATE[HY000] [1045] Access denied for user 'adminlicencetest'@'localh
     }
 }
 
+{
+    "time": "2025-04-16 15:46:08",
+    "function": "test_db",
+    "host": "localhost",
+    "database": "adminlicencetest",
+    "username": "adminlicencetest"
+}
+
+ERREUR: SQLSTATE[HY000] [1045] Access denied for user 'adminlicencetest'@'localhost' (using password: YES)
+
+{
+    "time": "2025-04-16 15:46:15",
+    "function": "test_db",
+    "host": "localhost",
+    "database": "adminlicencetest",
+    "username": "adminlicenceteste"
+}
+
+{
+    "time": "2025-04-16 15:46:15",
+    "function": "update_env_db_config",
+    "status": "success",
+    "env_path": "R:\\Adev\\200  -  test\\adminlicence_saas\/.env"
+}
+
+{
+    "time": "2025-04-16 15:46:21",
+    "function": "test_db",
+    "host": "localhost",
+    "database": "adminlicencetest",
+    "username": "adminlicencetesteee"
+}
+
+ERREUR: SQLSTATE[HY000] [1045] Access denied for user 'adminlicencetesteee'@'localhost' (using password: YES)
+
+{
+    "time": "2025-04-16 15:46:28",
+    "function": "test_db",
+    "host": "localhost",
+    "database": "adminlicencetest",
+    "username": "adminlicencetest"
+}
+
+{
+    "time": "2025-04-16 15:46:28",
+    "function": "update_env_db_config",
+    "status": "success",
+    "env_path": "R:\\Adev\\200  -  test\\adminlicence_saas\/.env"
+}
+
+{
+    "time": "2025-04-16 15:46:59",
+    "function": "get_admin_details",
+    "connection": {
+        "host": "localhost",
+        "database": "adminlicencetest",
+        "username": "adminlicencetest",
+        "port": "3306"
+    }
+}
+
+{
+    "time": "2025-04-16 15:56:12",
+    "function": "test_db",
+    "host": "localhost",
+    "database": "adminlicencetest",
+    "username": "adminlicencetest"
+}
+
+{
+    "time": "2025-04-16 15:56:12",
+    "function": "update_env_db_config",
+    "status": "success",
+    "env_path": "R:\\Adev\\200  -  test\\adminlicence_saas\/.env"
+}
+
+{
+    "time": "2025-04-16 15:56:19",
+    "function": "test_db",
+    "host": "localhost",
+    "database": "adminlicencetest",
+    "username": "adminlicencetest"
+}
+
+{
+    "time": "2025-04-16 15:56:19",
+    "function": "update_env_db_config",
+    "status": "success",
+    "env_path": "R:\\Adev\\200  -  test\\adminlicence_saas\/.env"
+}
+
+{
+    "time": "2025-04-16 15:56:40",
+    "function": "get_admin_details",
+    "connection": {
+        "host": "localhost",
+        "database": "adminlicencetest",
+        "username": "adminlicencetest",
+        "port": "3306"
+    }
+}
+
+{
+    "time": "2025-04-16 15:57:03",
+    "function": "get_admin_details",
+    "connection": {
+        "host": "localhost",
+        "database": "adminlicencetest",
+        "username": "adminlicencetest",
+        "port": "3306"
+    }
+}
+

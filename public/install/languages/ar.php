@@ -102,4 +102,10 @@ return [
     'save_failed' => 'فشل الحفظ',
     'complete' => 'مكتمل',
     'with_warnings' => 'مع تحذيرات',
+    'return' => 'رجوع',
+    'saving' => 'جاري الحفظ',
+    'unknown_error' => 'حدث خطأ غير معروف',
+    'testing' => 'اختبار',
+    'fill_required_fields' => 'يرجى ملء جميع الحقول المطلوبة',
+    'ajax_error' => 'تعذر الاتصال بالخادم',
 ];

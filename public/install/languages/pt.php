@@ -102,4 +102,10 @@ return [
     'save_failed' => 'Falha ao salvar',
     'complete' => 'Completo',
     'with_warnings' => 'com avisos',
+    'return' => 'Voltar',
+    'saving' => 'Salvando',
+    'unknown_error' => 'Ocorreu um erro',
+    'testing' => 'Testando',
+    'fill_required_fields' => 'Por favor, preencha todos os campos obrigatórios',
+    'ajax_error' => 'Não foi possível conectar ao servidor',
 ];

@@ -96,4 +96,10 @@ return [
     'save_failed' => 'Error al guardar',
     'complete' => 'Completo',
     'with_warnings' => 'con advertencias',
+    'return' => 'Volver',
+    'saving' => 'Guardando',
+    'unknown_error' => 'Un error ha ocurrido',
+    'testing' => 'Probando',
+    'fill_required_fields' => 'Por favor complete todos los campos requeridos',
+    'ajax_error' => 'No se puede conectar al servidor',
 ];

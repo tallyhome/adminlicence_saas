@@ -1594,3 +1594,198 @@
     }
 }
 
+{
+    "time": "2025-04-16 15:45:40",
+    "function": "detect_project_request",
+    "method": "GET",
+    "query": {
+        "ajax": "1"
+    },
+    "server": {
+        "DOCUMENT_ROOT": "R:\\Adev\\200  -  test\\adminlicence_saas\\public",
+        "REMOTE_ADDR": "127.0.0.1",
+        "REMOTE_PORT": "56373",
+        "SERVER_SOFTWARE": "PHP 8.2.12 Development Server",
+        "SERVER_PROTOCOL": "HTTP\/1.1",
+        "SERVER_NAME": "127.0.0.1",
+        "SERVER_PORT": "8000",
+        "REQUEST_URI": "\/install\/ajax\/detect_project.php?ajax=1",
+        "REQUEST_METHOD": "GET",
+        "SCRIPT_NAME": "\/install\/ajax\/detect_project.php",
+        "SCRIPT_FILENAME": "R:\\Adev\\200  -  test\\adminlicence_saas\\public\\install\\ajax\\detect_project.php",
+        "PHP_SELF": "\/install\/ajax\/detect_project.php",
+        "QUERY_STRING": "ajax=1",
+        "HTTP_HOST": "127.0.0.1:8000",
+        "HTTP_USER_AGENT": "Mozilla\/5.0 (Windows NT 10.0; Win64; x64; rv:137.0) Gecko\/20100101 Firefox\/137.0",
+        "HTTP_ACCEPT": "application\/json, text\/javascript, *\/*; q=0.01",
+        "HTTP_ACCEPT_LANGUAGE": "fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3",
+        "HTTP_ACCEPT_ENCODING": "gzip, deflate, br, zstd",
+        "HTTP_X_REQUESTED_WITH": "XMLHttpRequest",
+        "HTTP_DNT": "1",
+        "HTTP_CONNECTION": "keep-alive",
+        "HTTP_REFERER": "http:\/\/127.0.0.1:8000\/install\/index.php?step=2",
+        "HTTP_COOKIE": "io=2G6p8qMg8xwIN3JpAAAD; TawkConnectionTime=0; PHPSESSID=hcsc3m94mlr88j37gd0i4rd5nd; XSRF-TOKEN=eyJpdiI6ImxmTHZocVZpSTBZOFl6cHBHYTMyYUE9PSIsInZhbHVlIjoiT0N0RktabXY0bEF2VjhBSkpqcnZxcmlOVytBMXdkVEM1NzFRRmdYUUpMV1ZtbVlidG1SNXpQR01FNEtCNHJCbXFudE52YTNKVW9iOVBjbkR5NkltQzNQWmE4T3VLbXQxWGxxRERDaVZpbllnL1B0R0hpeEx5VFNuSzYwYnZuSjAiLCJtYWMiOiI2NDViZjViZGRhZTE1YTYyMjhkMWMxMzIzNDJhZjkxNWQ3OWQ2NDIxY2VlYTVkZTdiYmY4Y2U2MGI5NjMxNDc0IiwidGFnIjoiIn0%3D; adminlicence_session=eyJpdiI6IjVQc2xUZjAzS3dnVGFhZ0hyR2ExTmc9PSIsInZhbHVlIjoieG9GY3hLTU0rVnR5LzhhejFQam5VVytCUmFIUjIwQXU5UTBiN0NRc09FOEpBblBUbU5qeHBVVnlDQm1mMXU3aFQxSjV1elladUgwT1QwbDgzeks5TTM4c1V5S2lMMXVPT1BKNzl5TTlpYzFTNVVNYWhzSmN6ajJSMlBDUE1lVDYiLCJtYWMiOiI2ZDY0Njg1Y2VkNTM4MWFlYTA0YTQ3YTQ0ODFlOTM2NmIyOWU3MTBhMmZlNmUxNGQ5ZDUxMWJlZjE5MGE0YjNjIiwidGFnIjoiIn0%3D",
+        "HTTP_SEC_FETCH_DEST": "empty",
+        "HTTP_SEC_FETCH_MODE": "cors",
+        "HTTP_SEC_FETCH_SITE": "same-origin",
+        "REQUEST_TIME_FLOAT": 1744811140.982492,
+        "REQUEST_TIME": 1744811140
+    }
+}
+
+{
+    "time": "2025-04-16 15:53:02",
+    "function": "detect_project_request",
+    "method": "GET",
+    "query": {
+        "ajax": "1"
+    },
+    "server": {
+        "DOCUMENT_ROOT": "R:\\Adev\\200  -  test\\adminlicence_saas\\public",
+        "REMOTE_ADDR": "127.0.0.1",
+        "REMOTE_PORT": "57232",
+        "SERVER_SOFTWARE": "PHP 8.2.12 Development Server",
+        "SERVER_PROTOCOL": "HTTP\/1.1",
+        "SERVER_NAME": "127.0.0.1",
+        "SERVER_PORT": "8000",
+        "REQUEST_URI": "\/install\/ajax\/detect_project.php?ajax=1",
+        "REQUEST_METHOD": "GET",
+        "SCRIPT_NAME": "\/install\/ajax\/detect_project.php",
+        "SCRIPT_FILENAME": "R:\\Adev\\200  -  test\\adminlicence_saas\\public\\install\\ajax\\detect_project.php",
+        "PHP_SELF": "\/install\/ajax\/detect_project.php",
+        "QUERY_STRING": "ajax=1",
+        "HTTP_HOST": "127.0.0.1:8000",
+        "HTTP_USER_AGENT": "Mozilla\/5.0 (Windows NT 10.0; Win64; x64; rv:137.0) Gecko\/20100101 Firefox\/137.0",
+        "HTTP_ACCEPT": "application\/json, text\/javascript, *\/*; q=0.01",
+        "HTTP_ACCEPT_LANGUAGE": "fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3",
+        "HTTP_ACCEPT_ENCODING": "gzip, deflate, br, zstd",
+        "HTTP_X_REQUESTED_WITH": "XMLHttpRequest",
+        "HTTP_DNT": "1",
+        "HTTP_CONNECTION": "keep-alive",
+        "HTTP_REFERER": "http:\/\/127.0.0.1:8000\/install\/index.php?step=2",
+        "HTTP_COOKIE": "io=2G6p8qMg8xwIN3JpAAAD; TawkConnectionTime=0; PHPSESSID=hcsc3m94mlr88j37gd0i4rd5nd; XSRF-TOKEN=eyJpdiI6Im81VmtIN0toOW0xMHFQR1pZVGM2OWc9PSIsInZhbHVlIjoiNWZ2SmhFODlwQTdac0lSelZsR1NQZmYwekxxUHFrVkY0cmZLZzZSUVpxN3dZMDk5TStSQlBBbUZQSXZkY3NHN2FxVDEyQUpyQWtibkR5eGN2MzBGc2srRjI4eUFkOXRxWTNmZk5FWXlibVZmZFEyZUYrSzhVbUtxS3lybTVpQ1giLCJtYWMiOiJhYTNkN2FmYzU1MWUwNGE0NjFhN2EzMjBmMDY3MmRmYzFiMjdjMjJiMDJhNTBkYTYxMTEyZTg3ZTk2ODg3M2EzIiwidGFnIjoiIn0%3D; adminlicence_session=eyJpdiI6IldYR1FDdkhDQzM2VmpXTnR1RFpmYkE9PSIsInZhbHVlIjoiRUFkQnpRZkpkWGQrcU1JZFRuZCtlajNpTnZtYW9vZXlnNGxFTWJndFM0MzFDOS9wTVoxOTJBeDRnZkFNMDVCNElQNTJkMTlSK0ZUdzFhcit5dWtWdk5WSXNXZTJKOHZFTXVIYWFkeEhFZE1BMnhRV1BkeE5JTHpYZjZmeHlWWXQiLCJtYWMiOiI4MTM2ZDgyZTA1NzJmZTEwNWFkYzZkYTJjMWJkYzg0NDRiN2RmMjhlMmMzM2Q3MzA4Mjk5OGQwYTZjYjhmZWY0IiwidGFnIjoiIn0%3D",
+        "HTTP_SEC_FETCH_DEST": "empty",
+        "HTTP_SEC_FETCH_MODE": "cors",
+        "HTTP_SEC_FETCH_SITE": "same-origin",
+        "REQUEST_TIME_FLOAT": 1744811582.545806,
+        "REQUEST_TIME": 1744811582
+    }
+}
+
+{
+    "time": "2025-04-16 15:53:26",
+    "function": "detect_project_request",
+    "method": "GET",
+    "query": {
+        "ajax": "1"
+    },
+    "server": {
+        "DOCUMENT_ROOT": "R:\\Adev\\200  -  test\\adminlicence_saas\\public",
+        "REMOTE_ADDR": "127.0.0.1",
+        "REMOTE_PORT": "57279",
+        "SERVER_SOFTWARE": "PHP 8.2.12 Development Server",
+        "SERVER_PROTOCOL": "HTTP\/1.1",
+        "SERVER_NAME": "127.0.0.1",
+        "SERVER_PORT": "8000",
+        "REQUEST_URI": "\/install\/ajax\/detect_project.php?ajax=1",
+        "REQUEST_METHOD": "GET",
+        "SCRIPT_NAME": "\/install\/ajax\/detect_project.php",
+        "SCRIPT_FILENAME": "R:\\Adev\\200  -  test\\adminlicence_saas\\public\\install\\ajax\\detect_project.php",
+        "PHP_SELF": "\/install\/ajax\/detect_project.php",
+        "QUERY_STRING": "ajax=1",
+        "HTTP_HOST": "127.0.0.1:8000",
+        "HTTP_USER_AGENT": "Mozilla\/5.0 (Windows NT 10.0; Win64; x64; rv:137.0) Gecko\/20100101 Firefox\/137.0",
+        "HTTP_ACCEPT": "application\/json, text\/javascript, *\/*; q=0.01",
+        "HTTP_ACCEPT_LANGUAGE": "fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3",
+        "HTTP_ACCEPT_ENCODING": "gzip, deflate, br, zstd",
+        "HTTP_X_REQUESTED_WITH": "XMLHttpRequest",
+        "HTTP_DNT": "1",
+        "HTTP_CONNECTION": "keep-alive",
+        "HTTP_REFERER": "http:\/\/127.0.0.1:8000\/install\/index.php?lang=fr",
+        "HTTP_COOKIE": "io=2G6p8qMg8xwIN3JpAAAD; TawkConnectionTime=0; PHPSESSID=hcsc3m94mlr88j37gd0i4rd5nd; XSRF-TOKEN=eyJpdiI6Im81VmtIN0toOW0xMHFQR1pZVGM2OWc9PSIsInZhbHVlIjoiNWZ2SmhFODlwQTdac0lSelZsR1NQZmYwekxxUHFrVkY0cmZLZzZSUVpxN3dZMDk5TStSQlBBbUZQSXZkY3NHN2FxVDEyQUpyQWtibkR5eGN2MzBGc2srRjI4eUFkOXRxWTNmZk5FWXlibVZmZFEyZUYrSzhVbUtxS3lybTVpQ1giLCJtYWMiOiJhYTNkN2FmYzU1MWUwNGE0NjFhN2EzMjBmMDY3MmRmYzFiMjdjMjJiMDJhNTBkYTYxMTEyZTg3ZTk2ODg3M2EzIiwidGFnIjoiIn0%3D; adminlicence_session=eyJpdiI6IldYR1FDdkhDQzM2VmpXTnR1RFpmYkE9PSIsInZhbHVlIjoiRUFkQnpRZkpkWGQrcU1JZFRuZCtlajNpTnZtYW9vZXlnNGxFTWJndFM0MzFDOS9wTVoxOTJBeDRnZkFNMDVCNElQNTJkMTlSK0ZUdzFhcit5dWtWdk5WSXNXZTJKOHZFTXVIYWFkeEhFZE1BMnhRV1BkeE5JTHpYZjZmeHlWWXQiLCJtYWMiOiI4MTM2ZDgyZTA1NzJmZTEwNWFkYzZkYTJjMWJkYzg0NDRiN2RmMjhlMmMzM2Q3MzA4Mjk5OGQwYTZjYjhmZWY0IiwidGFnIjoiIn0%3D",
+        "HTTP_SEC_FETCH_DEST": "empty",
+        "HTTP_SEC_FETCH_MODE": "cors",
+        "HTTP_SEC_FETCH_SITE": "same-origin",
+        "REQUEST_TIME_FLOAT": 1744811606.990245,
+        "REQUEST_TIME": 1744811606
+    }
+}
+
+{
+    "time": "2025-04-16 15:53:34",
+    "function": "detect_project_request",
+    "method": "GET",
+    "query": {
+        "ajax": "1"
+    },
+    "server": {
+        "DOCUMENT_ROOT": "R:\\Adev\\200  -  test\\adminlicence_saas\\public",
+        "REMOTE_ADDR": "127.0.0.1",
+        "REMOTE_PORT": "57302",
+        "SERVER_SOFTWARE": "PHP 8.2.12 Development Server",
+        "SERVER_PROTOCOL": "HTTP\/1.1",
+        "SERVER_NAME": "127.0.0.1",
+        "SERVER_PORT": "8000",
+        "REQUEST_URI": "\/install\/ajax\/detect_project.php?ajax=1",
+        "REQUEST_METHOD": "GET",
+        "SCRIPT_NAME": "\/install\/ajax\/detect_project.php",
+        "SCRIPT_FILENAME": "R:\\Adev\\200  -  test\\adminlicence_saas\\public\\install\\ajax\\detect_project.php",
+        "PHP_SELF": "\/install\/ajax\/detect_project.php",
+        "QUERY_STRING": "ajax=1",
+        "HTTP_HOST": "127.0.0.1:8000",
+        "HTTP_USER_AGENT": "Mozilla\/5.0 (Windows NT 10.0; Win64; x64; rv:137.0) Gecko\/20100101 Firefox\/137.0",
+        "HTTP_ACCEPT": "application\/json, text\/javascript, *\/*; q=0.01",
+        "HTTP_ACCEPT_LANGUAGE": "fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3",
+        "HTTP_ACCEPT_ENCODING": "gzip, deflate, br, zstd",
+        "HTTP_X_REQUESTED_WITH": "XMLHttpRequest",
+        "HTTP_DNT": "1",
+        "HTTP_CONNECTION": "keep-alive",
+        "HTTP_REFERER": "http:\/\/127.0.0.1:8000\/install\/index.php?lang=fr",
+        "HTTP_COOKIE": "io=2G6p8qMg8xwIN3JpAAAD; TawkConnectionTime=0; PHPSESSID=hcsc3m94mlr88j37gd0i4rd5nd; XSRF-TOKEN=eyJpdiI6Im81VmtIN0toOW0xMHFQR1pZVGM2OWc9PSIsInZhbHVlIjoiNWZ2SmhFODlwQTdac0lSelZsR1NQZmYwekxxUHFrVkY0cmZLZzZSUVpxN3dZMDk5TStSQlBBbUZQSXZkY3NHN2FxVDEyQUpyQWtibkR5eGN2MzBGc2srRjI4eUFkOXRxWTNmZk5FWXlibVZmZFEyZUYrSzhVbUtxS3lybTVpQ1giLCJtYWMiOiJhYTNkN2FmYzU1MWUwNGE0NjFhN2EzMjBmMDY3MmRmYzFiMjdjMjJiMDJhNTBkYTYxMTEyZTg3ZTk2ODg3M2EzIiwidGFnIjoiIn0%3D; adminlicence_session=eyJpdiI6IldYR1FDdkhDQzM2VmpXTnR1RFpmYkE9PSIsInZhbHVlIjoiRUFkQnpRZkpkWGQrcU1JZFRuZCtlajNpTnZtYW9vZXlnNGxFTWJndFM0MzFDOS9wTVoxOTJBeDRnZkFNMDVCNElQNTJkMTlSK0ZUdzFhcit5dWtWdk5WSXNXZTJKOHZFTXVIYWFkeEhFZE1BMnhRV1BkeE5JTHpYZjZmeHlWWXQiLCJtYWMiOiI4MTM2ZDgyZTA1NzJmZTEwNWFkYzZkYTJjMWJkYzg0NDRiN2RmMjhlMmMzM2Q3MzA4Mjk5OGQwYTZjYjhmZWY0IiwidGFnIjoiIn0%3D",
+        "HTTP_SEC_FETCH_DEST": "empty",
+        "HTTP_SEC_FETCH_MODE": "cors",
+        "HTTP_SEC_FETCH_SITE": "same-origin",
+        "REQUEST_TIME_FLOAT": 1744811614.312592,
+        "REQUEST_TIME": 1744811614
+    }
+}
+
+{
+    "time": "2025-04-16 15:56:07",
+    "function": "detect_project_request",
+    "method": "GET",
+    "query": {
+        "ajax": "1"
+    },
+    "server": {
+        "DOCUMENT_ROOT": "R:\\Adev\\200  -  test\\adminlicence_saas\\public",
+        "REMOTE_ADDR": "127.0.0.1",
+        "REMOTE_PORT": "57613",
+        "SERVER_SOFTWARE": "PHP 8.2.12 Development Server",
+        "SERVER_PROTOCOL": "HTTP\/1.1",
+        "SERVER_NAME": "127.0.0.1",
+        "SERVER_PORT": "8000",
+        "REQUEST_URI": "\/install\/ajax\/detect_project.php?ajax=1",
+        "REQUEST_METHOD": "GET",
+        "SCRIPT_NAME": "\/install\/ajax\/detect_project.php",
+        "SCRIPT_FILENAME": "R:\\Adev\\200  -  test\\adminlicence_saas\\public\\install\\ajax\\detect_project.php",
+        "PHP_SELF": "\/install\/ajax\/detect_project.php",
+        "QUERY_STRING": "ajax=1",
+        "HTTP_HOST": "127.0.0.1:8000",
+        "HTTP_USER_AGENT": "Mozilla\/5.0 (Windows NT 10.0; Win64; x64; rv:137.0) Gecko\/20100101 Firefox\/137.0",
+        "HTTP_ACCEPT": "application\/json, text\/javascript, *\/*; q=0.01",
+        "HTTP_ACCEPT_LANGUAGE": "fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3",
+        "HTTP_ACCEPT_ENCODING": "gzip, deflate, br, zstd",
+        "HTTP_X_REQUESTED_WITH": "XMLHttpRequest",
+        "HTTP_DNT": "1",
+        "HTTP_CONNECTION": "keep-alive",
+        "HTTP_REFERER": "http:\/\/127.0.0.1:8000\/install\/index.php?step=2",
+        "HTTP_COOKIE": "io=2G6p8qMg8xwIN3JpAAAD; TawkConnectionTime=0; PHPSESSID=hcsc3m94mlr88j37gd0i4rd5nd; XSRF-TOKEN=eyJpdiI6Im81VmtIN0toOW0xMHFQR1pZVGM2OWc9PSIsInZhbHVlIjoiNWZ2SmhFODlwQTdac0lSelZsR1NQZmYwekxxUHFrVkY0cmZLZzZSUVpxN3dZMDk5TStSQlBBbUZQSXZkY3NHN2FxVDEyQUpyQWtibkR5eGN2MzBGc2srRjI4eUFkOXRxWTNmZk5FWXlibVZmZFEyZUYrSzhVbUtxS3lybTVpQ1giLCJtYWMiOiJhYTNkN2FmYzU1MWUwNGE0NjFhN2EzMjBmMDY3MmRmYzFiMjdjMjJiMDJhNTBkYTYxMTEyZTg3ZTk2ODg3M2EzIiwidGFnIjoiIn0%3D; adminlicence_session=eyJpdiI6IldYR1FDdkhDQzM2VmpXTnR1RFpmYkE9PSIsInZhbHVlIjoiRUFkQnpRZkpkWGQrcU1JZFRuZCtlajNpTnZtYW9vZXlnNGxFTWJndFM0MzFDOS9wTVoxOTJBeDRnZkFNMDVCNElQNTJkMTlSK0ZUdzFhcit5dWtWdk5WSXNXZTJKOHZFTXVIYWFkeEhFZE1BMnhRV1BkeE5JTHpYZjZmeHlWWXQiLCJtYWMiOiI4MTM2ZDgyZTA1NzJmZTEwNWFkYzZkYTJjMWJkYzg0NDRiN2RmMjhlMmMzM2Q3MzA4Mjk5OGQwYTZjYjhmZWY0IiwidGFnIjoiIn0%3D",
+        "HTTP_SEC_FETCH_DEST": "empty",
+        "HTTP_SEC_FETCH_MODE": "cors",
+        "HTTP_SEC_FETCH_SITE": "same-origin",
+        "REQUEST_TIME_FLOAT": 1744811767.454674,
+        "REQUEST_TIME": 1744811767
+    }
+}
+
