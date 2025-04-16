@@ -73,3 +73,18 @@
     }
 }
 
+{
+    "time": "2025-04-16 15:40:30",
+    "function": "save_admin_response",
+    "response": {
+        "status": true,
+        "message": "Admin account information saved",
+        "admin_email": "tally@obione.net",
+        "project_url": "http:\/\/127.0.0.1:8000\/",
+        "session_data": {
+            "admin_saved": true,
+            "admin_config": "Set"
+        }
+    }
+}
+

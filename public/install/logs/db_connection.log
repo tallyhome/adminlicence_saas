@@ -211,3 +211,54 @@ ERREUR: SQLSTATE[HY000] [1045] Access denied for user 'adminlicencetest'@'localh
     "env_path": "R:\\Adev\\200  -  test\\adminlicence_saas\/.env"
 }
 
+{
+    "time": "2025-04-16 15:40:15",
+    "function": "test_db",
+    "host": "localhost",
+    "database": "adminlicencetest",
+    "username": "adminlicencetest"
+}
+
+{
+    "time": "2025-04-16 15:40:15",
+    "function": "update_env_db_config",
+    "status": "success",
+    "env_path": "R:\\Adev\\200  -  test\\adminlicence_saas\/.env"
+}
+
+{
+    "time": "2025-04-16 15:40:18",
+    "function": "test_db",
+    "host": "localhost",
+    "database": "adminlicencetest",
+    "username": "adminlicencetest"
+}
+
+ERREUR: SQLSTATE[HY000] [1045] Access denied for user 'adminlicencetest'@'localhost' (using password: YES)
+
+{
+    "time": "2025-04-16 15:40:22",
+    "function": "test_db",
+    "host": "localhost",
+    "database": "adminlicencetest",
+    "username": "adminlicencetest"
+}
+
+{
+    "time": "2025-04-16 15:40:22",
+    "function": "update_env_db_config",
+    "status": "success",
+    "env_path": "R:\\Adev\\200  -  test\\adminlicence_saas\/.env"
+}
+
+{
+    "time": "2025-04-16 15:40:44",
+    "function": "get_admin_details",
+    "connection": {
+        "host": "localhost",
+        "database": "adminlicencetest",
+        "username": "adminlicencetest",
+        "port": "3306"
+    }
+}
+

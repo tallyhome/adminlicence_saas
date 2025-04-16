@@ -1,0 +1,105 @@
+<?php
+/**
+ * Arabic language file
+ */
+return [
+    'installation_title' => 'تثبيت AdminLicence',
+    
+    // Step 1 - License verification
+    'license_verification' => 'التحقق من الترخيص',
+    'license_key' => 'مفتاح الترخيص',
+    'verify' => 'تحقق',
+    'next' => 'التالي',
+    'previous' => 'السابق',
+    'license_valid' => 'الترخيص صالح',
+    'license_invalid' => 'الترخيص غير صالح',
+    'license_expired' => 'الترخيص منتهي الصلاحية',
+    'license_revoked' => 'تم إلغاء الترخيص',
+    'license_suspended' => 'الترخيص معلق',
+    'expiry_date' => 'تاريخ انتهاء الصلاحية',
+    
+    // Step 2 - Project detection
+    'project_detection' => 'اكتشاف وإعداد المشروع',
+    'project_type' => 'نوع المشروع',
+    'php_project' => 'مشروع PHP بسيط',
+    'laravel_project' => 'مشروع Laravel',
+    'react_project' => 'مشروع React',
+    'env_file' => 'ملف .env',
+    'env_file_exists' => 'ملف .env موجود',
+    'env_file_missing' => 'ملف .env مفقود',
+    'vendor_directory' => 'مجلد vendor/',
+    'vendor_exists' => 'مجلد vendor/ موجود',
+    'vendor_missing' => 'مجلد vendor/ مفقود',
+    'creating_env' => 'إنشاء ملف .env',
+    'run_composer' => 'يرجى تشغيل "composer install" لتثبيت التبعيات',
+    
+    // Step 3 - Database configuration
+    'database_configuration' => 'إعداد قاعدة البيانات',
+    'db_host' => 'مضيف قاعدة البيانات',
+    'db_port' => 'المنفذ',
+    'db_name' => 'اسم قاعدة البيانات',
+    'db_username' => 'اسم المستخدم',
+    'db_password' => 'كلمة المرور',
+    'test_connection' => 'اختبار الاتصال',
+    'connection_success' => 'تم الاتصال بنجاح',
+    'connection_failed' => 'فشل الاتصال',
+    
+    // Step 4 - Admin account
+    'admin_account' => 'حساب المسؤول',
+    'project_url' => 'رابط المشروع',
+    'admin_email' => 'البريد الإلكتروني للمسؤول',
+    'admin_password' => 'كلمة المرور',
+    'confirm_password' => 'تأكيد كلمة المرور',
+    'passwords_not_match' => 'كلمات المرور غير متطابقة',
+    'save' => 'حفظ',
+    'admin_saved' => 'تم حفظ معلومات حساب المسؤول',
+    
+    // Step 5 - Installation
+    'installation_summary' => 'ملخص التثبيت',
+    'start_installation' => 'بدء التثبيت',
+    'installing' => 'جاري التثبيت...',
+    'installation_progress' => 'تقدم التثبيت',
+    'license_check' => 'التحقق من الترخيص',
+    'project_detection_check' => 'اكتشاف المشروع',
+    'env_creation_check' => 'إنشاء ملف .env',
+    'vendor_check' => 'التحقق من مجلد vendor',
+    'database_check' => 'إعداد قاعدة البيانات',
+    'admin_setup_check' => 'إعداد حساب المسؤول',
+    'installation_complete' => 'اكتمل التثبيت',
+    'installation_failed' => 'فشل التثبيت',
+    'go_to_login' => 'الذهاب إلى صفحة تسجيل الدخول',
+    'retry' => 'إعادة المحاولة',
+    'installation_logs' => 'سجلات التثبيت',
+    'starting_installation' => 'بدء عملية التثبيت...',
+    'detected_project_type' => 'نوع المشروع المكتشف:',
+    'vendor_installation' => 'تثبيت تبعيات vendor',
+    'database_migrations' => 'ترحيلات قاعدة البيانات',
+    'database_seeders' => 'بذور قاعدة البيانات',
+    'installation_success' => 'تم الانتهاء من التثبيت بنجاح!',
+    'ajax_error' => 'خطأ AJAX:',
+    'server_message' => 'رسالة الخادم:',
+    'response_parse_error' => 'تعذر تحليل استجابة الخادم:',
+    
+    // Step 6 - Installation completed
+    'installation_completed' => 'اكتمل التثبيت',
+    'installation_success_message' => 'تم الانتهاء من التثبيت بنجاح!',
+    'connection_details' => 'تفاصيل الاتصال',
+    'security' => 'الأمان',
+    'remove_install_dir_note' => 'لأسباب أمنية، يوصى بإزالة دليل التثبيت بعد الانتهاء.',
+    'remove_install_dir' => 'إزالة دليل التثبيت',
+    'confirm_remove_install_dir' => 'هل أنت متأكد أنك تريد إزالة دليل التثبيت؟ هذا الإجراء لا رجعة فيه.',
+    'removing' => 'جاري الإزالة...',
+    'install_dir_removed' => 'تمت إزالة دليل التثبيت بنجاح.',
+    'install_dir_remove_failed' => 'تعذر إزالة دليل التثبيت. يرجى إزالته يدويًا.',
+    'go_to_dashboard' => 'الذهاب إلى لوحة التحكم',
+    
+    // General
+    'error' => 'خطأ',
+    'success' => 'نجاح',
+    'warning' => 'تحذير',
+    'info' => 'معلومات',
+    'all_fields_required' => 'جميع الحقول مطلوبة',
+    'save_failed' => 'فشل الحفظ',
+    'complete' => 'مكتمل',
+    'with_warnings' => 'مع تحذيرات',
+];

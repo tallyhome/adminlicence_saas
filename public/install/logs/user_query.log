@@ -1,0 +1,10 @@
+{
+    "time": "2025-04-16 15:40:44",
+    "function": "get_admin_details",
+    "results": {
+        "superadmin_found": true,
+        "admin_found": true,
+        "user_found": true
+    }
+}
+

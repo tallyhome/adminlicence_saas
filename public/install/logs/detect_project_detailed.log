@@ -526,3 +526,19 @@
     }
 }
 
+{
+    "time": "2025-04-16 15:40:03",
+    "function": "detect_project_detailed",
+    "initial_project_root": "R:\\Adev\\200  -  test\\adminlicence_saas",
+    "paths_checked": {
+        "env_file": {
+            "path": "R:\\Adev\\200  -  test\\adminlicence_saas\/.env",
+            "exists": true
+        },
+        "vendor_dir": {
+            "path": "R:\\Adev\\200  -  test\\adminlicence_saas\/vendor",
+            "exists": true
+        }
+    }
+}
+
