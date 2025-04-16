@@ -88,23 +88,9 @@ return [
     'server_message' => 'Server message:',
     'response_parse_error' => 'Could not parse server response:',
     
-    // Step 6 - Installation completed
-    'installation_completed' => 'Installation Completed',
-    'installation_success_message' => 'The installation has been completed successfully!',
-    'connection_details' => 'Connection Details',
-    'security' => 'Security',
-    'remove_install_dir_note' => 'For security reasons, it is recommended to remove the installation directory after completion.',
-    'remove_install_dir' => 'Remove Installation Directory',
-    'confirm_remove_install_dir' => 'Are you sure you want to remove the installation directory? This action is irreversible.',
-    'removing' => 'Removing...',
-    'install_dir_removed' => 'The installation directory has been successfully removed.',
-    'install_dir_remove_failed' => 'Unable to remove the installation directory. Please remove it manually.',
-    'go_to_dashboard' => 'Go to Dashboard',
-    
     // General
     'error' => 'Error',
     'success' => 'Success',
     'warning' => 'Warning',
     'info' => 'Information',
-    'previous' => 'Previous',
 ];

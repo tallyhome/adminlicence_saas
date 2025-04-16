@@ -12,22 +12,31 @@
         </div>
         <div class="card-body">
             <div class="row">
-                <!-- Informations des utilisateurs -->
+                <!-- Chargement des informations utilisateurs depuis la base de données -->
                 <?php
-                // Utiliser les valeurs par défaut et les informations de session
+                // Récupérer les informations des utilisateurs depuis la base de données
+                $userInfo = json_decode(file_get_contents('ajax/get_admin_details.php'), true);
                 $projectUrl = isset($_SESSION['admin_config']['project_url']) ? $_SESSION['admin_config']['project_url'] : '';
                 
-                // Informations SuperAdmin
-                $superAdminEmail = 'superadmin@example.com';
-                $superAdminPassword = 'password';
-                
-                // Informations Admin (créé pendant l'installation)
-                $adminEmail = isset($_SESSION['admin_config']['email']) ? $_SESSION['admin_config']['email'] : '';
-                $adminPassword = isset($_SESSION['admin_config']['password']) ? substr($_SESSION['admin_config']['password'], 0, 3) . str_repeat('*', strlen($_SESSION['admin_config']['password']) - 3) : '';
-                
-                // Informations User
-                $userEmail = 'user@example.com';
-                $userPassword = 'password';
+                // Vérifier si les informations ont été récupérées avec succès
+                if (!isset($userInfo['status']) || !$userInfo['status']) {
+                    // Utiliser les informations de session comme fallback
+                    $superAdminEmail = 'superadmin@example.com';
+                    $superAdminPassword = 'password';
+                    $adminEmail = isset($_SESSION['admin_config']['email']) ? $_SESSION['admin_config']['email'] : '';
+                    $adminPassword = isset($_SESSION['admin_config']['password']) ? substr($_SESSION['admin_config']['password'], 0, 3) . str_repeat('*', strlen($_SESSION['admin_config']['password']) - 3) : '';
+                    $userEmail = 'user@example.com';
+                    $userPassword = 'password';
+                } else {
+                    // Utiliser les informations récupérées depuis la base de données
+                    $superAdminEmail = $userInfo['superadmin']['email'];
+                    $superAdminPassword = $userInfo['superadmin']['password_hint'];
+                    $adminEmail = $userInfo['admin']['email'];
+                    $adminPassword = $userInfo['admin']['password_hint'];
+                    $userEmail = $userInfo['user']['email'];
+                    $userPassword = $userInfo['user']['password_hint'];
+                    $projectUrl = $userInfo['admin_url'];
+                }
                 ?>
                 
                 <!-- SuperAdmin -->

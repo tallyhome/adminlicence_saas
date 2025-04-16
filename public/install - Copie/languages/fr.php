@@ -99,24 +99,10 @@ return [
     'server_message' => 'Message du serveur :',
     'response_parse_error' => 'Impossible d\'analyser la réponse du serveur :',
     
-    // Step 6 - Installation completed
-    'installation_completed' => 'Installation terminée',
-    'installation_success_message' => 'L\'installation a été effectuée avec succès !',
-    'connection_details' => 'Détails de connexion',
-    'security' => 'Sécurité',
-    'remove_install_dir_note' => 'Pour des raisons de sécurité, il est recommandé de supprimer le dossier d\'installation après avoir terminé.',
-    'remove_install_dir' => 'Supprimer le dossier d\'installation',
-    'confirm_remove_install_dir' => 'Êtes-vous sûr de vouloir supprimer le dossier d\'installation ? Cette action est irréversible.',
-    'removing' => 'Suppression en cours...',
-    'install_dir_removed' => 'Le dossier d\'installation a été supprimé avec succès.',
-    'install_dir_remove_failed' => 'Impossible de supprimer le dossier d\'installation. Veuillez le supprimer manuellement.',
-    'go_to_dashboard' => 'Accéder au tableau de bord',
-    
     // General
     'error' => 'Erreur',
     'success' => 'Succès',
     'warning' => 'Avertissement',
     'info' => 'Information',
     'return' => 'Retour',
-    'previous' => 'Précédent',
 ];
