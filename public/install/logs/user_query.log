@@ -38,3 +38,13 @@
     }
 }
 
+{
+    "time": "2025-04-16 16:14:45",
+    "function": "get_admin_details",
+    "results": {
+        "superadmin_found": true,
+        "admin_found": true,
+        "user_found": true
+    }
+}
+

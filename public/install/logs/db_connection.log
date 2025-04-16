@@ -375,3 +375,14 @@ ERREUR: SQLSTATE[HY000] [1045] Access denied for user 'adminlicencetesteee'@'loc
     }
 }
 
+{
+    "time": "2025-04-16 16:14:45",
+    "function": "get_admin_details",
+    "connection": {
+        "host": "localhost",
+        "database": "adminlicencetest",
+        "username": "adminlicencetest",
+        "port": "3306"
+    }
+}
+
