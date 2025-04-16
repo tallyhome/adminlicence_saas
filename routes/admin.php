@@ -205,6 +205,8 @@ Route::middleware('auth:admin')->group(function () {
     // Routes pour les tickets de support (admin standard)
     Route::prefix('tickets')->group(function () {
         Route::get('/', [\App\Http\Controllers\Admin\SupportTicketController::class, 'index'])->name('admin.tickets.index');
+        Route::get('/create', [\App\Http\Controllers\Admin\SupportTicketController::class, 'create'])->name('admin.tickets.create');
+        Route::post('/', [\App\Http\Controllers\Admin\SupportTicketController::class, 'store'])->name('admin.tickets.store');
         Route::get('/{ticket}', [\App\Http\Controllers\Admin\SupportTicketController::class, 'show'])->name('admin.tickets.show');
         Route::patch('/{ticket}/status', [\App\Http\Controllers\Admin\SupportTicketController::class, 'updateStatus'])->name('admin.tickets.update-status');
         Route::post('/{ticket}/reply', [\App\Http\Controllers\Admin\SupportTicketController::class, 'reply'])->name('admin.tickets.reply');

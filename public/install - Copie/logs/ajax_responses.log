@@ -1030,3 +1030,1403 @@
     }
 }
 
+{
+    "time": "2025-04-16 15:34:38",
+    "license_key": "IN2K-YYAU-PCZ1-AUYM",
+    "result": {
+        "status": false,
+        "message": "Domaine non autoris\u00e9 pour cette cl\u00e9",
+        "data": null,
+        "debug_info": [
+            "D\u00e9but de la v\u00e9rification de licence: 2025-04-16 15:34:38",
+            "Cl\u00e9 de licence: IN2K-YYAU-PCZ1-AUYM",
+            "Domaine: 127.0.0.1",
+            "IP: 127.0.0.1",
+            "Base URL API: https:\/\/licence.myvcard.fr",
+            "Essai du point d'entr\u00e9e: https:\/\/licence.myvcard.fr\/api\/check-serial.php",
+            "Utilisation de cURL pour la requ\u00eate",
+            "Code HTTP: 200",
+            "Temps de r\u00e9ponse: 136 ms",
+            "R\u00e9ponse JSON valide re\u00e7ue",
+            "Contenu de la r\u00e9ponse: {\"status\":\"error\",\"message\":\"Domaine non autoris\\u00e9 pour cette cl\\u00e9\"}",
+            "Licence invalide: Domaine non autoris\u00e9 pour cette cl\u00e9"
+        ]
+    }
+}
+
+{
+    "time": "2025-04-16 15:34:38",
+    "license_key": "IN2K-YYAU-PCZ1-AUYM",
+    "result": {
+        "status": false,
+        "message": "Domaine non autoris\u00e9 pour cette cl\u00e9",
+        "data": null,
+        "debug_info": [
+            "D\u00e9but de la v\u00e9rification de licence: 2025-04-16 15:34:38",
+            "Cl\u00e9 de licence: IN2K-YYAU-PCZ1-AUYM",
+            "Domaine: 127.0.0.1",
+            "IP: 127.0.0.1",
+            "Base URL API: https:\/\/licence.myvcard.fr",
+            "Essai du point d'entr\u00e9e: https:\/\/licence.myvcard.fr\/api\/check-serial.php",
+            "Utilisation de cURL pour la requ\u00eate",
+            "Code HTTP: 200",
+            "Temps de r\u00e9ponse: 91 ms",
+            "R\u00e9ponse JSON valide re\u00e7ue",
+            "Contenu de la r\u00e9ponse: {\"status\":\"error\",\"message\":\"Domaine non autoris\\u00e9 pour cette cl\\u00e9\"}",
+            "Licence invalide: Domaine non autoris\u00e9 pour cette cl\u00e9"
+        ]
+    }
+}
+
+{
+    "time": "2025-04-16 15:34:51",
+    "license_key": "TNBH-DRDK-K9JG-H4RR1",
+    "result": {
+        "status": false,
+        "message": "Cl\u00e9 de s\u00e9rie invalide",
+        "data": null,
+        "debug_info": [
+            "D\u00e9but de la v\u00e9rification de licence: 2025-04-16 15:34:51",
+            "Cl\u00e9 de licence: TNBH-DRDK-K9JG-H4RR1",
+            "Domaine: 127.0.0.1",
+            "IP: 127.0.0.1",
+            "Base URL API: https:\/\/licence.myvcard.fr",
+            "Essai du point d'entr\u00e9e: https:\/\/licence.myvcard.fr\/api\/check-serial.php",
+            "Utilisation de cURL pour la requ\u00eate",
+            "Code HTTP: 200",
+            "Temps de r\u00e9ponse: 115 ms",
+            "R\u00e9ponse JSON valide re\u00e7ue",
+            "Contenu de la r\u00e9ponse: {\"status\":\"error\",\"message\":\"Cl\\u00e9 de s\\u00e9rie invalide\"}",
+            "Licence invalide: Cl\u00e9 de s\u00e9rie invalide"
+        ]
+    }
+}
+
+{
+    "time": "2025-04-16 15:34:51",
+    "license_key": "TNBH-DRDK-K9JG-H4RR1",
+    "result": {
+        "status": false,
+        "message": "Cl\u00e9 de s\u00e9rie invalide",
+        "data": null,
+        "debug_info": [
+            "D\u00e9but de la v\u00e9rification de licence: 2025-04-16 15:34:51",
+            "Cl\u00e9 de licence: TNBH-DRDK-K9JG-H4RR1",
+            "Domaine: 127.0.0.1",
+            "IP: 127.0.0.1",
+            "Base URL API: https:\/\/licence.myvcard.fr",
+            "Essai du point d'entr\u00e9e: https:\/\/licence.myvcard.fr\/api\/check-serial.php",
+            "Utilisation de cURL pour la requ\u00eate",
+            "Code HTTP: 200",
+            "Temps de r\u00e9ponse: 84 ms",
+            "R\u00e9ponse JSON valide re\u00e7ue",
+            "Contenu de la r\u00e9ponse: {\"status\":\"error\",\"message\":\"Cl\\u00e9 de s\\u00e9rie invalide\"}",
+            "Licence invalide: Cl\u00e9 de s\u00e9rie invalide"
+        ]
+    }
+}
+
+{
+    "time": "2025-04-16 15:34:55",
+    "license_key": "TNBH-DRDK-K9JG-H4R1",
+    "result": {
+        "status": false,
+        "message": "Cl\u00e9 de s\u00e9rie invalide",
+        "data": null,
+        "debug_info": [
+            "D\u00e9but de la v\u00e9rification de licence: 2025-04-16 15:34:55",
+            "Cl\u00e9 de licence: TNBH-DRDK-K9JG-H4R1",
+            "Domaine: 127.0.0.1",
+            "IP: 127.0.0.1",
+            "Base URL API: https:\/\/licence.myvcard.fr",
+            "Essai du point d'entr\u00e9e: https:\/\/licence.myvcard.fr\/api\/check-serial.php",
+            "Utilisation de cURL pour la requ\u00eate",
+            "Code HTTP: 200",
+            "Temps de r\u00e9ponse: 84 ms",
+            "R\u00e9ponse JSON valide re\u00e7ue",
+            "Contenu de la r\u00e9ponse: {\"status\":\"error\",\"message\":\"Cl\\u00e9 de s\\u00e9rie invalide\"}",
+            "Licence invalide: Cl\u00e9 de s\u00e9rie invalide"
+        ]
+    }
+}
+
+{
+    "time": "2025-04-16 15:34:55",
+    "license_key": "TNBH-DRDK-K9JG-H4R1",
+    "result": {
+        "status": false,
+        "message": "Cl\u00e9 de s\u00e9rie invalide",
+        "data": null,
+        "debug_info": [
+            "D\u00e9but de la v\u00e9rification de licence: 2025-04-16 15:34:55",
+            "Cl\u00e9 de licence: TNBH-DRDK-K9JG-H4R1",
+            "Domaine: 127.0.0.1",
+            "IP: 127.0.0.1",
+            "Base URL API: https:\/\/licence.myvcard.fr",
+            "Essai du point d'entr\u00e9e: https:\/\/licence.myvcard.fr\/api\/check-serial.php",
+            "Utilisation de cURL pour la requ\u00eate",
+            "Code HTTP: 200",
+            "Temps de r\u00e9ponse: 86 ms",
+            "R\u00e9ponse JSON valide re\u00e7ue",
+            "Contenu de la r\u00e9ponse: {\"status\":\"error\",\"message\":\"Cl\\u00e9 de s\\u00e9rie invalide\"}",
+            "Licence invalide: Cl\u00e9 de s\u00e9rie invalide"
+        ]
+    }
+}
+
+{
+    "time": "2025-04-16 15:34:57",
+    "license_key": "TNBH-DRDK-K9JG-H4R1",
+    "result": {
+        "status": false,
+        "message": "Cl\u00e9 de s\u00e9rie invalide",
+        "data": null,
+        "debug_info": [
+            "D\u00e9but de la v\u00e9rification de licence: 2025-04-16 15:34:57",
+            "Cl\u00e9 de licence: TNBH-DRDK-K9JG-H4R1",
+            "Domaine: 127.0.0.1",
+            "IP: 127.0.0.1",
+            "Base URL API: https:\/\/licence.myvcard.fr",
+            "Essai du point d'entr\u00e9e: https:\/\/licence.myvcard.fr\/api\/check-serial.php",
+            "Utilisation de cURL pour la requ\u00eate",
+            "Code HTTP: 200",
+            "Temps de r\u00e9ponse: 92 ms",
+            "R\u00e9ponse JSON valide re\u00e7ue",
+            "Contenu de la r\u00e9ponse: {\"status\":\"error\",\"message\":\"Cl\\u00e9 de s\\u00e9rie invalide\"}",
+            "Licence invalide: Cl\u00e9 de s\u00e9rie invalide"
+        ]
+    }
+}
+
+{
+    "time": "2025-04-16 15:34:58",
+    "license_key": "TNBH-DRDK-K9JG-H4R1",
+    "result": {
+        "status": false,
+        "message": "Cl\u00e9 de s\u00e9rie invalide",
+        "data": null,
+        "debug_info": [
+            "D\u00e9but de la v\u00e9rification de licence: 2025-04-16 15:34:57",
+            "Cl\u00e9 de licence: TNBH-DRDK-K9JG-H4R1",
+            "Domaine: 127.0.0.1",
+            "IP: 127.0.0.1",
+            "Base URL API: https:\/\/licence.myvcard.fr",
+            "Essai du point d'entr\u00e9e: https:\/\/licence.myvcard.fr\/api\/check-serial.php",
+            "Utilisation de cURL pour la requ\u00eate",
+            "Code HTTP: 200",
+            "Temps de r\u00e9ponse: 89 ms",
+            "R\u00e9ponse JSON valide re\u00e7ue",
+            "Contenu de la r\u00e9ponse: {\"status\":\"error\",\"message\":\"Cl\\u00e9 de s\\u00e9rie invalide\"}",
+            "Licence invalide: Cl\u00e9 de s\u00e9rie invalide"
+        ]
+    }
+}
+
+{
+    "time": "2025-04-16 15:35:02",
+    "license_key": "TNBH-DRDK-K9JG-H4RR",
+    "result": {
+        "status": true,
+        "message": "Cl\u00e9 de s\u00e9rie valide",
+        "data": {
+            "token": "c9ea5b9a6e66542a0fa5ef810fea7586",
+            "project": "",
+            "expires_at": null
+        },
+        "debug_info": [
+            "D\u00e9but de la v\u00e9rification de licence: 2025-04-16 15:35:02",
+            "Cl\u00e9 de licence: TNBH-DRDK-K9JG-H4RR",
+            "Domaine: 127.0.0.1",
+            "IP: 127.0.0.1",
+            "Base URL API: https:\/\/licence.myvcard.fr",
+            "Essai du point d'entr\u00e9e: https:\/\/licence.myvcard.fr\/api\/check-serial.php",
+            "Utilisation de cURL pour la requ\u00eate",
+            "Code HTTP: 200",
+            "Temps de r\u00e9ponse: 106 ms",
+            "R\u00e9ponse JSON valide re\u00e7ue",
+            "Contenu de la r\u00e9ponse: {\"status\":\"success\",\"message\":\"Cl\\u00e9 de s\\u00e9rie valide\",\"data\":{\"token\":\"c9ea5b9a6e66542a0fa5ef810fea7586\",\"project\":\"\",\"expires_at\":null}}",
+            "Licence valide!"
+        ]
+    }
+}
+
+{
+    "time": "2025-04-16 15:35:02",
+    "license_key": "TNBH-DRDK-K9JG-H4RR",
+    "result": {
+        "status": true,
+        "message": "Cl\u00e9 de s\u00e9rie valide",
+        "data": {
+            "token": "c626c8963a97aeae1f2c8ddf95b706eb",
+            "project": "",
+            "expires_at": null
+        },
+        "debug_info": [
+            "D\u00e9but de la v\u00e9rification de licence: 2025-04-16 15:35:02",
+            "Cl\u00e9 de licence: TNBH-DRDK-K9JG-H4RR",
+            "Domaine: 127.0.0.1",
+            "IP: 127.0.0.1",
+            "Base URL API: https:\/\/licence.myvcard.fr",
+            "Essai du point d'entr\u00e9e: https:\/\/licence.myvcard.fr\/api\/check-serial.php",
+            "Utilisation de cURL pour la requ\u00eate",
+            "Code HTTP: 200",
+            "Temps de r\u00e9ponse: 92 ms",
+            "R\u00e9ponse JSON valide re\u00e7ue",
+            "Contenu de la r\u00e9ponse: {\"status\":\"success\",\"message\":\"Cl\\u00e9 de s\\u00e9rie valide\",\"data\":{\"token\":\"c626c8963a97aeae1f2c8ddf95b706eb\",\"project\":\"\",\"expires_at\":null}}",
+            "Licence valide!"
+        ]
+    }
+}
+
+{
+    "time": "2025-04-16 15:35:09",
+    "license_key": "TNBH-DRDK-K9JG-H4R1",
+    "result": {
+        "status": false,
+        "message": "Cl\u00e9 de s\u00e9rie invalide",
+        "data": null,
+        "debug_info": [
+            "D\u00e9but de la v\u00e9rification de licence: 2025-04-16 15:35:09",
+            "Cl\u00e9 de licence: TNBH-DRDK-K9JG-H4R1",
+            "Domaine: 127.0.0.1",
+            "IP: 127.0.0.1",
+            "Base URL API: https:\/\/licence.myvcard.fr",
+            "Essai du point d'entr\u00e9e: https:\/\/licence.myvcard.fr\/api\/check-serial.php",
+            "Utilisation de cURL pour la requ\u00eate",
+            "Code HTTP: 200",
+            "Temps de r\u00e9ponse: 88 ms",
+            "R\u00e9ponse JSON valide re\u00e7ue",
+            "Contenu de la r\u00e9ponse: {\"status\":\"error\",\"message\":\"Cl\\u00e9 de s\\u00e9rie invalide\"}",
+            "Licence invalide: Cl\u00e9 de s\u00e9rie invalide"
+        ]
+    }
+}
+
+{
+    "time": "2025-04-16 15:35:09",
+    "license_key": "TNBH-DRDK-K9JG-H4R1",
+    "result": {
+        "status": false,
+        "message": "Cl\u00e9 de s\u00e9rie invalide",
+        "data": null,
+        "debug_info": [
+            "D\u00e9but de la v\u00e9rification de licence: 2025-04-16 15:35:09",
+            "Cl\u00e9 de licence: TNBH-DRDK-K9JG-H4R1",
+            "Domaine: 127.0.0.1",
+            "IP: 127.0.0.1",
+            "Base URL API: https:\/\/licence.myvcard.fr",
+            "Essai du point d'entr\u00e9e: https:\/\/licence.myvcard.fr\/api\/check-serial.php",
+            "Utilisation de cURL pour la requ\u00eate",
+            "Code HTTP: 200",
+            "Temps de r\u00e9ponse: 84 ms",
+            "R\u00e9ponse JSON valide re\u00e7ue",
+            "Contenu de la r\u00e9ponse: {\"status\":\"error\",\"message\":\"Cl\\u00e9 de s\\u00e9rie invalide\"}",
+            "Licence invalide: Cl\u00e9 de s\u00e9rie invalide"
+        ]
+    }
+}
+
+{
+    "time": "2025-04-16 15:35:16",
+    "license_key": "TNBH-DRDK-K9JG-H4R1",
+    "result": {
+        "status": false,
+        "message": "Cl\u00e9 de s\u00e9rie invalide",
+        "data": null,
+        "debug_info": [
+            "D\u00e9but de la v\u00e9rification de licence: 2025-04-16 15:35:16",
+            "Cl\u00e9 de licence: TNBH-DRDK-K9JG-H4R1",
+            "Domaine: 127.0.0.1",
+            "IP: 127.0.0.1",
+            "Base URL API: https:\/\/licence.myvcard.fr",
+            "Essai du point d'entr\u00e9e: https:\/\/licence.myvcard.fr\/api\/check-serial.php",
+            "Utilisation de cURL pour la requ\u00eate",
+            "Code HTTP: 200",
+            "Temps de r\u00e9ponse: 122 ms",
+            "R\u00e9ponse JSON valide re\u00e7ue",
+            "Contenu de la r\u00e9ponse: {\"status\":\"error\",\"message\":\"Cl\\u00e9 de s\\u00e9rie invalide\"}",
+            "Licence invalide: Cl\u00e9 de s\u00e9rie invalide"
+        ]
+    }
+}
+
+{
+    "time": "2025-04-16 15:35:16",
+    "license_key": "TNBH-DRDK-K9JG-H4R1",
+    "result": {
+        "status": false,
+        "message": "Cl\u00e9 de s\u00e9rie invalide",
+        "data": null,
+        "debug_info": [
+            "D\u00e9but de la v\u00e9rification de licence: 2025-04-16 15:35:16",
+            "Cl\u00e9 de licence: TNBH-DRDK-K9JG-H4R1",
+            "Domaine: 127.0.0.1",
+            "IP: 127.0.0.1",
+            "Base URL API: https:\/\/licence.myvcard.fr",
+            "Essai du point d'entr\u00e9e: https:\/\/licence.myvcard.fr\/api\/check-serial.php",
+            "Utilisation de cURL pour la requ\u00eate",
+            "Code HTTP: 200",
+            "Temps de r\u00e9ponse: 120 ms",
+            "R\u00e9ponse JSON valide re\u00e7ue",
+            "Contenu de la r\u00e9ponse: {\"status\":\"error\",\"message\":\"Cl\\u00e9 de s\\u00e9rie invalide\"}",
+            "Licence invalide: Cl\u00e9 de s\u00e9rie invalide"
+        ]
+    }
+}
+
+{
+    "time": "2025-04-16 15:35:42",
+    "license_key": "TNBH-DRDK-K9JG-H4R1",
+    "result": {
+        "status": false,
+        "message": "Cl\u00e9 de s\u00e9rie invalide",
+        "data": null,
+        "debug_info": [
+            "D\u00e9but de la v\u00e9rification de licence: 2025-04-16 15:35:42",
+            "Cl\u00e9 de licence: TNBH-DRDK-K9JG-H4R1",
+            "Domaine: 127.0.0.1",
+            "IP: 127.0.0.1",
+            "Base URL API: https:\/\/licence.myvcard.fr",
+            "Essai du point d'entr\u00e9e: https:\/\/licence.myvcard.fr\/api\/check-serial.php",
+            "Utilisation de cURL pour la requ\u00eate",
+            "Code HTTP: 200",
+            "Temps de r\u00e9ponse: 93 ms",
+            "R\u00e9ponse JSON valide re\u00e7ue",
+            "Contenu de la r\u00e9ponse: {\"status\":\"error\",\"message\":\"Cl\\u00e9 de s\\u00e9rie invalide\"}",
+            "Licence invalide: Cl\u00e9 de s\u00e9rie invalide"
+        ]
+    }
+}
+
+{
+    "time": "2025-04-16 15:35:42",
+    "license_key": "TNBH-DRDK-K9JG-H4R1",
+    "result": {
+        "status": false,
+        "message": "Cl\u00e9 de s\u00e9rie invalide",
+        "data": null,
+        "debug_info": [
+            "D\u00e9but de la v\u00e9rification de licence: 2025-04-16 15:35:42",
+            "Cl\u00e9 de licence: TNBH-DRDK-K9JG-H4R1",
+            "Domaine: 127.0.0.1",
+            "IP: 127.0.0.1",
+            "Base URL API: https:\/\/licence.myvcard.fr",
+            "Essai du point d'entr\u00e9e: https:\/\/licence.myvcard.fr\/api\/check-serial.php",
+            "Utilisation de cURL pour la requ\u00eate",
+            "Code HTTP: 200",
+            "Temps de r\u00e9ponse: 100 ms",
+            "R\u00e9ponse JSON valide re\u00e7ue",
+            "Contenu de la r\u00e9ponse: {\"status\":\"error\",\"message\":\"Cl\\u00e9 de s\\u00e9rie invalide\"}",
+            "Licence invalide: Cl\u00e9 de s\u00e9rie invalide"
+        ]
+    }
+}
+
+{
+    "time": "2025-04-16 15:36:05",
+    "license_key": "TNBH-DRDK-K9JG-H4RR",
+    "result": {
+        "status": true,
+        "message": "Cl\u00e9 de s\u00e9rie valide",
+        "data": {
+            "token": "da0f11070cc6ba16ccd4512dc7547ec0",
+            "project": "",
+            "expires_at": null
+        },
+        "debug_info": [
+            "D\u00e9but de la v\u00e9rification de licence: 2025-04-16 15:36:05",
+            "Cl\u00e9 de licence: TNBH-DRDK-K9JG-H4RR",
+            "Domaine: 127.0.0.1",
+            "IP: 127.0.0.1",
+            "Base URL API: https:\/\/licence.myvcard.fr",
+            "Essai du point d'entr\u00e9e: https:\/\/licence.myvcard.fr\/api\/check-serial.php",
+            "Utilisation de cURL pour la requ\u00eate",
+            "Code HTTP: 200",
+            "Temps de r\u00e9ponse: 106 ms",
+            "R\u00e9ponse JSON valide re\u00e7ue",
+            "Contenu de la r\u00e9ponse: {\"status\":\"success\",\"message\":\"Cl\\u00e9 de s\\u00e9rie valide\",\"data\":{\"token\":\"da0f11070cc6ba16ccd4512dc7547ec0\",\"project\":\"\",\"expires_at\":null}}",
+            "Licence valide!"
+        ]
+    }
+}
+
+{
+    "time": "2025-04-16 15:36:05",
+    "license_key": "TNBH-DRDK-K9JG-H4RR",
+    "result": {
+        "status": true,
+        "message": "Cl\u00e9 de s\u00e9rie valide",
+        "data": {
+            "token": "8501f83e5ac721c1878b7d52303ff775",
+            "project": "",
+            "expires_at": null
+        },
+        "debug_info": [
+            "D\u00e9but de la v\u00e9rification de licence: 2025-04-16 15:36:05",
+            "Cl\u00e9 de licence: TNBH-DRDK-K9JG-H4RR",
+            "Domaine: 127.0.0.1",
+            "IP: 127.0.0.1",
+            "Base URL API: https:\/\/licence.myvcard.fr",
+            "Essai du point d'entr\u00e9e: https:\/\/licence.myvcard.fr\/api\/check-serial.php",
+            "Utilisation de cURL pour la requ\u00eate",
+            "Code HTTP: 200",
+            "Temps de r\u00e9ponse: 93 ms",
+            "R\u00e9ponse JSON valide re\u00e7ue",
+            "Contenu de la r\u00e9ponse: {\"status\":\"success\",\"message\":\"Cl\\u00e9 de s\\u00e9rie valide\",\"data\":{\"token\":\"8501f83e5ac721c1878b7d52303ff775\",\"project\":\"\",\"expires_at\":null}}",
+            "Licence valide!"
+        ]
+    }
+}
+
+{
+    "time": "2025-04-16 15:37:00",
+    "license_key": "TNBH-DRDK-K9JG-H4RR",
+    "result": {
+        "status": true,
+        "message": "Cl\u00e9 de s\u00e9rie valide",
+        "data": {
+            "token": "3c0a82f0168046060b06dd3b3d05341f",
+            "project": "",
+            "expires_at": null
+        },
+        "debug_info": [
+            "D\u00e9but de la v\u00e9rification de licence: 2025-04-16 15:37:00",
+            "Cl\u00e9 de licence: TNBH-DRDK-K9JG-H4RR",
+            "Domaine: 127.0.0.1",
+            "IP: 127.0.0.1",
+            "Base URL API: https:\/\/licence.myvcard.fr",
+            "Essai du point d'entr\u00e9e: https:\/\/licence.myvcard.fr\/api\/check-serial.php",
+            "Utilisation de cURL pour la requ\u00eate",
+            "Code HTTP: 200",
+            "Temps de r\u00e9ponse: 124 ms",
+            "R\u00e9ponse JSON valide re\u00e7ue",
+            "Contenu de la r\u00e9ponse: {\"status\":\"success\",\"message\":\"Cl\\u00e9 de s\\u00e9rie valide\",\"data\":{\"token\":\"3c0a82f0168046060b06dd3b3d05341f\",\"project\":\"\",\"expires_at\":null}}",
+            "Licence valide!"
+        ]
+    }
+}
+
+{
+    "time": "2025-04-16 15:37:00",
+    "license_key": "TNBH-DRDK-K9JG-H4RR",
+    "result": {
+        "status": true,
+        "message": "Cl\u00e9 de s\u00e9rie valide",
+        "data": {
+            "token": "f55cecb123e3f567944455c858ff067b",
+            "project": "",
+            "expires_at": null
+        },
+        "debug_info": [
+            "D\u00e9but de la v\u00e9rification de licence: 2025-04-16 15:37:00",
+            "Cl\u00e9 de licence: TNBH-DRDK-K9JG-H4RR",
+            "Domaine: 127.0.0.1",
+            "IP: 127.0.0.1",
+            "Base URL API: https:\/\/licence.myvcard.fr",
+            "Essai du point d'entr\u00e9e: https:\/\/licence.myvcard.fr\/api\/check-serial.php",
+            "Utilisation de cURL pour la requ\u00eate",
+            "Code HTTP: 200",
+            "Temps de r\u00e9ponse: 86 ms",
+            "R\u00e9ponse JSON valide re\u00e7ue",
+            "Contenu de la r\u00e9ponse: {\"status\":\"success\",\"message\":\"Cl\\u00e9 de s\\u00e9rie valide\",\"data\":{\"token\":\"f55cecb123e3f567944455c858ff067b\",\"project\":\"\",\"expires_at\":null}}",
+            "Licence valide!"
+        ]
+    }
+}
+
+{
+    "time": "2025-04-16 15:40:01",
+    "license_key": "TNBH-DRDK-K9JG-H4RR",
+    "result": {
+        "status": true,
+        "message": "Cl\u00e9 de s\u00e9rie valide",
+        "data": {
+            "token": "0df7a78b785cda7de825e00530f247ae",
+            "project": "",
+            "expires_at": null
+        },
+        "debug_info": [
+            "D\u00e9but de la v\u00e9rification de licence: 2025-04-16 15:40:01",
+            "Cl\u00e9 de licence: TNBH-DRDK-K9JG-H4RR",
+            "Domaine: 127.0.0.1",
+            "IP: 127.0.0.1",
+            "Base URL API: https:\/\/licence.myvcard.fr",
+            "Essai du point d'entr\u00e9e: https:\/\/licence.myvcard.fr\/api\/check-serial.php",
+            "Utilisation de cURL pour la requ\u00eate",
+            "Code HTTP: 200",
+            "Temps de r\u00e9ponse: 181 ms",
+            "R\u00e9ponse JSON valide re\u00e7ue",
+            "Contenu de la r\u00e9ponse: {\"status\":\"success\",\"message\":\"Cl\\u00e9 de s\\u00e9rie valide\",\"data\":{\"token\":\"0df7a78b785cda7de825e00530f247ae\",\"project\":\"\",\"expires_at\":null}}",
+            "Licence valide!"
+        ]
+    }
+}
+
+{
+    "time": "2025-04-16 15:40:01",
+    "license_key": "TNBH-DRDK-K9JG-H4RR",
+    "result": {
+        "status": true,
+        "message": "Cl\u00e9 de s\u00e9rie valide",
+        "data": {
+            "token": "fddce88541df23396ea95c7b9a673a7a",
+            "project": "",
+            "expires_at": null
+        },
+        "debug_info": [
+            "D\u00e9but de la v\u00e9rification de licence: 2025-04-16 15:40:01",
+            "Cl\u00e9 de licence: TNBH-DRDK-K9JG-H4RR",
+            "Domaine: 127.0.0.1",
+            "IP: 127.0.0.1",
+            "Base URL API: https:\/\/licence.myvcard.fr",
+            "Essai du point d'entr\u00e9e: https:\/\/licence.myvcard.fr\/api\/check-serial.php",
+            "Utilisation de cURL pour la requ\u00eate",
+            "Code HTTP: 200",
+            "Temps de r\u00e9ponse: 148 ms",
+            "R\u00e9ponse JSON valide re\u00e7ue",
+            "Contenu de la r\u00e9ponse: {\"status\":\"success\",\"message\":\"Cl\\u00e9 de s\\u00e9rie valide\",\"data\":{\"token\":\"fddce88541df23396ea95c7b9a673a7a\",\"project\":\"\",\"expires_at\":null}}",
+            "Licence valide!"
+        ]
+    }
+}
+
+{
+    "time": "2025-04-16 15:41:36",
+    "license_key": "TNBH-DRDK-K9JG-H4R1",
+    "result": {
+        "status": false,
+        "message": "Cl\u00e9 de s\u00e9rie invalide",
+        "data": null,
+        "debug_info": [
+            "D\u00e9but de la v\u00e9rification de licence: 2025-04-16 15:41:36",
+            "Cl\u00e9 de licence: TNBH-DRDK-K9JG-H4R1",
+            "Domaine: 127.0.0.1",
+            "IP: 127.0.0.1",
+            "Base URL API: https:\/\/licence.myvcard.fr",
+            "Essai du point d'entr\u00e9e: https:\/\/licence.myvcard.fr\/api\/check-serial.php",
+            "Utilisation de cURL pour la requ\u00eate",
+            "Code HTTP: 200",
+            "Temps de r\u00e9ponse: 94 ms",
+            "R\u00e9ponse JSON valide re\u00e7ue",
+            "Contenu de la r\u00e9ponse: {\"status\":\"error\",\"message\":\"Cl\\u00e9 de s\\u00e9rie invalide\"}",
+            "Licence invalide: Cl\u00e9 de s\u00e9rie invalide"
+        ]
+    }
+}
+
+{
+    "time": "2025-04-16 15:41:37",
+    "license_key": "TNBH-DRDK-K9JG-H4R1",
+    "result": {
+        "status": false,
+        "message": "Cl\u00e9 de s\u00e9rie invalide",
+        "data": null,
+        "debug_info": [
+            "D\u00e9but de la v\u00e9rification de licence: 2025-04-16 15:41:36",
+            "Cl\u00e9 de licence: TNBH-DRDK-K9JG-H4R1",
+            "Domaine: 127.0.0.1",
+            "IP: 127.0.0.1",
+            "Base URL API: https:\/\/licence.myvcard.fr",
+            "Essai du point d'entr\u00e9e: https:\/\/licence.myvcard.fr\/api\/check-serial.php",
+            "Utilisation de cURL pour la requ\u00eate",
+            "Code HTTP: 200",
+            "Temps de r\u00e9ponse: 82 ms",
+            "R\u00e9ponse JSON valide re\u00e7ue",
+            "Contenu de la r\u00e9ponse: {\"status\":\"error\",\"message\":\"Cl\\u00e9 de s\\u00e9rie invalide\"}",
+            "Licence invalide: Cl\u00e9 de s\u00e9rie invalide"
+        ]
+    }
+}
+
+{
+    "time": "2025-04-16 15:41:40",
+    "license_key": "TNBH-DRDK-K9JG-H4Rr",
+    "result": {
+        "status": true,
+        "message": "Cl\u00e9 de s\u00e9rie valide",
+        "data": {
+            "token": "32960a30e144e1911da1328963cee9a6",
+            "project": "",
+            "expires_at": null
+        },
+        "debug_info": [
+            "D\u00e9but de la v\u00e9rification de licence: 2025-04-16 15:41:40",
+            "Cl\u00e9 de licence: TNBH-DRDK-K9JG-H4Rr",
+            "Domaine: 127.0.0.1",
+            "IP: 127.0.0.1",
+            "Base URL API: https:\/\/licence.myvcard.fr",
+            "Essai du point d'entr\u00e9e: https:\/\/licence.myvcard.fr\/api\/check-serial.php",
+            "Utilisation de cURL pour la requ\u00eate",
+            "Code HTTP: 200",
+            "Temps de r\u00e9ponse: 86 ms",
+            "R\u00e9ponse JSON valide re\u00e7ue",
+            "Contenu de la r\u00e9ponse: {\"status\":\"success\",\"message\":\"Cl\\u00e9 de s\\u00e9rie valide\",\"data\":{\"token\":\"32960a30e144e1911da1328963cee9a6\",\"project\":\"\",\"expires_at\":null}}",
+            "Licence valide!"
+        ]
+    }
+}
+
+{
+    "time": "2025-04-16 15:41:40",
+    "license_key": "TNBH-DRDK-K9JG-H4Rr",
+    "result": {
+        "status": true,
+        "message": "Cl\u00e9 de s\u00e9rie valide",
+        "data": {
+            "token": "52c29ed04231e1aac5c722d9a1e204d5",
+            "project": "",
+            "expires_at": null
+        },
+        "debug_info": [
+            "D\u00e9but de la v\u00e9rification de licence: 2025-04-16 15:41:40",
+            "Cl\u00e9 de licence: TNBH-DRDK-K9JG-H4Rr",
+            "Domaine: 127.0.0.1",
+            "IP: 127.0.0.1",
+            "Base URL API: https:\/\/licence.myvcard.fr",
+            "Essai du point d'entr\u00e9e: https:\/\/licence.myvcard.fr\/api\/check-serial.php",
+            "Utilisation de cURL pour la requ\u00eate",
+            "Code HTTP: 200",
+            "Temps de r\u00e9ponse: 83 ms",
+            "R\u00e9ponse JSON valide re\u00e7ue",
+            "Contenu de la r\u00e9ponse: {\"status\":\"success\",\"message\":\"Cl\\u00e9 de s\\u00e9rie valide\",\"data\":{\"token\":\"52c29ed04231e1aac5c722d9a1e204d5\",\"project\":\"\",\"expires_at\":null}}",
+            "Licence valide!"
+        ]
+    }
+}
+
+{
+    "time": "2025-04-16 15:45:28",
+    "license_key": "TNBH-DRDK-K9JG-H4R1",
+    "result": {
+        "status": false,
+        "message": "Cl\u00e9 de s\u00e9rie invalide",
+        "data": null,
+        "debug_info": [
+            "D\u00e9but de la v\u00e9rification de licence: 2025-04-16 15:45:28",
+            "Cl\u00e9 de licence: TNBH-DRDK-K9JG-H4R1",
+            "Domaine: 127.0.0.1",
+            "IP: 127.0.0.1",
+            "Base URL API: https:\/\/licence.myvcard.fr",
+            "Essai du point d'entr\u00e9e: https:\/\/licence.myvcard.fr\/api\/check-serial.php",
+            "Utilisation de cURL pour la requ\u00eate",
+            "Code HTTP: 200",
+            "Temps de r\u00e9ponse: 131 ms",
+            "R\u00e9ponse JSON valide re\u00e7ue",
+            "Contenu de la r\u00e9ponse: {\"status\":\"error\",\"message\":\"Cl\\u00e9 de s\\u00e9rie invalide\"}",
+            "Licence invalide: Cl\u00e9 de s\u00e9rie invalide"
+        ]
+    }
+}
+
+{
+    "time": "2025-04-16 15:45:28",
+    "license_key": "TNBH-DRDK-K9JG-H4R1",
+    "result": {
+        "status": false,
+        "message": "Cl\u00e9 de s\u00e9rie invalide",
+        "data": null,
+        "debug_info": [
+            "D\u00e9but de la v\u00e9rification de licence: 2025-04-16 15:45:28",
+            "Cl\u00e9 de licence: TNBH-DRDK-K9JG-H4R1",
+            "Domaine: 127.0.0.1",
+            "IP: 127.0.0.1",
+            "Base URL API: https:\/\/licence.myvcard.fr",
+            "Essai du point d'entr\u00e9e: https:\/\/licence.myvcard.fr\/api\/check-serial.php",
+            "Utilisation de cURL pour la requ\u00eate",
+            "Code HTTP: 200",
+            "Temps de r\u00e9ponse: 126 ms",
+            "R\u00e9ponse JSON valide re\u00e7ue",
+            "Contenu de la r\u00e9ponse: {\"status\":\"error\",\"message\":\"Cl\\u00e9 de s\\u00e9rie invalide\"}",
+            "Licence invalide: Cl\u00e9 de s\u00e9rie invalide"
+        ]
+    }
+}
+
+{
+    "time": "2025-04-16 15:45:32",
+    "license_key": "TNBH-DRDK-K9JG-H4R11",
+    "result": {
+        "status": false,
+        "message": "Cl\u00e9 de s\u00e9rie invalide",
+        "data": null,
+        "debug_info": [
+            "D\u00e9but de la v\u00e9rification de licence: 2025-04-16 15:45:32",
+            "Cl\u00e9 de licence: TNBH-DRDK-K9JG-H4R11",
+            "Domaine: 127.0.0.1",
+            "IP: 127.0.0.1",
+            "Base URL API: https:\/\/licence.myvcard.fr",
+            "Essai du point d'entr\u00e9e: https:\/\/licence.myvcard.fr\/api\/check-serial.php",
+            "Utilisation de cURL pour la requ\u00eate",
+            "Code HTTP: 200",
+            "Temps de r\u00e9ponse: 95 ms",
+            "R\u00e9ponse JSON valide re\u00e7ue",
+            "Contenu de la r\u00e9ponse: {\"status\":\"error\",\"message\":\"Cl\\u00e9 de s\\u00e9rie invalide\"}",
+            "Licence invalide: Cl\u00e9 de s\u00e9rie invalide"
+        ]
+    }
+}
+
+{
+    "time": "2025-04-16 15:45:33",
+    "license_key": "TNBH-DRDK-K9JG-H4R11",
+    "result": {
+        "status": false,
+        "message": "Cl\u00e9 de s\u00e9rie invalide",
+        "data": null,
+        "debug_info": [
+            "D\u00e9but de la v\u00e9rification de licence: 2025-04-16 15:45:32",
+            "Cl\u00e9 de licence: TNBH-DRDK-K9JG-H4R11",
+            "Domaine: 127.0.0.1",
+            "IP: 127.0.0.1",
+            "Base URL API: https:\/\/licence.myvcard.fr",
+            "Essai du point d'entr\u00e9e: https:\/\/licence.myvcard.fr\/api\/check-serial.php",
+            "Utilisation de cURL pour la requ\u00eate",
+            "Code HTTP: 200",
+            "Temps de r\u00e9ponse: 128 ms",
+            "R\u00e9ponse JSON valide re\u00e7ue",
+            "Contenu de la r\u00e9ponse: {\"status\":\"error\",\"message\":\"Cl\\u00e9 de s\\u00e9rie invalide\"}",
+            "Licence invalide: Cl\u00e9 de s\u00e9rie invalide"
+        ]
+    }
+}
+
+{
+    "time": "2025-04-16 15:45:36",
+    "license_key": "TNBH-DRDK-K9JG-H4RR",
+    "result": {
+        "status": true,
+        "message": "Cl\u00e9 de s\u00e9rie valide",
+        "data": {
+            "token": "af19a145f59627463fdc52753e4fbffa",
+            "project": "",
+            "expires_at": null
+        },
+        "debug_info": [
+            "D\u00e9but de la v\u00e9rification de licence: 2025-04-16 15:45:36",
+            "Cl\u00e9 de licence: TNBH-DRDK-K9JG-H4RR",
+            "Domaine: 127.0.0.1",
+            "IP: 127.0.0.1",
+            "Base URL API: https:\/\/licence.myvcard.fr",
+            "Essai du point d'entr\u00e9e: https:\/\/licence.myvcard.fr\/api\/check-serial.php",
+            "Utilisation de cURL pour la requ\u00eate",
+            "Code HTTP: 200",
+            "Temps de r\u00e9ponse: 113 ms",
+            "R\u00e9ponse JSON valide re\u00e7ue",
+            "Contenu de la r\u00e9ponse: {\"status\":\"success\",\"message\":\"Cl\\u00e9 de s\\u00e9rie valide\",\"data\":{\"token\":\"af19a145f59627463fdc52753e4fbffa\",\"project\":\"\",\"expires_at\":null}}",
+            "Licence valide!"
+        ]
+    }
+}
+
+{
+    "time": "2025-04-16 15:45:36",
+    "license_key": "TNBH-DRDK-K9JG-H4RR",
+    "result": {
+        "status": true,
+        "message": "Cl\u00e9 de s\u00e9rie valide",
+        "data": {
+            "token": "d966e50a443fb7db3159429371cdbee3",
+            "project": "",
+            "expires_at": null
+        },
+        "debug_info": [
+            "D\u00e9but de la v\u00e9rification de licence: 2025-04-16 15:45:36",
+            "Cl\u00e9 de licence: TNBH-DRDK-K9JG-H4RR",
+            "Domaine: 127.0.0.1",
+            "IP: 127.0.0.1",
+            "Base URL API: https:\/\/licence.myvcard.fr",
+            "Essai du point d'entr\u00e9e: https:\/\/licence.myvcard.fr\/api\/check-serial.php",
+            "Utilisation de cURL pour la requ\u00eate",
+            "Code HTTP: 200",
+            "Temps de r\u00e9ponse: 85 ms",
+            "R\u00e9ponse JSON valide re\u00e7ue",
+            "Contenu de la r\u00e9ponse: {\"status\":\"success\",\"message\":\"Cl\\u00e9 de s\\u00e9rie valide\",\"data\":{\"token\":\"d966e50a443fb7db3159429371cdbee3\",\"project\":\"\",\"expires_at\":null}}",
+            "Licence valide!"
+        ]
+    }
+}
+
+{
+    "time": "2025-04-16 15:53:42",
+    "license_key": "TNBH-DRDK-K9JG-H4RR",
+    "result": {
+        "status": true,
+        "message": "Cl\u00e9 de s\u00e9rie valide",
+        "data": {
+            "token": "4ee6ec11e260356ff016f05da495a7ac",
+            "project": "",
+            "expires_at": null
+        },
+        "debug_info": [
+            "D\u00e9but de la v\u00e9rification de licence: 2025-04-16 15:53:42",
+            "Cl\u00e9 de licence: TNBH-DRDK-K9JG-H4RR",
+            "Domaine: 127.0.0.1",
+            "IP: 127.0.0.1",
+            "Base URL API: https:\/\/licence.myvcard.fr",
+            "Essai du point d'entr\u00e9e: https:\/\/licence.myvcard.fr\/api\/check-serial.php",
+            "Utilisation de cURL pour la requ\u00eate",
+            "Code HTTP: 200",
+            "Temps de r\u00e9ponse: 99 ms",
+            "R\u00e9ponse JSON valide re\u00e7ue",
+            "Contenu de la r\u00e9ponse: {\"status\":\"success\",\"message\":\"Cl\\u00e9 de s\\u00e9rie valide\",\"data\":{\"token\":\"4ee6ec11e260356ff016f05da495a7ac\",\"project\":\"\",\"expires_at\":null}}",
+            "Licence valide!"
+        ]
+    }
+}
+
+{
+    "time": "2025-04-16 15:53:42",
+    "license_key": "TNBH-DRDK-K9JG-H4RR",
+    "result": {
+        "status": true,
+        "message": "Cl\u00e9 de s\u00e9rie valide",
+        "data": {
+            "token": "68ba70991640f8cdf389a1fb181ccb94",
+            "project": "",
+            "expires_at": null
+        },
+        "debug_info": [
+            "D\u00e9but de la v\u00e9rification de licence: 2025-04-16 15:53:42",
+            "Cl\u00e9 de licence: TNBH-DRDK-K9JG-H4RR",
+            "Domaine: 127.0.0.1",
+            "IP: 127.0.0.1",
+            "Base URL API: https:\/\/licence.myvcard.fr",
+            "Essai du point d'entr\u00e9e: https:\/\/licence.myvcard.fr\/api\/check-serial.php",
+            "Utilisation de cURL pour la requ\u00eate",
+            "Code HTTP: 200",
+            "Temps de r\u00e9ponse: 84 ms",
+            "R\u00e9ponse JSON valide re\u00e7ue",
+            "Contenu de la r\u00e9ponse: {\"status\":\"success\",\"message\":\"Cl\\u00e9 de s\\u00e9rie valide\",\"data\":{\"token\":\"68ba70991640f8cdf389a1fb181ccb94\",\"project\":\"\",\"expires_at\":null}}",
+            "Licence valide!"
+        ]
+    }
+}
+
+{
+    "time": "2025-04-16 15:53:46",
+    "license_key": "TNBH-DRDK-K9JG-H4R1",
+    "result": {
+        "status": false,
+        "message": "Cl\u00e9 de s\u00e9rie invalide",
+        "data": null,
+        "debug_info": [
+            "D\u00e9but de la v\u00e9rification de licence: 2025-04-16 15:53:46",
+            "Cl\u00e9 de licence: TNBH-DRDK-K9JG-H4R1",
+            "Domaine: 127.0.0.1",
+            "IP: 127.0.0.1",
+            "Base URL API: https:\/\/licence.myvcard.fr",
+            "Essai du point d'entr\u00e9e: https:\/\/licence.myvcard.fr\/api\/check-serial.php",
+            "Utilisation de cURL pour la requ\u00eate",
+            "Code HTTP: 200",
+            "Temps de r\u00e9ponse: 118 ms",
+            "R\u00e9ponse JSON valide re\u00e7ue",
+            "Contenu de la r\u00e9ponse: {\"status\":\"error\",\"message\":\"Cl\\u00e9 de s\\u00e9rie invalide\"}",
+            "Licence invalide: Cl\u00e9 de s\u00e9rie invalide"
+        ]
+    }
+}
+
+{
+    "time": "2025-04-16 15:53:47",
+    "license_key": "TNBH-DRDK-K9JG-H4R1",
+    "result": {
+        "status": false,
+        "message": "Cl\u00e9 de s\u00e9rie invalide",
+        "data": null,
+        "debug_info": [
+            "D\u00e9but de la v\u00e9rification de licence: 2025-04-16 15:53:47",
+            "Cl\u00e9 de licence: TNBH-DRDK-K9JG-H4R1",
+            "Domaine: 127.0.0.1",
+            "IP: 127.0.0.1",
+            "Base URL API: https:\/\/licence.myvcard.fr",
+            "Essai du point d'entr\u00e9e: https:\/\/licence.myvcard.fr\/api\/check-serial.php",
+            "Utilisation de cURL pour la requ\u00eate",
+            "Code HTTP: 200",
+            "Temps de r\u00e9ponse: 113 ms",
+            "R\u00e9ponse JSON valide re\u00e7ue",
+            "Contenu de la r\u00e9ponse: {\"status\":\"error\",\"message\":\"Cl\\u00e9 de s\\u00e9rie invalide\"}",
+            "Licence invalide: Cl\u00e9 de s\u00e9rie invalide"
+        ]
+    }
+}
+
+{
+    "time": "2025-04-16 15:53:49",
+    "license_key": "TNBH-DRDK-K9JG-H4R1",
+    "result": {
+        "status": false,
+        "message": "Cl\u00e9 de s\u00e9rie invalide",
+        "data": null,
+        "debug_info": [
+            "D\u00e9but de la v\u00e9rification de licence: 2025-04-16 15:53:49",
+            "Cl\u00e9 de licence: TNBH-DRDK-K9JG-H4R1",
+            "Domaine: 127.0.0.1",
+            "IP: 127.0.0.1",
+            "Base URL API: https:\/\/licence.myvcard.fr",
+            "Essai du point d'entr\u00e9e: https:\/\/licence.myvcard.fr\/api\/check-serial.php",
+            "Utilisation de cURL pour la requ\u00eate",
+            "Code HTTP: 200",
+            "Temps de r\u00e9ponse: 89 ms",
+            "R\u00e9ponse JSON valide re\u00e7ue",
+            "Contenu de la r\u00e9ponse: {\"status\":\"error\",\"message\":\"Cl\\u00e9 de s\\u00e9rie invalide\"}",
+            "Licence invalide: Cl\u00e9 de s\u00e9rie invalide"
+        ]
+    }
+}
+
+{
+    "time": "2025-04-16 15:53:49",
+    "license_key": "TNBH-DRDK-K9JG-H4R1",
+    "result": {
+        "status": false,
+        "message": "Cl\u00e9 de s\u00e9rie invalide",
+        "data": null,
+        "debug_info": [
+            "D\u00e9but de la v\u00e9rification de licence: 2025-04-16 15:53:49",
+            "Cl\u00e9 de licence: TNBH-DRDK-K9JG-H4R1",
+            "Domaine: 127.0.0.1",
+            "IP: 127.0.0.1",
+            "Base URL API: https:\/\/licence.myvcard.fr",
+            "Essai du point d'entr\u00e9e: https:\/\/licence.myvcard.fr\/api\/check-serial.php",
+            "Utilisation de cURL pour la requ\u00eate",
+            "Code HTTP: 200",
+            "Temps de r\u00e9ponse: 87 ms",
+            "R\u00e9ponse JSON valide re\u00e7ue",
+            "Contenu de la r\u00e9ponse: {\"status\":\"error\",\"message\":\"Cl\\u00e9 de s\\u00e9rie invalide\"}",
+            "Licence invalide: Cl\u00e9 de s\u00e9rie invalide"
+        ]
+    }
+}
+
+{
+    "time": "2025-04-16 15:53:53",
+    "license_key": "TNBH-DRDK-K9JG-H4R2",
+    "result": {
+        "status": false,
+        "message": "Cl\u00e9 de s\u00e9rie invalide",
+        "data": null,
+        "debug_info": [
+            "D\u00e9but de la v\u00e9rification de licence: 2025-04-16 15:53:53",
+            "Cl\u00e9 de licence: TNBH-DRDK-K9JG-H4R2",
+            "Domaine: 127.0.0.1",
+            "IP: 127.0.0.1",
+            "Base URL API: https:\/\/licence.myvcard.fr",
+            "Essai du point d'entr\u00e9e: https:\/\/licence.myvcard.fr\/api\/check-serial.php",
+            "Utilisation de cURL pour la requ\u00eate",
+            "Code HTTP: 200",
+            "Temps de r\u00e9ponse: 91 ms",
+            "R\u00e9ponse JSON valide re\u00e7ue",
+            "Contenu de la r\u00e9ponse: {\"status\":\"error\",\"message\":\"Cl\\u00e9 de s\\u00e9rie invalide\"}",
+            "Licence invalide: Cl\u00e9 de s\u00e9rie invalide"
+        ]
+    }
+}
+
+{
+    "time": "2025-04-16 15:53:53",
+    "license_key": "TNBH-DRDK-K9JG-H4R2",
+    "result": {
+        "status": false,
+        "message": "Cl\u00e9 de s\u00e9rie invalide",
+        "data": null,
+        "debug_info": [
+            "D\u00e9but de la v\u00e9rification de licence: 2025-04-16 15:53:53",
+            "Cl\u00e9 de licence: TNBH-DRDK-K9JG-H4R2",
+            "Domaine: 127.0.0.1",
+            "IP: 127.0.0.1",
+            "Base URL API: https:\/\/licence.myvcard.fr",
+            "Essai du point d'entr\u00e9e: https:\/\/licence.myvcard.fr\/api\/check-serial.php",
+            "Utilisation de cURL pour la requ\u00eate",
+            "Code HTTP: 200",
+            "Temps de r\u00e9ponse: 101 ms",
+            "R\u00e9ponse JSON valide re\u00e7ue",
+            "Contenu de la r\u00e9ponse: {\"status\":\"error\",\"message\":\"Cl\\u00e9 de s\\u00e9rie invalide\"}",
+            "Licence invalide: Cl\u00e9 de s\u00e9rie invalide"
+        ]
+    }
+}
+
+{
+    "time": "2025-04-16 15:53:56",
+    "license_key": "TNBH-DRDK-K9JG-H4R3",
+    "result": {
+        "status": false,
+        "message": "Cl\u00e9 de s\u00e9rie invalide",
+        "data": null,
+        "debug_info": [
+            "D\u00e9but de la v\u00e9rification de licence: 2025-04-16 15:53:55",
+            "Cl\u00e9 de licence: TNBH-DRDK-K9JG-H4R3",
+            "Domaine: 127.0.0.1",
+            "IP: 127.0.0.1",
+            "Base URL API: https:\/\/licence.myvcard.fr",
+            "Essai du point d'entr\u00e9e: https:\/\/licence.myvcard.fr\/api\/check-serial.php",
+            "Utilisation de cURL pour la requ\u00eate",
+            "Code HTTP: 200",
+            "Temps de r\u00e9ponse: 132 ms",
+            "R\u00e9ponse JSON valide re\u00e7ue",
+            "Contenu de la r\u00e9ponse: {\"status\":\"error\",\"message\":\"Cl\\u00e9 de s\\u00e9rie invalide\"}",
+            "Licence invalide: Cl\u00e9 de s\u00e9rie invalide"
+        ]
+    }
+}
+
+{
+    "time": "2025-04-16 15:53:56",
+    "license_key": "TNBH-DRDK-K9JG-H4R3",
+    "result": {
+        "status": false,
+        "message": "Cl\u00e9 de s\u00e9rie invalide",
+        "data": null,
+        "debug_info": [
+            "D\u00e9but de la v\u00e9rification de licence: 2025-04-16 15:53:56",
+            "Cl\u00e9 de licence: TNBH-DRDK-K9JG-H4R3",
+            "Domaine: 127.0.0.1",
+            "IP: 127.0.0.1",
+            "Base URL API: https:\/\/licence.myvcard.fr",
+            "Essai du point d'entr\u00e9e: https:\/\/licence.myvcard.fr\/api\/check-serial.php",
+            "Utilisation de cURL pour la requ\u00eate",
+            "Code HTTP: 200",
+            "Temps de r\u00e9ponse: 102 ms",
+            "R\u00e9ponse JSON valide re\u00e7ue",
+            "Contenu de la r\u00e9ponse: {\"status\":\"error\",\"message\":\"Cl\\u00e9 de s\\u00e9rie invalide\"}",
+            "Licence invalide: Cl\u00e9 de s\u00e9rie invalide"
+        ]
+    }
+}
+
+{
+    "time": "2025-04-16 15:54:02",
+    "license_key": "TNBH-DRDK-K9JG-H4R3",
+    "result": {
+        "status": false,
+        "message": "Cl\u00e9 de s\u00e9rie invalide",
+        "data": null,
+        "debug_info": [
+            "D\u00e9but de la v\u00e9rification de licence: 2025-04-16 15:54:01",
+            "Cl\u00e9 de licence: TNBH-DRDK-K9JG-H4R3",
+            "Domaine: 127.0.0.1",
+            "IP: 127.0.0.1",
+            "Base URL API: https:\/\/licence.myvcard.fr",
+            "Essai du point d'entr\u00e9e: https:\/\/licence.myvcard.fr\/api\/check-serial.php",
+            "Utilisation de cURL pour la requ\u00eate",
+            "Code HTTP: 200",
+            "Temps de r\u00e9ponse: 105 ms",
+            "R\u00e9ponse JSON valide re\u00e7ue",
+            "Contenu de la r\u00e9ponse: {\"status\":\"error\",\"message\":\"Cl\\u00e9 de s\\u00e9rie invalide\"}",
+            "Licence invalide: Cl\u00e9 de s\u00e9rie invalide"
+        ]
+    }
+}
+
+{
+    "time": "2025-04-16 15:54:02",
+    "license_key": "TNBH-DRDK-K9JG-H4R3",
+    "result": {
+        "status": false,
+        "message": "Cl\u00e9 de s\u00e9rie invalide",
+        "data": null,
+        "debug_info": [
+            "D\u00e9but de la v\u00e9rification de licence: 2025-04-16 15:54:02",
+            "Cl\u00e9 de licence: TNBH-DRDK-K9JG-H4R3",
+            "Domaine: 127.0.0.1",
+            "IP: 127.0.0.1",
+            "Base URL API: https:\/\/licence.myvcard.fr",
+            "Essai du point d'entr\u00e9e: https:\/\/licence.myvcard.fr\/api\/check-serial.php",
+            "Utilisation de cURL pour la requ\u00eate",
+            "Code HTTP: 200",
+            "Temps de r\u00e9ponse: 92 ms",
+            "R\u00e9ponse JSON valide re\u00e7ue",
+            "Contenu de la r\u00e9ponse: {\"status\":\"error\",\"message\":\"Cl\\u00e9 de s\\u00e9rie invalide\"}",
+            "Licence invalide: Cl\u00e9 de s\u00e9rie invalide"
+        ]
+    }
+}
+
+{
+    "time": "2025-04-16 15:55:05",
+    "license_key": "TNBH-DRDK-K9JG-H4RR",
+    "result": {
+        "status": true,
+        "message": "Cl\u00e9 de s\u00e9rie valide",
+        "data": {
+            "token": "690fdab18d47842adb671e6935564028",
+            "project": "",
+            "expires_at": null
+        },
+        "debug_info": [
+            "D\u00e9but de la v\u00e9rification de licence: 2025-04-16 15:55:04",
+            "Cl\u00e9 de licence: TNBH-DRDK-K9JG-H4RR",
+            "Domaine: 127.0.0.1",
+            "IP: 127.0.0.1",
+            "Base URL API: https:\/\/licence.myvcard.fr",
+            "Essai du point d'entr\u00e9e: https:\/\/licence.myvcard.fr\/api\/check-serial.php",
+            "Utilisation de cURL pour la requ\u00eate",
+            "Code HTTP: 200",
+            "Temps de r\u00e9ponse: 107 ms",
+            "R\u00e9ponse JSON valide re\u00e7ue",
+            "Contenu de la r\u00e9ponse: {\"status\":\"success\",\"message\":\"Cl\\u00e9 de s\\u00e9rie valide\",\"data\":{\"token\":\"690fdab18d47842adb671e6935564028\",\"project\":\"\",\"expires_at\":null}}",
+            "Licence valide!"
+        ]
+    }
+}
+
+{
+    "time": "2025-04-16 15:55:05",
+    "license_key": "TNBH-DRDK-K9JG-H4RR",
+    "result": {
+        "status": true,
+        "message": "Cl\u00e9 de s\u00e9rie valide",
+        "data": {
+            "token": "51524792f187a8fb2ef242c986cda4ed",
+            "project": "",
+            "expires_at": null
+        },
+        "debug_info": [
+            "D\u00e9but de la v\u00e9rification de licence: 2025-04-16 15:55:05",
+            "Cl\u00e9 de licence: TNBH-DRDK-K9JG-H4RR",
+            "Domaine: 127.0.0.1",
+            "IP: 127.0.0.1",
+            "Base URL API: https:\/\/licence.myvcard.fr",
+            "Essai du point d'entr\u00e9e: https:\/\/licence.myvcard.fr\/api\/check-serial.php",
+            "Utilisation de cURL pour la requ\u00eate",
+            "Code HTTP: 200",
+            "Temps de r\u00e9ponse: 85 ms",
+            "R\u00e9ponse JSON valide re\u00e7ue",
+            "Contenu de la r\u00e9ponse: {\"status\":\"success\",\"message\":\"Cl\\u00e9 de s\\u00e9rie valide\",\"data\":{\"token\":\"51524792f187a8fb2ef242c986cda4ed\",\"project\":\"\",\"expires_at\":null}}",
+            "Licence valide!"
+        ]
+    }
+}
+
+{
+    "time": "2025-04-16 15:55:09",
+    "license_key": "TNBH-DRDK-K9JG-H4R1",
+    "result": {
+        "status": false,
+        "message": "Cl\u00e9 de s\u00e9rie invalide",
+        "data": null,
+        "debug_info": [
+            "D\u00e9but de la v\u00e9rification de licence: 2025-04-16 15:55:09",
+            "Cl\u00e9 de licence: TNBH-DRDK-K9JG-H4R1",
+            "Domaine: 127.0.0.1",
+            "IP: 127.0.0.1",
+            "Base URL API: https:\/\/licence.myvcard.fr",
+            "Essai du point d'entr\u00e9e: https:\/\/licence.myvcard.fr\/api\/check-serial.php",
+            "Utilisation de cURL pour la requ\u00eate",
+            "Code HTTP: 200",
+            "Temps de r\u00e9ponse: 127 ms",
+            "R\u00e9ponse JSON valide re\u00e7ue",
+            "Contenu de la r\u00e9ponse: {\"status\":\"error\",\"message\":\"Cl\\u00e9 de s\\u00e9rie invalide\"}",
+            "Licence invalide: Cl\u00e9 de s\u00e9rie invalide"
+        ]
+    }
+}
+
+{
+    "time": "2025-04-16 15:55:09",
+    "license_key": "TNBH-DRDK-K9JG-H4R1",
+    "result": {
+        "status": false,
+        "message": "Cl\u00e9 de s\u00e9rie invalide",
+        "data": null,
+        "debug_info": [
+            "D\u00e9but de la v\u00e9rification de licence: 2025-04-16 15:55:09",
+            "Cl\u00e9 de licence: TNBH-DRDK-K9JG-H4R1",
+            "Domaine: 127.0.0.1",
+            "IP: 127.0.0.1",
+            "Base URL API: https:\/\/licence.myvcard.fr",
+            "Essai du point d'entr\u00e9e: https:\/\/licence.myvcard.fr\/api\/check-serial.php",
+            "Utilisation de cURL pour la requ\u00eate",
+            "Code HTTP: 200",
+            "Temps de r\u00e9ponse: 88 ms",
+            "R\u00e9ponse JSON valide re\u00e7ue",
+            "Contenu de la r\u00e9ponse: {\"status\":\"error\",\"message\":\"Cl\\u00e9 de s\\u00e9rie invalide\"}",
+            "Licence invalide: Cl\u00e9 de s\u00e9rie invalide"
+        ]
+    }
+}
+
+{
+    "time": "2025-04-16 15:55:14",
+    "license_key": "TNBH-DRDK-K9JG-H4R1111",
+    "result": {
+        "status": false,
+        "message": "Cl\u00e9 de s\u00e9rie invalide",
+        "data": null,
+        "debug_info": [
+            "D\u00e9but de la v\u00e9rification de licence: 2025-04-16 15:55:14",
+            "Cl\u00e9 de licence: TNBH-DRDK-K9JG-H4R1111",
+            "Domaine: 127.0.0.1",
+            "IP: 127.0.0.1",
+            "Base URL API: https:\/\/licence.myvcard.fr",
+            "Essai du point d'entr\u00e9e: https:\/\/licence.myvcard.fr\/api\/check-serial.php",
+            "Utilisation de cURL pour la requ\u00eate",
+            "Code HTTP: 200",
+            "Temps de r\u00e9ponse: 131 ms",
+            "R\u00e9ponse JSON valide re\u00e7ue",
+            "Contenu de la r\u00e9ponse: {\"status\":\"error\",\"message\":\"Cl\\u00e9 de s\\u00e9rie invalide\"}",
+            "Licence invalide: Cl\u00e9 de s\u00e9rie invalide"
+        ]
+    }
+}
+
+{
+    "time": "2025-04-16 15:55:20",
+    "license_key": "TNBH-DRDK-K9JG-H4Rr",
+    "result": {
+        "status": true,
+        "message": "Cl\u00e9 de s\u00e9rie valide",
+        "data": {
+            "token": "2ce7ad0ee42b146cc667454df3a0060f",
+            "project": "",
+            "expires_at": null
+        },
+        "debug_info": [
+            "D\u00e9but de la v\u00e9rification de licence: 2025-04-16 15:55:19",
+            "Cl\u00e9 de licence: TNBH-DRDK-K9JG-H4Rr",
+            "Domaine: 127.0.0.1",
+            "IP: 127.0.0.1",
+            "Base URL API: https:\/\/licence.myvcard.fr",
+            "Essai du point d'entr\u00e9e: https:\/\/licence.myvcard.fr\/api\/check-serial.php",
+            "Utilisation de cURL pour la requ\u00eate",
+            "Code HTTP: 200",
+            "Temps de r\u00e9ponse: 113 ms",
+            "R\u00e9ponse JSON valide re\u00e7ue",
+            "Contenu de la r\u00e9ponse: {\"status\":\"success\",\"message\":\"Cl\\u00e9 de s\\u00e9rie valide\",\"data\":{\"token\":\"2ce7ad0ee42b146cc667454df3a0060f\",\"project\":\"\",\"expires_at\":null}}",
+            "Licence valide!"
+        ]
+    }
+}
+
+{
+    "time": "2025-04-16 15:55:20",
+    "license_key": "TNBH-DRDK-K9JG-H4Rr",
+    "result": {
+        "status": true,
+        "message": "Cl\u00e9 de s\u00e9rie valide",
+        "data": {
+            "token": "353407cb39d9e1a80d39e8357788bb00",
+            "project": "",
+            "expires_at": null
+        },
+        "debug_info": [
+            "D\u00e9but de la v\u00e9rification de licence: 2025-04-16 15:55:20",
+            "Cl\u00e9 de licence: TNBH-DRDK-K9JG-H4Rr",
+            "Domaine: 127.0.0.1",
+            "IP: 127.0.0.1",
+            "Base URL API: https:\/\/licence.myvcard.fr",
+            "Essai du point d'entr\u00e9e: https:\/\/licence.myvcard.fr\/api\/check-serial.php",
+            "Utilisation de cURL pour la requ\u00eate",
+            "Code HTTP: 200",
+            "Temps de r\u00e9ponse: 101 ms",
+            "R\u00e9ponse JSON valide re\u00e7ue",
+            "Contenu de la r\u00e9ponse: {\"status\":\"success\",\"message\":\"Cl\\u00e9 de s\\u00e9rie valide\",\"data\":{\"token\":\"353407cb39d9e1a80d39e8357788bb00\",\"project\":\"\",\"expires_at\":null}}",
+            "Licence valide!"
+        ]
+    }
+}
+
+{
+    "time": "2025-04-16 15:55:25",
+    "license_key": "TNBH-DRDK-K9JG-H4R1",
+    "result": {
+        "status": false,
+        "message": "Cl\u00e9 de s\u00e9rie invalide",
+        "data": null,
+        "debug_info": [
+            "D\u00e9but de la v\u00e9rification de licence: 2025-04-16 15:55:25",
+            "Cl\u00e9 de licence: TNBH-DRDK-K9JG-H4R1",
+            "Domaine: 127.0.0.1",
+            "IP: 127.0.0.1",
+            "Base URL API: https:\/\/licence.myvcard.fr",
+            "Essai du point d'entr\u00e9e: https:\/\/licence.myvcard.fr\/api\/check-serial.php",
+            "Utilisation de cURL pour la requ\u00eate",
+            "Code HTTP: 200",
+            "Temps de r\u00e9ponse: 118 ms",
+            "R\u00e9ponse JSON valide re\u00e7ue",
+            "Contenu de la r\u00e9ponse: {\"status\":\"error\",\"message\":\"Cl\\u00e9 de s\\u00e9rie invalide\"}",
+            "Licence invalide: Cl\u00e9 de s\u00e9rie invalide"
+        ]
+    }
+}
+
+{
+    "time": "2025-04-16 15:55:25",
+    "license_key": "TNBH-DRDK-K9JG-H4R1",
+    "result": {
+        "status": false,
+        "message": "Cl\u00e9 de s\u00e9rie invalide",
+        "data": null,
+        "debug_info": [
+            "D\u00e9but de la v\u00e9rification de licence: 2025-04-16 15:55:25",
+            "Cl\u00e9 de licence: TNBH-DRDK-K9JG-H4R1",
+            "Domaine: 127.0.0.1",
+            "IP: 127.0.0.1",
+            "Base URL API: https:\/\/licence.myvcard.fr",
+            "Essai du point d'entr\u00e9e: https:\/\/licence.myvcard.fr\/api\/check-serial.php",
+            "Utilisation de cURL pour la requ\u00eate",
+            "Code HTTP: 200",
+            "Temps de r\u00e9ponse: 94 ms",
+            "R\u00e9ponse JSON valide re\u00e7ue",
+            "Contenu de la r\u00e9ponse: {\"status\":\"error\",\"message\":\"Cl\\u00e9 de s\\u00e9rie invalide\"}",
+            "Licence invalide: Cl\u00e9 de s\u00e9rie invalide"
+        ]
+    }
+}
+
+{
+    "time": "2025-04-16 15:56:05",
+    "license_key": "TNBH-DRDK-K9JG-H4RR",
+    "result": {
+        "status": true,
+        "message": "Cl\u00e9 de s\u00e9rie valide",
+        "data": {
+            "token": "078c0bc14ec559438e74cd41afd091dc",
+            "project": "",
+            "expires_at": null
+        },
+        "debug_info": [
+            "D\u00e9but de la v\u00e9rification de licence: 2025-04-16 15:56:05",
+            "Cl\u00e9 de licence: TNBH-DRDK-K9JG-H4RR",
+            "Domaine: 127.0.0.1",
+            "IP: 127.0.0.1",
+            "Base URL API: https:\/\/licence.myvcard.fr",
+            "Essai du point d'entr\u00e9e: https:\/\/licence.myvcard.fr\/api\/check-serial.php",
+            "Utilisation de cURL pour la requ\u00eate",
+            "Code HTTP: 200",
+            "Temps de r\u00e9ponse: 130 ms",
+            "R\u00e9ponse JSON valide re\u00e7ue",
+            "Contenu de la r\u00e9ponse: {\"status\":\"success\",\"message\":\"Cl\\u00e9 de s\\u00e9rie valide\",\"data\":{\"token\":\"078c0bc14ec559438e74cd41afd091dc\",\"project\":\"\",\"expires_at\":null}}",
+            "Licence valide!"
+        ]
+    }
+}
+
+{
+    "time": "2025-04-16 15:56:05",
+    "license_key": "TNBH-DRDK-K9JG-H4RR",
+    "result": {
+        "status": true,
+        "message": "Cl\u00e9 de s\u00e9rie valide",
+        "data": {
+            "token": "4ddee466a4837e06c4e542a6634f9c69",
+            "project": "",
+            "expires_at": null
+        },
+        "debug_info": [
+            "D\u00e9but de la v\u00e9rification de licence: 2025-04-16 15:56:05",
+            "Cl\u00e9 de licence: TNBH-DRDK-K9JG-H4RR",
+            "Domaine: 127.0.0.1",
+            "IP: 127.0.0.1",
+            "Base URL API: https:\/\/licence.myvcard.fr",
+            "Essai du point d'entr\u00e9e: https:\/\/licence.myvcard.fr\/api\/check-serial.php",
+            "Utilisation de cURL pour la requ\u00eate",
+            "Code HTTP: 200",
+            "Temps de r\u00e9ponse: 100 ms",
+            "R\u00e9ponse JSON valide re\u00e7ue",
+            "Contenu de la r\u00e9ponse: {\"status\":\"success\",\"message\":\"Cl\\u00e9 de s\\u00e9rie valide\",\"data\":{\"token\":\"4ddee466a4837e06c4e542a6634f9c69\",\"project\":\"\",\"expires_at\":null}}",
+            "Licence valide!"
+        ]
+    }
+}
+

@@ -9,6 +9,26 @@ use Illuminate\Notifications\DatabaseNotification;
 class NotificationController extends Controller
 {
     /**
+     * Créer et envoyer une notification globale (push ou broadcast)
+     * Accessible uniquement aux superadmins
+     */
+    public function createGlobal(Request $request)
+    {
+        $user = Auth::user();
+        if (!$user || !$user->is_super_admin) {
+            abort(403, 'Seuls les superadmins peuvent envoyer des notifications globales.');
+        }
+        $data = $request->validate([
+            'title' => 'required|string|max:255',
+            'message' => 'required|string',
+            'type' => 'required|in:push,broadcast',
+        ]);
+        // Ici, tu ajoutes la logique d'envoi (broadcast/push) selon ton système
+        // ...
+        return response()->json(['success' => true, 'message' => 'Notification envoyée à tous les utilisateurs.']);
+    }
+    
+    /**
      * Afficher toutes les notifications de l'utilisateur connecté
      *
      * @return \Illuminate\Http\Response

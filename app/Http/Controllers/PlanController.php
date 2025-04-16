@@ -25,6 +25,9 @@ class PlanController extends Controller
      */
     public function index(): JsonResponse
     {
+        // Seuls les admins/superadmins peuvent voir la liste des plans
+        if (!$this->isAdminOrSuperAdmin()) abort(403);
+
         $plans = Plan::active()->get();
         return response()->json(['plans' => $plans]);
     }
@@ -34,6 +37,9 @@ class PlanController extends Controller
      */
     public function show(Plan $plan): JsonResponse
     {
+        // Seuls les admins/superadmins peuvent voir les détails d'un plan
+        if (!$this->isAdminOrSuperAdmin()) abort(403);
+
         return response()->json(['plan' => $plan]);
     }
 
@@ -42,6 +48,9 @@ class PlanController extends Controller
      */
     public function subscribe(Request $request, Plan $plan): JsonResponse
     {
+        // Seuls les admins/superadmins peuvent souscrire pour un tenant
+        if (!$this->isAdminOrSuperAdmin()) abort(403);
+
         $request->validate([
             'payment_method' => 'required|in:stripe,paypal',
             'billing_cycle' => 'required|in:monthly,yearly'
@@ -85,6 +94,9 @@ class PlanController extends Controller
      */
     public function cancel(Request $request): JsonResponse
     {
+        // Seuls les admins/superadmins peuvent annuler un abonnement
+        if (!$this->isAdminOrSuperAdmin()) abort(403);
+
         $tenant = $request->user()->tenant;
         $subscription = $tenant->subscriptions()
             ->where('status', 'active')
@@ -115,6 +127,9 @@ class PlanController extends Controller
      */
     public function resume(Request $request): JsonResponse
     {
+        // Seuls les admins/superadmins peuvent reprendre un abonnement
+        if (!$this->isAdminOrSuperAdmin()) abort(403);
+
         $tenant = $request->user()->tenant;
         $subscription = $tenant->subscriptions()
             ->where('status', 'active')

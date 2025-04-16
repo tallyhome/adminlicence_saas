@@ -1,0 +1,50 @@
+{
+    "time": "2025-04-16 15:40:44",
+    "function": "get_admin_details",
+    "results": {
+        "superadmin_found": true,
+        "admin_found": true,
+        "user_found": true
+    }
+}
+
+{
+    "time": "2025-04-16 15:46:59",
+    "function": "get_admin_details",
+    "results": {
+        "superadmin_found": true,
+        "admin_found": true,
+        "user_found": true
+    }
+}
+
+{
+    "time": "2025-04-16 15:56:40",
+    "function": "get_admin_details",
+    "results": {
+        "superadmin_found": true,
+        "admin_found": true,
+        "user_found": true
+    }
+}
+
+{
+    "time": "2025-04-16 15:57:03",
+    "function": "get_admin_details",
+    "results": {
+        "superadmin_found": true,
+        "admin_found": true,
+        "user_found": true
+    }
+}
+
+{
+    "time": "2025-04-16 16:14:45",
+    "function": "get_admin_details",
+    "results": {
+        "superadmin_found": true,
+        "admin_found": true,
+        "user_found": true
+    }
+}
+

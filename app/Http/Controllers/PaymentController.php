@@ -22,6 +22,9 @@ class PaymentController extends Controller
 
     public function setupIntent()
     {
+        // Seuls les admins/superadmins peuvent créer un setup intent
+        if (!$this->isAdminOrSuperAdmin()) abort(403);
+
         try {
             $intent = $this->stripeService->createSetupIntent();
             return response()->json(['clientSecret' => $intent->client_secret]);
@@ -33,6 +36,9 @@ class PaymentController extends Controller
 
     public function storePaymentMethod(Request $request)
     {
+        // Seuls les admins/superadmins peuvent ajouter un moyen de paiement
+        if (!$this->isAdminOrSuperAdmin()) abort(403);
+
         $request->validate([
             'payment_method_id' => 'required|string',
             'is_default' => 'boolean'
@@ -54,6 +60,9 @@ class PaymentController extends Controller
 
     public function deletePaymentMethod(Request $request, PaymentMethod $paymentMethod)
     {
+        // Seuls les admins/superadmins peuvent supprimer un moyen de paiement
+        if (!$this->isAdminOrSuperAdmin()) abort(403);
+
         try {
             if ($request->user()->tenant_id !== $paymentMethod->tenant_id) {
                 return response()->json(['error' => 'Non autorisé'], 403);
@@ -74,6 +83,9 @@ class PaymentController extends Controller
 
     public function createPayPalOrder(Request $request)
     {
+        // Seuls les admins/superadmins peuvent créer une commande PayPal
+        if (!$this->isAdminOrSuperAdmin()) abort(403);
+
         try {
             $subscription = Subscription::findOrFail($request->subscription_id);
             $order = $this->paypalService->createOrder($subscription);
@@ -86,6 +98,9 @@ class PaymentController extends Controller
 
     public function capturePayPalOrder(Request $request)
     {
+        // Seuls les admins/superadmins peuvent capturer une commande PayPal
+        if (!$this->isAdminOrSuperAdmin()) abort(403);
+
         try {
             $order = $this->paypalService->captureOrder($request->order_id);
             return response()->json($order);

@@ -406,3 +406,27 @@
     "status": "success"
 }
 
+{
+    "time": "2025-04-16 15:40:30",
+    "function": "update_env_app_url",
+    "project_url": "http:\/\/127.0.0.1:8000\/",
+    "env_path": "R:\\Adev\\200  -  test\\adminlicence_saas\/.env",
+    "status": "success"
+}
+
+{
+    "time": "2025-04-16 15:46:44",
+    "function": "update_env_app_url",
+    "project_url": "http:\/\/127.0.0.1:8000\/",
+    "env_path": "R:\\Adev\\200  -  test\\adminlicence_saas\/.env",
+    "status": "success"
+}
+
+{
+    "time": "2025-04-16 15:56:26",
+    "function": "update_env_app_url",
+    "project_url": "http:\/\/127.0.0.1:8000\/",
+    "env_path": "R:\\Adev\\200  -  test\\adminlicence_saas\/.env",
+    "status": "success"
+}
+

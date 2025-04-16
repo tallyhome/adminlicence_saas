@@ -1,108 +1,96 @@
 <?php
 /**
- * Script pour vérifier la validité de la clé de licence
+ * AJAX handler for license verification
  */
 
-// Activer l'affichage des erreurs pour le débogage en mode développement uniquement
-// En production, ces lignes devraient être commentées
-ini_set('display_errors', 0);
-ini_set('display_startup_errors', 0);
-error_reporting(0);
-
-// Démarrer la session
 session_start();
 
-// Définir le type de contenu comme JSON
-header('Content-Type: application/json');
+// Include necessary files
+require_once '../includes/functions.php';
+require_once '../includes/LicenceValidator.php';
 
-// Créer le répertoire de logs s'il n'existe pas
+// Enable error reporting for debugging
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
+// Create log directory if it doesn't exist
 $logDir = __DIR__ . '/../logs';
 if (!is_dir($logDir)) {
     mkdir($logDir, 0755, true);
 }
 
-// Journaliser les requêtes
-$logFile = $logDir . '/license_verification.log';
-$requestData = json_encode($_POST);
-$logMessage = date('Y-m-d H:i:s') . " - Requête reçue: $requestData\n";
-file_put_contents($logFile, $logMessage, FILE_APPEND);
+// Log request
+$requestLog = [
+    'time' => date('Y-m-d H:i:s'),
+    'request' => $_POST,
+    'server' => $_SERVER
+];
+file_put_contents($logDir . '/ajax_requests.log', json_encode($requestLog, JSON_PRETTY_PRINT) . "\n\n", FILE_APPEND);
 
-// Vérifier si la clé de licence a été soumise
-if (!isset($_POST['license_key']) || empty($_POST['license_key'])) {
-    $response = [
+// Check if request is a POST request
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    echo json_encode([
         'status' => false,
-        'message' => 'Clé de licence requise'
-    ];
-    echo json_encode($response);
+        'message' => 'Method not allowed'
+    ]);
     exit;
 }
 
-// Récupérer la clé de licence
-$licenseKey = trim($_POST['license_key']);
+// Get license key
+$licenseKey = isset($_POST['license_key']) ? trim($_POST['license_key']) : '';
 
-// Journaliser la tentative de vérification
-$logMessage = date('Y-m-d H:i:s') . " - Tentative de vérification de la clé: $licenseKey\n";
-file_put_contents($logFile, $logMessage, FILE_APPEND);
-
-// Pour le mode production, nous allons vérifier les clés de licence valides
-// Pour l'installation, nous acceptons certaines clés spécifiques ou toutes les clés avec un format valide
-
-// Liste des clés de licence valides pour le développement/installation
-$validLicenseKeys = [
-    'DEMO-1234-5678-9012',
-    'TEST-ABCD-EFGH-IJKL',
-    'TALLY-HOME-2025-PROD',
-    'ADMIN-LICENCE-2025-DEV'
-];
-
-// Vérifier si la clé est dans la liste des clés valides
-$isValidKey = in_array($licenseKey, $validLicenseKeys);
-
-// Vérifier le format de la clé (format attendu: XXXX-XXXX-XXXX-XXXX)
-$hasValidFormat = preg_match('/^[A-Za-z0-9]{4,5}(-[A-Za-z0-9]{4,5}){3,}$/', $licenseKey);
-
-// Pour l'installation, nous acceptons toutes les clés avec un format valide
-// En production, cette condition devrait être plus stricte
-$isValid = $isValidKey || $hasValidFormat;
-
-if ($isValid) {
-    // Licence valide
-    $response = [
-        'status' => true,
-        'message' => 'Licence valide',
-        'expiry_date' => date('Y-m-d', strtotime('+1 year')),
-        'secure_code' => md5($licenseKey . time())
-    ];
-    
-    // Stocker les informations de licence dans la session
-    $_SESSION['license_key'] = $licenseKey;
-    $_SESSION['license_verified'] = true;
-    $_SESSION['license_details'] = $response;
-    
-    // Journaliser le succès
-    $logMessage = date('Y-m-d H:i:s') . " - Licence valide: $licenseKey\n";
-    file_put_contents($logFile, $logMessage, FILE_APPEND);
-} else {
-    // Licence invalide
-    $response = [
+if (empty($licenseKey)) {
+    echo json_encode([
         'status' => false,
-        'message' => 'Clé de licence invalide'
-    ];
-    
-    // Stocker les informations de licence dans la session
-    $_SESSION['license_key'] = $licenseKey;
-    $_SESSION['license_verified'] = false;
-    $_SESSION['license_details'] = $response;
-    
-    // Journaliser l'échec
-    $logMessage = date('Y-m-d H:i:s') . " - Licence invalide: $licenseKey\n";
-    file_put_contents($logFile, $logMessage, FILE_APPEND);
+        'message' => 'License key not provided'
+    ]);
+    exit;
 }
 
-// Journaliser la réponse
-$responseData = json_encode($response);
-$logMessage = date('Y-m-d H:i:s') . " - Réponse envoyée: $responseData\n";
-file_put_contents($logFile, $logMessage, FILE_APPEND);
+// API configuration
+$apiUrl = 'https://licence.myvcard.fr';
+$apiKey = 'sk_wuRFNJ7fI6CaMzJptdfYhzAGW3DieKwC';
+$apiSecret = 'sk_3ewgI2dP0zPyLXlHyDT1qYbzQny6H2hb';
 
-// Renvoyer la réponse
-echo json_encode($response);
+// Create license validator instance
+$validator = new LicenceValidator($apiUrl, $apiKey, $apiSecret);
+
+try {
+    // Verify license
+    $result = $validator->verifyLicence($licenseKey);
+    
+    // Log result
+    $responseLog = [
+        'time' => date('Y-m-d H:i:s'),
+        'license_key' => $licenseKey,
+        'result' => $result
+    ];
+    file_put_contents($logDir . '/ajax_responses.log', json_encode($responseLog, JSON_PRETTY_PRINT) . "\n\n", FILE_APPEND);
+    
+    // If license is valid, store information in session
+    if ($result['status']) {
+        $_SESSION['license_key'] = $licenseKey;
+        $_SESSION['license_valid'] = true;
+        $_SESSION['license_expiry'] = $result['data']['expiry_date'] ?? null;
+        $_SESSION['license_token'] = $result['data']['token'] ?? null;
+        $_SESSION['license_project'] = $result['data']['project'] ?? null;
+    }
+    
+    // Return result
+    echo json_encode([
+        'status' => $result['status'],
+        'message' => $result['message'],
+        'expiry_date' => $result['data']['expiry_date'] ?? null,
+        'token' => $result['data']['token'] ?? null,
+        'project' => $result['data']['project'] ?? null
+    ]);
+} catch (Exception $e) {
+    // Log error
+    file_put_contents($logDir . '/ajax_errors.log', "Error: " . $e->getMessage() . "\n" . $e->getTraceAsString() . "\n\n", FILE_APPEND);
+    
+    // Return error
+    echo json_encode([
+        'status' => false,
+        'message' => 'Error: ' . $e->getMessage()
+    ]);
+}

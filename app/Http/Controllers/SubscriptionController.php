@@ -33,6 +33,10 @@ class SubscriptionController extends Controller
      */
     public function plans()
     {
+        // Accessible à tous les rôles connectés
+        // (si tu veux restreindre, décommente la ligne suivante)
+        // if (!$this->isAdminOrSuperAdmin() && !$this->isSimpleUser()) abort(403);
+        
         // Get the current tenant
         $tenant = Auth::user()->tenant;
         
@@ -99,6 +103,10 @@ class SubscriptionController extends Controller
      */
     public function checkout($planId)
     {
+        // Accessible à tous les rôles connectés
+        // (si tu veux restreindre, décommente la ligne suivante)
+        // if (!$this->isAdminOrSuperAdmin() && !$this->isSimpleUser()) abort(403);
+        
         // Get the current tenant
         $tenant = Auth::user()->tenant;
         
@@ -125,6 +133,9 @@ class SubscriptionController extends Controller
      */
     public function processStripeSubscription(Request $request)
     {
+        // Seulement user simple peut souscrire
+        if (!$this->isSimpleUser()) abort(403);
+        
         $request->validate([
             'plan_id' => 'required|string',
             'payment_method_id' => 'required|string',
@@ -213,6 +224,9 @@ class SubscriptionController extends Controller
      */
     public function processPayPalSubscription(Request $request)
     {
+        // Seulement user simple peut souscrire
+        if (!$this->isSimpleUser()) abort(403);
+        
         $request->validate([
             'plan_id' => 'required|string',
             'paypal_email' => 'required|email',
@@ -284,28 +298,14 @@ class SubscriptionController extends Controller
     }
     
     /**
-     * Display the subscription success page.
-     *
-     * @return \Illuminate\View\View
-     */
-    public function success()
-    {
-        // Get the current tenant
-        $tenant = Auth::user()->tenant;
-        
-        // Get the current subscription
-        $subscription = $tenant->subscriptions()->first();
-        
-        return view('subscription.success', compact('tenant', 'subscription'));
-    }
-    
-    /**
      * Display the payment methods page.
      *
      * @return \Illuminate\View\View
      */
     public function paymentMethods()
     {
+        // Accessible à tous les rôles connectés
+        
         // Get the current tenant
         $tenant = Auth::user()->tenant;
         
@@ -323,6 +323,8 @@ class SubscriptionController extends Controller
      */
     public function addPaymentMethod($type = 'card')
     {
+        // Accessible à tous les rôles connectés
+        
         // Get the current tenant
         $tenant = Auth::user()->tenant;
         
@@ -337,6 +339,8 @@ class SubscriptionController extends Controller
      */
     public function storeStripePaymentMethod(Request $request)
     {
+        // Accessible à tous les rôles connectés
+        
         $request->validate([
             'payment_method_id' => 'required|string',
         ]);
@@ -387,6 +391,8 @@ class SubscriptionController extends Controller
      */
     public function storePayPalPaymentMethod(Request $request)
     {
+        // Accessible à tous les rôles connectés
+        
         $request->validate([
             'paypal_email' => 'required|email',
         ]);
@@ -424,6 +430,8 @@ class SubscriptionController extends Controller
      */
     public function setDefaultPaymentMethod($id)
     {
+        // Accessible à tous les rôles connectés
+        
         try {
             // Get the current tenant
             $tenant = Auth::user()->tenant;
@@ -463,6 +471,8 @@ class SubscriptionController extends Controller
      */
     public function deletePaymentMethod($id)
     {
+        // Accessible à tous les rôles connectés
+        
         try {
             // Get the current tenant
             $tenant = Auth::user()->tenant;
@@ -514,6 +524,8 @@ class SubscriptionController extends Controller
      */
     public function invoices()
     {
+        // Accessible à tous les rôles connectés
+        
         // Get the current tenant
         $tenant = Auth::user()->tenant;
         
@@ -531,6 +543,8 @@ class SubscriptionController extends Controller
      */
     public function showInvoice($id)
     {
+        // Accessible à tous les rôles connectés
+        
         // Get the current tenant
         $tenant = Auth::user()->tenant;
         
@@ -553,6 +567,9 @@ class SubscriptionController extends Controller
      */
     public function cancelSubscription(Request $request)
     {
+        // Seuls les admins/superadmins peuvent annuler
+        if (!$this->isAdminOrSuperAdmin()) abort(403);
+        
         $request->validate([
             'at_period_end' => 'nullable|boolean',
         ]);
@@ -603,6 +620,9 @@ class SubscriptionController extends Controller
      */
     public function resumeSubscription()
     {
+        // Seuls les admins/superadmins peuvent reprendre
+        if (!$this->isAdminOrSuperAdmin()) abort(403);
+        
         try {
             // Get the current tenant
             $tenant = Auth::user()->tenant;

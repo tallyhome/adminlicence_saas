@@ -6,12 +6,11 @@
 <div class="container mx-auto px-4 py-6">
     <div class="flex justify-between items-center mb-6">
         <h1 class="text-2xl font-semibold text-gray-800">Notifications</h1>
-        <div>
-            <button id="mark-all-as-read" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg shadow-sm">
-                <i class="fas fa-check-double mr-2"></i>Tout marquer comme lu
-            </button>
-        </div>
-    </div>
+        @if(auth('admin')->user() && auth('admin')->user()->is_super_admin)
+            <a href="{{ route('admin.notifications.create') }}" class="btn btn-warning me-2">
+                <i class="fas fa-plus"></i> Créer une notification
+            </a>
+        @endif
 
     <div class="bg-white rounded-lg shadow-md overflow-hidden">
         @if($notifications->count() > 0)

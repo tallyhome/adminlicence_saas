@@ -110,25 +110,39 @@
 $(document).ready(function() {
     // Gérer le clic sur le bouton de suppression du dossier d'installation
     $('#remove-install-dir').on('click', function() {
-        if (confirm('<?php echo isset($translations["confirm_remove_install_dir"]) ? $translations["confirm_remove_install_dir"] : "Êtes-vous sûr de vouloir supprimer le dossier d\'installation ? Cette action est irréversible."; ?>')) {
-            $(this).prop('disabled', true).html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> <?php echo isset($translations["removing"]) ? $translations["removing"] : "Suppression en cours..."; ?>');
+        var confirmMessage = "<?php echo addslashes(isset($translations['confirm_remove_install_dir']) ? $translations['confirm_remove_install_dir'] : 'Êtes-vous sûr de vouloir supprimer le dossier d\'installation ? Cette action est irréversible.'); ?>";
+        var removingMessage = "<?php echo addslashes(isset($translations['removing']) ? $translations['removing'] : 'Suppression en cours...'); ?>";
+        var successMessage = "<?php echo addslashes(isset($translations['install_dir_removed']) ? $translations['install_dir_removed'] : 'Le dossier d\'installation a été supprimé avec succès.'); ?>";
+        var failureMessage = "<?php echo addslashes(isset($translations['install_dir_remove_failed']) ? $translations['install_dir_remove_failed'] : 'Impossible de supprimer le dossier d\'installation. Veuillez le supprimer manuellement.'); ?>";
+        var buttonText = "<?php echo addslashes(isset($translations['remove_install_dir']) ? $translations['remove_install_dir'] : 'Supprimer le dossier d\'installation'); ?>";
+        var projectUrl = "<?php echo isset($_SESSION['admin_config']['project_url']) ? $_SESSION['admin_config']['project_url'] : ''; ?>";
+        
+        if (confirm(confirmMessage)) {
+            $(this).prop('disabled', true).html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> ' + removingMessage);
             
             $.ajax({
                 url: 'ajax/remove_install_dir.php',
                 type: 'POST',
                 dataType: 'json',
                 success: function(response) {
-                    if (response.status) {
-                        alert('<?php echo isset($translations["install_dir_removed"]) ? $translations["install_dir_removed"] : "Le dossier d\'installation a été supprimé avec succès."; ?>');
-                        window.location.href = '<?php echo isset($_SESSION['admin_config']['project_url']) ? $_SESSION['admin_config']['project_url'] : ''; ?>';
+                    console.log('Réponse:', response);
+                    if (response && response.status) {
+                        alert(successMessage);
+                        if (projectUrl) {
+                            window.location.href = projectUrl;
+                        }
                     } else {
-                        alert('<?php echo isset($translations["install_dir_remove_failed"]) ? $translations["install_dir_remove_failed"] : "Impossible de supprimer le dossier d\'installation. Veuillez le supprimer manuellement."; ?>');
-                        $('#remove-install-dir').prop('disabled', false).html('<i class="fas fa-trash"></i> <?php echo isset($translations["remove_install_dir"]) ? $translations["remove_install_dir"] : "Supprimer le dossier d\'installation"; ?>');
+                        alert(failureMessage);
+                        $('#remove-install-dir').prop('disabled', false).html('<i class="fas fa-trash"></i> ' + buttonText);
                     }
                 },
-                error: function() {
-                    alert('<?php echo isset($translations["install_dir_remove_failed"]) ? $translations["install_dir_remove_failed"] : "Impossible de supprimer le dossier d\'installation. Veuillez le supprimer manuellement."; ?>');
-                    $('#remove-install-dir').prop('disabled', false).html('<i class="fas fa-trash"></i> <?php echo isset($translations["remove_install_dir"]) ? $translations["remove_install_dir"] : "Supprimer le dossier d\'installation"; ?>');
+                error: function(xhr, status, error) {
+                    console.error('Erreur AJAX:', status, error);
+                    if (xhr.responseText) {
+                        console.error('Réponse:', xhr.responseText);
+                    }
+                    alert(failureMessage);
+                    $('#remove-install-dir').prop('disabled', false).html('<i class="fas fa-trash"></i> ' + buttonText);
                 }
             });
         }

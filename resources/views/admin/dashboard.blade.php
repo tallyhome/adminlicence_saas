@@ -25,6 +25,68 @@
 
     <!-- Cartes de statistiques -->
     <div class="row">
+        <!-- Accès rapide aux modules SaaS -->
+        <div class="col-xl-3 col-lg-4 col-md-6 mb-4">
+            <a href="{{ route('subscription.plans') }}" class="text-decoration-none card-link">
+                <div class="card border-left-primary shadow h-100 py-2">
+                    <div class="card-body d-flex align-items-center">
+                        <div class="me-3">
+                            <i class="fas fa-cubes fa-2x text-primary"></i>
+                        </div>
+                        <div>
+                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Abonnements</div>
+                            <div class="small">Voir les plans</div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-xl-3 col-lg-4 col-md-6 mb-4">
+            <a href="{{ route('admin.tickets.index') }}" class="text-decoration-none card-link">
+                <div class="card border-left-info shadow h-100 py-2">
+                    <div class="card-body d-flex align-items-center">
+                        <div class="me-3">
+                            <i class="fas fa-life-ring fa-2x text-info"></i>
+                        </div>
+                        <div>
+                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Support</div>
+                            <div class="small">Liste des tickets</div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-xl-3 col-lg-4 col-md-6 mb-4">
+            <a href="{{ route('admin.tickets.create') }}" class="text-decoration-none card-link">
+                <div class="card border-left-success shadow h-100 py-2">
+                    <div class="card-body d-flex align-items-center">
+                        <div class="me-3">
+                            <i class="fas fa-plus-circle fa-2x text-success"></i>
+                        </div>
+                        <div>
+                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Nouveau ticket</div>
+                            <div class="small">Créer un ticket</div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-xl-3 col-lg-4 col-md-6 mb-4">
+            <a href="{{ route('admin.notifications.index') }}" class="text-decoration-none card-link">
+                <div class="card border-left-warning shadow h-100 py-2">
+                    <div class="card-body d-flex align-items-center">
+                        <div class="me-3">
+                            <i class="fas fa-bell fa-2x text-warning"></i>
+                        </div>
+                        <div>
+                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Notifications</div>
+                            <div class="small">Voir les notifications</div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+
         <div class="col-xl col-lg-4 col-md-6 mb-4">
             <a href="{{ route('admin.serial-keys.index') }}" class="text-decoration-none card-link">
                 <div class="card border-left-primary shadow h-100 py-2">

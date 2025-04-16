@@ -24,6 +24,9 @@ class PaymentMethodController extends Controller
      */
     public function index()
     {
+        // Seuls les admins/superadmins peuvent voir la liste des moyens de paiement
+        if (!$this->isAdminOrSuperAdmin()) abort(403);
+
         $user = Auth::user();
         $paymentMethods = $user->paymentMethods;
 
@@ -37,6 +40,9 @@ class PaymentMethodController extends Controller
      */
     public function addCard(Request $request)
     {
+        // Seuls les admins/superadmins peuvent ajouter une carte
+        if (!$this->isAdminOrSuperAdmin()) abort(403);
+
         $request->validate([
             'payment_method_id' => 'required|string',
             'is_default' => 'boolean'
@@ -66,6 +72,9 @@ class PaymentMethodController extends Controller
      */
     public function setDefault(Request $request, PaymentMethod $paymentMethod)
     {
+        // Seuls les admins/superadmins peuvent définir un moyen de paiement par défaut
+        if (!$this->isAdminOrSuperAdmin()) abort(403);
+
         try {
             $user = Auth::user();
 
@@ -101,6 +110,9 @@ class PaymentMethodController extends Controller
      */
     public function destroy(PaymentMethod $paymentMethod)
     {
+        // Seuls les admins/superadmins peuvent supprimer un moyen de paiement
+        if (!$this->isAdminOrSuperAdmin()) abort(403);
+
         try {
             $user = Auth::user();
 

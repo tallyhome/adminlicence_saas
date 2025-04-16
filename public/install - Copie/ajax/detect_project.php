@@ -3,12 +3,18 @@
  * AJAX handler for project detection
  */
 
-// Démarrer la session
-session_start();
-
 // Activer l'affichage des erreurs
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
+
+// Définir les en-têtes CORS pour permettre les requêtes AJAX
+header('Access-Control-Allow-Origin: *');
+header('Access-Control-Allow-Methods: GET, POST');
+header('Access-Control-Allow-Headers: Content-Type');
+header('Content-Type: application/json');
+
+// Démarrer la session
+session_start();
 
 // Inclure les fonctions utilitaires
 require_once '../includes/functions.php';
@@ -19,14 +25,95 @@ if (!is_dir($logDir)) {
     mkdir($logDir, 0755, true);
 }
 
+// Journaliser la requête pour débogage
+$requestData = [
+    'time' => date('Y-m-d H:i:s'),
+    'function' => 'detect_project_request',
+    'method' => $_SERVER['REQUEST_METHOD'],
+    'query' => $_GET,
+    'server' => $_SERVER
+];
+file_put_contents($logDir . '/detect_project_debug.log', json_encode($requestData, JSON_PRETTY_PRINT) . "\n\n", FILE_APPEND);
+
 // Détecter le type de projet
 $projectInfo = detectProjectType();
 
-// Journaliser la détection
+// Vérification forcée du fichier .env et du répertoire vendor
+$projectRoot = $projectInfo['project_root'];
+
+// Créer un fichier de log détaillé pour le débogage
+$debugData = [
+    'time' => date('Y-m-d H:i:s'),
+    'function' => 'detect_project_detailed',
+    'initial_project_root' => $projectRoot,
+    'paths_checked' => []
+];
+
+// Vérifier si nous sommes dans le répertoire public d'un projet Laravel
+if (basename($projectRoot) === 'public') {
+    // Remonter d'un niveau pour obtenir la racine du projet
+    $parentRoot = realpath($projectRoot . '/..');
+    $debugData['paths_checked']['parent_root'] = $parentRoot;
+    
+    // Vérifier si le répertoire parent est un projet Laravel
+    $isLaravelParent = file_exists($parentRoot . '/artisan') && 
+                       is_dir($parentRoot . '/routes') && 
+                       file_exists($parentRoot . '/routes/web.php');
+    
+    $debugData['paths_checked']['artisan_parent'] = [
+        'path' => $parentRoot . '/artisan',
+        'exists' => file_exists($parentRoot . '/artisan')
+    ];
+    
+    $debugData['paths_checked']['routes_dir_parent'] = [
+        'path' => $parentRoot . '/routes',
+        'exists' => is_dir($parentRoot . '/routes')
+    ];
+    
+    $debugData['paths_checked']['web_php_parent'] = [
+        'path' => $parentRoot . '/routes/web.php',
+        'exists' => file_exists($parentRoot . '/routes/web.php')
+    ];
+    
+    $debugData['is_laravel_parent'] = $isLaravelParent;
+    
+    if ($isLaravelParent) {
+        // Si le parent est un projet Laravel, utiliser ce chemin comme racine du projet
+        $projectRoot = $parentRoot;
+        $projectInfo['project_root'] = $projectRoot;
+        $projectInfo['type'] = 'laravel';
+        $debugData['adjusted_project_root'] = $projectRoot;
+    }
+}
+
+// Vérification forcée du fichier .env
+$envExists = file_exists($projectRoot . '/.env');
+$projectInfo['has_env'] = $envExists;
+
+$debugData['paths_checked']['env_file'] = [
+    'path' => $projectRoot . '/.env',
+    'exists' => $envExists
+];
+
+// Vérification forcée du répertoire vendor
+$vendorExists = is_dir($projectRoot . '/vendor');
+$projectInfo['has_vendor'] = $vendorExists;
+
+$debugData['paths_checked']['vendor_dir'] = [
+    'path' => $projectRoot . '/vendor',
+    'exists' => $vendorExists
+];
+
+// Journaliser les informations détaillées
+file_put_contents($logDir . '/detect_project_detailed.log', json_encode($debugData, JSON_PRETTY_PRINT) . "\n\n", FILE_APPEND);
+
+// Journaliser la détection après vérification forcée
 $logData = [
     'time' => date('Y-m-d H:i:s'),
     'function' => 'detect_project',
-    'project_info' => $projectInfo
+    'project_info' => $projectInfo,
+    'env_exists' => $projectInfo['has_env'] ? 'oui' : 'non',
+    'vendor_exists' => $projectInfo['has_vendor'] ? 'oui' : 'non'
 ];
 file_put_contents($logDir . '/project_detection.log', json_encode($logData, JSON_PRETTY_PRINT) . "\n\n", FILE_APPEND);
 
@@ -42,26 +129,57 @@ $vendorInstalled = false;
 if ($projectInfo['type'] === 'laravel') {
     // Créer le fichier .env s'il n'existe pas
     if (!$projectInfo['has_env']) {
-        $envData = [
-            'APP_NAME' => 'Laravel',
-            'APP_ENV' => 'local',
-            'APP_KEY' => generateRandomKey(),
-            'APP_DEBUG' => 'true',
-            'APP_URL' => 'http://localhost',
-            
-            'LOG_CHANNEL' => 'stack',
-            'LOG_DEPRECATIONS_CHANNEL' => 'null',
-            'LOG_LEVEL' => 'debug',
-            
-            'DB_CONNECTION' => 'mysql',
-            'DB_HOST' => '127.0.0.1',
-            'DB_PORT' => '3306',
-            'DB_DATABASE' => 'laravel',
-            'DB_USERNAME' => 'root',
-            'DB_PASSWORD' => '',
-        ];
+        // Vérifier si .env.example existe
+        $envExamplePath = $projectRoot . '/.env.example';
+        $envPath = $projectRoot . '/.env';
         
-        $envCreated = updateEnvFile($envData);
+        // Journaliser la vérification de .env.example
+        $logData = [
+            'time' => date('Y-m-d H:i:s'),
+            'function' => 'create_env_file',
+            'env_example_path' => $envExamplePath,
+            'env_example_exists' => file_exists($envExamplePath)
+        ];
+        file_put_contents($logDir . '/env_creation.log', json_encode($logData, JSON_PRETTY_PRINT) . "\n\n", FILE_APPEND);
+        
+        if (file_exists($envExamplePath)) {
+            // Copier .env.example vers .env
+            $envContent = file_get_contents($envExamplePath);
+            
+            // Générer une nouvelle clé d'application si nécessaire
+            $envContent = preg_replace('/APP_KEY=.*/', 'APP_KEY=' . generateRandomKeyLocal(), $envContent);
+            
+            // Écrire le fichier .env
+            $envCreated = file_put_contents($envPath, $envContent) !== false;
+        } else {
+            // Créer un fichier .env par défaut si .env.example n'existe pas
+            $envData = [
+                'APP_NAME' => 'AdminLicence',
+                'APP_ENV' => 'local',
+                'APP_KEY' => generateRandomKeyLocal(),
+                'APP_DEBUG' => 'true',
+                'APP_URL' => 'http://localhost',
+                
+                'LOG_CHANNEL' => 'stack',
+                'LOG_DEPRECATIONS_CHANNEL' => 'null',
+                'LOG_LEVEL' => 'debug',
+                
+                'DB_CONNECTION' => 'mysql',
+                'DB_HOST' => '127.0.0.1',
+                'DB_PORT' => '3306',
+                'DB_DATABASE' => 'adminlicence',
+                'DB_USERNAME' => 'root',
+                'DB_PASSWORD' => '',
+                
+                'SESSION_DRIVER' => 'database',
+                'SESSION_LIFETIME' => '120',
+                'CACHE_STORE' => 'database',
+                'QUEUE_CONNECTION' => 'database',
+            ];
+            
+            $envCreated = updateEnvFileLocal($envData);
+        }
+        
         $projectInfo['has_env'] = $envCreated;
         $projectInfo['env_created'] = $envCreated;
         
@@ -141,11 +259,12 @@ echo json_encode($projectInfo);
 
 /**
  * Met à jour le fichier .env avec les données fournies
+ * Version locale pour éviter les conflits de déclaration
  *
  * @param array $envData Données à insérer dans le fichier .env
  * @return bool Succès de la mise à jour
  */
-function updateEnvFile($envData) {
+function updateEnvFileLocal($envData) {
     $projectRoot = $_SESSION['project_root'];
     $envPath = $projectRoot . '/.env';
     
@@ -170,10 +289,11 @@ function updateEnvFile($envData) {
 
 /**
  * Génère une clé aléatoire pour l'application
+ * Version locale pour éviter les conflits de déclaration
  *
  * @return string Clé aléatoire
  */
-function generateRandomKey() {
+function generateRandomKeyLocal() {
     $key = '';
     $chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_-=+{}[]:;<>?,./';
     for ($i = 0; $i < 32; $i++) {

@@ -102,4 +102,10 @@ return [
     'save_failed' => '保存失败',
     'complete' => '完成',
     'with_warnings' => '有警告',
+    'return' => '返回',
+    'saving' => '保存中',
+    'unknown_error' => '发生未知错误',
+    'testing' => '测试中',
+    'fill_required_fields' => '请填写所有必填字段',
+    'ajax_error' => '无法连接到服务器',
 ];

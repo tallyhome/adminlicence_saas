@@ -266,83 +266,17 @@ $(document).ready(function() {
                         });
                     }
                     
-                    // Afficher les détails de connexion
+                    // Stocker les informations d'administration pour l'étape 6
                     $.ajax({
                         url: 'ajax/get_admin_details.php',
                         type: 'GET',
                         dataType: 'json',
                         success: function(adminData) {
-                            if (adminData.status) {
-                                var detailsHtml = '<div class="mt-4 p-3 border rounded bg-light">';
-                                detailsHtml += '<h4><?php echo addslashes($translations['connection_details'] ?? "Détails de connexion"); ?></h4>';
-                                detailsHtml += '<div class="row">';
-                                
-                                // SuperAdmin
-                                detailsHtml += '<div class="col-md-4">';
-                                detailsHtml += '<div class="card mb-3">';
-                                detailsHtml += '<div class="card-header bg-primary text-white">SuperAdmin</div>';
-                                detailsHtml += '<div class="card-body">';
-                                detailsHtml += '<p><strong>Email:</strong> ' + adminData.email + '</p>';
-                                detailsHtml += '<p><strong>Mot de passe:</strong> ' + adminData.password_hint + '</p>';
-                                detailsHtml += '<p><a href="' + adminData.admin_url + '/login" target="_blank" class="btn btn-sm btn-primary">Se connecter</a></p>';
-                                detailsHtml += '</div></div></div>';
-                                
-                                // Admin
-                                detailsHtml += '<div class="col-md-4">';
-                                detailsHtml += '<div class="card mb-3">';
-                                detailsHtml += '<div class="card-header bg-info text-white">Admin</div>';
-                                detailsHtml += '<div class="card-body">';
-                                detailsHtml += '<p><strong>Email:</strong> ' + adminData.email + '</p>';
-                                detailsHtml += '<p><strong>Mot de passe:</strong> ' + adminData.password_hint + '</p>';
-                                detailsHtml += '<p><a href="' + adminData.admin_url + '/login" target="_blank" class="btn btn-sm btn-info">Se connecter</a></p>';
-                                detailsHtml += '</div></div></div>';
-                                
-                                // User
-                                detailsHtml += '<div class="col-md-4">';
-                                detailsHtml += '<div class="card mb-3">';
-                                detailsHtml += '<div class="card-header bg-success text-white">User</div>';
-                                detailsHtml += '<div class="card-body">';
-                                detailsHtml += '<p><strong>Email:</strong> ' + adminData.email + '</p>';
-                                detailsHtml += '<p><strong>Mot de passe:</strong> ' + adminData.password_hint + '</p>';
-                                detailsHtml += '<p><a href="' + adminData.user_url + '/login" target="_blank" class="btn btn-sm btn-success">Se connecter</a></p>';
-                                detailsHtml += '</div></div></div>';
-                                
-                                detailsHtml += '</div>';
-                                
-                                // Bouton pour supprimer le dossier d'installation
-                                detailsHtml += '<div class="mt-3">';
-                                detailsHtml += '<button id="remove-install-dir" class="btn btn-danger"><i class="fas fa-trash"></i> <?php echo addslashes($translations["remove_install_dir"] ?? "Supprimer le dossier d\'installation"); ?></button>';
-                                detailsHtml += '<p class="text-muted mt-2"><small><?php echo addslashes($translations["remove_install_dir_note"] ?? "Pour des raisons de sécurité, il est recommandé de supprimer le dossier d\'installation après avoir terminé."); ?></small></p>';
-                                detailsHtml += '</div>';
-                                
-                                detailsHtml += '</div>';
-                                
-                                $('#connection-details').html(detailsHtml).removeClass('d-none');
-                                
-                                // Gérer le clic sur le bouton de suppression du dossier d'installation
-                                $('#remove-install-dir').on('click', function() {
-                                    $(this).prop('disabled', true).html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> <?php echo addslashes($translations["removing"] ?? "Suppression en cours..."); ?>');
-                                    
-                                    $.ajax({
-                                        url: 'ajax/remove_install_dir.php',
-                                        type: 'POST',
-                                        dataType: 'json',
-                                        success: function(response) {
-                                            if (response.status) {
-                                                alert('<?php echo addslashes($translations["install_dir_removed"] ?? "Le dossier d\'installation a été supprimé avec succès."); ?>');
-                                                window.location.href = adminData.admin_url;
-                                            } else {
-                                                alert('<?php echo addslashes($translations["install_dir_remove_failed"] ?? "Impossible de supprimer le dossier d\'installation. Veuillez le supprimer manuellement."); ?>');
-                                                $('#remove-install-dir').prop('disabled', false).html('<i class="fas fa-trash"></i> <?php echo addslashes($translations["remove_install_dir"] ?? "Supprimer le dossier d\'installation"); ?>');
-                                            }
-                                        },
-                                        error: function() {
-                                            alert('<?php echo addslashes($translations["install_dir_remove_failed"] ?? "Impossible de supprimer le dossier d\'installation. Veuillez le supprimer manuellement."); ?>');
-                                            $('#remove-install-dir').prop('disabled', false).html('<i class="fas fa-trash"></i> <?php echo addslashes($translations["remove_install_dir"] ?? "Supprimer le dossier d\'installation"); ?>');
-                                        }
-                                    });
-                                });
-                            }
+                            // Aucun affichage à cette étape, les détails seront affichés à l'étape 6
+                            console.log('Informations d\'administration récupérées avec succès pour l\'étape 6');
+                        },
+                        error: function(xhr, status, error) {
+                            console.error('Erreur lors de la récupération des informations d\'administration:', error);
                         }
                     });
                     

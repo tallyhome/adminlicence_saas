@@ -71,6 +71,49 @@ try {
     // Marquer la connexion comme testée
     $_SESSION['db_tested'] = true;
     
+    // Mettre à jour le fichier .env avec les informations de base de données
+    require_once __DIR__ . '/../includes/functions.php';
+    
+    // Déterminer le chemin du projet
+    $projectRoot = $_SESSION['project_root'] ?? realpath(__DIR__ . '/../../..');
+    $envPath = $projectRoot . '/.env';
+    
+    // Vérifier si le fichier .env existe
+    if (file_exists($envPath)) {
+        // Lire le contenu du fichier .env
+        $envContent = file_get_contents($envPath);
+        
+        // Mettre à jour les variables de base de données
+        $envContent = preg_replace('/DB_CONNECTION=.*/', 'DB_CONNECTION=mysql', $envContent);
+        $envContent = preg_replace('/DB_HOST=.*/', "DB_HOST=$host", $envContent);
+        $envContent = preg_replace('/DB_PORT=.*/', "DB_PORT=3306", $envContent);
+        $envContent = preg_replace('/DB_DATABASE=.*/', "DB_DATABASE=$database", $envContent);
+        $envContent = preg_replace('/DB_USERNAME=.*/', "DB_USERNAME=$username", $envContent);
+        $envContent = preg_replace('/DB_PASSWORD=.*/', "DB_PASSWORD=$password", $envContent);
+        
+        // Écrire le fichier .env mis à jour
+        file_put_contents($envPath, $envContent);
+        
+        // Journaliser la mise à jour du fichier .env
+        $logData = [
+            'time' => date('Y-m-d H:i:s'),
+            'function' => 'update_env_db_config',
+            'status' => 'success',
+            'env_path' => $envPath
+        ];
+        file_put_contents($logDir . '/db_connection.log', json_encode($logData, JSON_PRETTY_PRINT) . "\n\n", FILE_APPEND);
+    } else {
+        // Journaliser l'erreur
+        $logData = [
+            'time' => date('Y-m-d H:i:s'),
+            'function' => 'update_env_db_config',
+            'status' => 'error',
+            'message' => 'Fichier .env introuvable',
+            'env_path' => $envPath
+        ];
+        file_put_contents($logDir . '/db_connection.log', json_encode($logData, JSON_PRETTY_PRINT) . "\n\n", FILE_APPEND);
+    }
+    
 } catch (PDOException $e) {
     // Erreur de connexion
     $response['status'] = false;

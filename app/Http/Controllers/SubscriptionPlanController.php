@@ -14,6 +14,10 @@ class SubscriptionPlanController extends Controller
      */
     public function index()
     {
+        // Accessible à tous les rôles connectés pour voir les plans
+        // (si tu veux restreindre, décommente la ligne suivante)
+        // if (!$this->isAdminOrSuperAdmin() && !$this->isSimpleUser()) abort(403);
+
         $tenant = Auth::user()->tenant;
         $plans = Plan::where('active', true)->get();
         $currentSubscription = $tenant->subscriptions()
@@ -32,6 +36,9 @@ class SubscriptionPlanController extends Controller
      */
     public function create(Request $request)
     {
+        // Seuls les admins/superadmins peuvent créer un abonnement
+        if (!$this->isAdminOrSuperAdmin()) abort(403);
+
         $request->validate([
             'plan_id' => 'required|exists:plans,id'
         ]);
@@ -60,6 +67,9 @@ class SubscriptionPlanController extends Controller
      */
     public function showPayment(Request $request)
     {
+        // Seuls les admins/superadmins peuvent accéder à la page de paiement
+        if (!$this->isAdminOrSuperAdmin()) abort(403);
+
         $plan = Plan::findOrFail($request->plan_id);
         $tenant = Auth::user()->tenant;
         $paymentMethods = $tenant->paymentMethods;

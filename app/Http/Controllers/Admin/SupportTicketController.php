@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
+use Illuminate\Routing\Controller;
 use App\Models\Admin;
 use App\Models\SupportTicket;
 use App\Models\TicketReply;
@@ -11,6 +11,60 @@ use Illuminate\Support\Facades\Auth;
 
 class SupportTicketController extends Controller
 {
+    /**
+     * Constructor to ensure only admins (not superadmins) can access these methods
+     */
+    public function __construct()
+    {
+        $this->middleware(function ($request, $next) {
+            $user = Auth::guard('admin')->user();
+            if (!$user || $user->is_super_admin) {
+                abort(403, 'Unauthorized action. Admin access required.');
+            }
+            return $next($request);
+        });
+    }
+
+    /**
+     * Show the form to create a new ticket.
+     */
+    public function create()
+    {
+        return view('admin.tickets.create');
+    }
+
+    /**
+     * Store a newly created ticket in storage.
+     */
+    public function store(Request $request)
+    {
+        $request->validate([
+            'subject' => 'required|string|max:255',
+            'priority' => 'required|in:low,medium,high',
+            'message' => 'required|string',
+        ]);
+        $user = Auth::guard('admin')->user();
+
+        $ticket = SupportTicket::create([
+            'client_id' => $user->id, // ou adapter selon la logique de client/admin
+            'subject' => $request->subject,
+            'priority' => $request->priority,
+            'status' => SupportTicket::STATUS_OPEN,
+            'created_by_type' => 'admin',
+            'created_by_id' => $user->id,
+        ]);
+
+        TicketReply::create([
+            'support_ticket_id' => $ticket->id,
+            'user_type' => TicketReply::USER_TYPE_ADMIN,
+            'user_id' => $user->id,
+            'message' => $request->message,
+        ]);
+
+        return redirect()->route('admin.tickets.show', $ticket)
+            ->with('success', 'Le ticket a été créé avec succès.');
+    }
+
     /**
      * Display a listing of the tickets.
      */
