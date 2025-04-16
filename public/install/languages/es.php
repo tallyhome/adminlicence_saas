@@ -66,9 +66,26 @@ return [
     'database_check' => 'Configuración de la base de datos',
     'admin_setup_check' => 'Configuración de la cuenta de administrador',
     'installation_complete' => 'Instalación completada',
+    'installation_success' => '¡Instalación completada con éxito!',
     'installation_failed' => 'Instalación fallida',
     'go_to_login' => 'Ir a la página de inicio de sesión',
     'retry' => 'Reintentar',
+    'ajax_error' => 'Error AJAX:',
+    'server_message' => 'Mensaje del servidor:',
+    'response_parse_error' => 'No se pudo analizar la respuesta del servidor:',
+    
+    // Step 6 - Installation completed
+    'installation_completed' => 'Instalación Completada',
+    'installation_success_message' => '¡La instalación se ha completado con éxito!',
+    'connection_details' => 'Detalles de Conexión',
+    'security' => 'Seguridad',
+    'remove_install_dir_note' => 'Por razones de seguridad, se recomienda eliminar el directorio de instalación después de completar.',
+    'remove_install_dir' => 'Eliminar Directorio de Instalación',
+    'confirm_remove_install_dir' => '¿Está seguro de que desea eliminar el directorio de instalación? Esta acción es irreversible.',
+    'removing' => 'Eliminando...',
+    'install_dir_removed' => 'El directorio de instalación ha sido eliminado con éxito.',
+    'install_dir_remove_failed' => 'No se pudo eliminar el directorio de instalación. Por favor, elimínelo manualmente.',
+    'go_to_dashboard' => 'Ir al Panel de Control',
     
     // General
     'error' => 'Error',
