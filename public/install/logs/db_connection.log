@@ -196,3 +196,18 @@ ERREUR: SQLSTATE[HY000] [1045] Access denied for user 'adminlicencetest'@'localh
     "env_path": "R:\\Adev\\200  -  test\\adminlicence_saas\/.env"
 }
 
+{
+    "time": "2025-04-16 14:31:14",
+    "function": "test_db",
+    "host": "localhost",
+    "database": "adminlicencetest",
+    "username": "adminlicencetest"
+}
+
+{
+    "time": "2025-04-16 14:31:14",
+    "function": "update_env_db_config",
+    "status": "success",
+    "env_path": "R:\\Adev\\200  -  test\\adminlicence_saas\/.env"
+}
+

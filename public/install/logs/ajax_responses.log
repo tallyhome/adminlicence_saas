@@ -978,3 +978,55 @@
     }
 }
 
+{
+    "time": "2025-04-16 14:30:59",
+    "license_key": "TNBH-DRDK-K9JG-H4R1",
+    "result": {
+        "status": false,
+        "message": "Cl\u00e9 de s\u00e9rie invalide",
+        "data": null,
+        "debug_info": [
+            "D\u00e9but de la v\u00e9rification de licence: 2025-04-16 14:30:59",
+            "Cl\u00e9 de licence: TNBH-DRDK-K9JG-H4R1",
+            "Domaine: 127.0.0.1",
+            "IP: 127.0.0.1",
+            "Base URL API: https:\/\/licence.myvcard.fr",
+            "Essai du point d'entr\u00e9e: https:\/\/licence.myvcard.fr\/api\/check-serial.php",
+            "Utilisation de cURL pour la requ\u00eate",
+            "Code HTTP: 200",
+            "Temps de r\u00e9ponse: 322 ms",
+            "R\u00e9ponse JSON valide re\u00e7ue",
+            "Contenu de la r\u00e9ponse: {\"status\":\"error\",\"message\":\"Cl\\u00e9 de s\\u00e9rie invalide\"}",
+            "Licence invalide: Cl\u00e9 de s\u00e9rie invalide"
+        ]
+    }
+}
+
+{
+    "time": "2025-04-16 14:31:04",
+    "license_key": "TNBH-DRDK-K9JG-H4RR",
+    "result": {
+        "status": true,
+        "message": "Cl\u00e9 de s\u00e9rie valide",
+        "data": {
+            "token": "1a2d0f22174ad592bafd170db59b3f09",
+            "project": "",
+            "expires_at": null
+        },
+        "debug_info": [
+            "D\u00e9but de la v\u00e9rification de licence: 2025-04-16 14:31:04",
+            "Cl\u00e9 de licence: TNBH-DRDK-K9JG-H4RR",
+            "Domaine: 127.0.0.1",
+            "IP: 127.0.0.1",
+            "Base URL API: https:\/\/licence.myvcard.fr",
+            "Essai du point d'entr\u00e9e: https:\/\/licence.myvcard.fr\/api\/check-serial.php",
+            "Utilisation de cURL pour la requ\u00eate",
+            "Code HTTP: 200",
+            "Temps de r\u00e9ponse: 107 ms",
+            "R\u00e9ponse JSON valide re\u00e7ue",
+            "Contenu de la r\u00e9ponse: {\"status\":\"success\",\"message\":\"Cl\\u00e9 de s\\u00e9rie valide\",\"data\":{\"token\":\"1a2d0f22174ad592bafd170db59b3f09\",\"project\":\"\",\"expires_at\":null}}",
+            "Licence valide!"
+        ]
+    }
+}
+

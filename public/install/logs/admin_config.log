@@ -398,3 +398,11 @@
     "status": "success"
 }
 
+{
+    "time": "2025-04-16 14:31:24",
+    "function": "update_env_app_url",
+    "project_url": "http:\/\/127.0.0.1:8000\/",
+    "env_path": "R:\\Adev\\200  -  test\\adminlicence_saas\/.env",
+    "status": "success"
+}
+

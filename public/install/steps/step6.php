@@ -12,14 +12,41 @@
         </div>
         <div class="card-body">
             <div class="row">
+                <!-- Chargement des informations utilisateurs depuis la base de données -->
+                <?php
+                // Récupérer les informations des utilisateurs depuis la base de données
+                $userInfo = json_decode(file_get_contents('ajax/get_admin_details.php'), true);
+                $projectUrl = isset($_SESSION['admin_config']['project_url']) ? $_SESSION['admin_config']['project_url'] : '';
+                
+                // Vérifier si les informations ont été récupérées avec succès
+                if (!isset($userInfo['status']) || !$userInfo['status']) {
+                    // Utiliser les informations de session comme fallback
+                    $superAdminEmail = 'superadmin@example.com';
+                    $superAdminPassword = 'password';
+                    $adminEmail = isset($_SESSION['admin_config']['email']) ? $_SESSION['admin_config']['email'] : '';
+                    $adminPassword = isset($_SESSION['admin_config']['password']) ? substr($_SESSION['admin_config']['password'], 0, 3) . str_repeat('*', strlen($_SESSION['admin_config']['password']) - 3) : '';
+                    $userEmail = 'user@example.com';
+                    $userPassword = 'password';
+                } else {
+                    // Utiliser les informations récupérées depuis la base de données
+                    $superAdminEmail = $userInfo['superadmin']['email'];
+                    $superAdminPassword = $userInfo['superadmin']['password_hint'];
+                    $adminEmail = $userInfo['admin']['email'];
+                    $adminPassword = $userInfo['admin']['password_hint'];
+                    $userEmail = $userInfo['user']['email'];
+                    $userPassword = $userInfo['user']['password_hint'];
+                    $projectUrl = $userInfo['admin_url'];
+                }
+                ?>
+                
                 <!-- SuperAdmin -->
                 <div class="col-md-4">
                     <div class="card mb-3">
                         <div class="card-header bg-primary text-white">SuperAdmin</div>
                         <div class="card-body">
-                            <p><strong>Email:</strong> <span id="superadmin-email"><?php echo isset($_SESSION['admin_config']['email']) ? $_SESSION['admin_config']['email'] : ''; ?></span></p>
-                            <p><strong>Mot de passe:</strong> <span id="superadmin-password"><?php echo isset($_SESSION['admin_config']['password']) ? substr($_SESSION['admin_config']['password'], 0, 3) . str_repeat('*', strlen($_SESSION['admin_config']['password']) - 3) : ''; ?></span></p>
-                            <p><a href="<?php echo isset($_SESSION['admin_config']['project_url']) ? $_SESSION['admin_config']['project_url'] : ''; ?>/login" target="_blank" class="btn btn-sm btn-primary">Se connecter</a></p>
+                            <p><strong>Email:</strong> <span id="superadmin-email"><?php echo $superAdminEmail; ?></span></p>
+                            <p><strong>Mot de passe:</strong> <span id="superadmin-password"><?php echo $superAdminPassword; ?></span></p>
+                            <p><a href="<?php echo $projectUrl; ?>/login" target="_blank" class="btn btn-sm btn-primary">Se connecter</a></p>
                         </div>
                     </div>
                 </div>
@@ -29,9 +56,9 @@
                     <div class="card mb-3">
                         <div class="card-header bg-info text-white">Admin</div>
                         <div class="card-body">
-                            <p><strong>Email:</strong> <span id="admin-email"><?php echo isset($_SESSION['admin_config']['email']) ? $_SESSION['admin_config']['email'] : ''; ?></span></p>
-                            <p><strong>Mot de passe:</strong> <span id="admin-password"><?php echo isset($_SESSION['admin_config']['password']) ? substr($_SESSION['admin_config']['password'], 0, 3) . str_repeat('*', strlen($_SESSION['admin_config']['password']) - 3) : ''; ?></span></p>
-                            <p><a href="<?php echo isset($_SESSION['admin_config']['project_url']) ? $_SESSION['admin_config']['project_url'] : ''; ?>/login" target="_blank" class="btn btn-sm btn-info">Se connecter</a></p>
+                            <p><strong>Email:</strong> <span id="admin-email"><?php echo $adminEmail; ?></span></p>
+                            <p><strong>Mot de passe:</strong> <span id="admin-password"><?php echo $adminPassword; ?></span></p>
+                            <p><a href="<?php echo $projectUrl; ?>/login" target="_blank" class="btn btn-sm btn-info">Se connecter</a></p>
                         </div>
                     </div>
                 </div>
@@ -41,9 +68,9 @@
                     <div class="card mb-3">
                         <div class="card-header bg-success text-white">User</div>
                         <div class="card-body">
-                            <p><strong>Email:</strong> <span id="user-email"><?php echo isset($_SESSION['admin_config']['email']) ? $_SESSION['admin_config']['email'] : ''; ?></span></p>
-                            <p><strong>Mot de passe:</strong> <span id="user-password"><?php echo isset($_SESSION['admin_config']['password']) ? substr($_SESSION['admin_config']['password'], 0, 3) . str_repeat('*', strlen($_SESSION['admin_config']['password']) - 3) : ''; ?></span></p>
-                            <p><a href="<?php echo isset($_SESSION['admin_config']['project_url']) ? $_SESSION['admin_config']['project_url'] : ''; ?>/login" target="_blank" class="btn btn-sm btn-success">Se connecter</a></p>
+                            <p><strong>Email:</strong> <span id="user-email"><?php echo $userEmail; ?></span></p>
+                            <p><strong>Mot de passe:</strong> <span id="user-password"><?php echo $userPassword; ?></span></p>
+                            <p><a href="<?php echo $projectUrl; ?>/login" target="_blank" class="btn btn-sm btn-success">Se connecter</a></p>
                         </div>
                     </div>
                 </div>
