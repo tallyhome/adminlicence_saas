@@ -61,26 +61,35 @@ class SubscriptionController extends Controller
      */
     public function checkout($planId)
     {
-        // Accessible à tous les rôles connectés
-        // (si tu veux restreindre, décommente la ligne suivante)
-        // if (!$this->isAdminOrSuperAdmin() && !$this->isSimpleUser()) abort(403);
-        
-        // Get the current tenant
-        $tenant = Auth::user()->tenant;
-        
-        // Get the selected plan
-        $plans = config('subscription.plans');
-        $plan = collect($plans)->firstWhere('id', $planId);
-        
-        if (!$plan) {
-            return redirect()->route('subscription.plans')
-                ->with('error', 'Selected plan not found.');
+        // Vérifier si l'utilisateur est connecté
+        if (!Auth::check() && !Auth::guard('admin')->check()) {
+            return redirect()->route('login')
+                ->with('error', 'Vous devez être connecté pour souscrire à un abonnement.');
         }
         
-        // Get payment methods
-        $paymentMethods = $tenant->paymentMethods;
+        // Récupérer le plan depuis la base de données
+        $plan = \App\Models\Plan::findOrFail($planId);
         
-        return view('subscription.checkout', compact('tenant', 'plan', 'paymentMethods'));
+        if (!$plan->is_active) {
+            return redirect()->route('subscription.plans')
+                ->with('error', 'Ce plan n\'est pas disponible actuellement.');
+        }
+        
+        // Récupérer les méthodes de paiement disponibles
+        $stripeEnabled = config('payment.stripe.enabled', false);
+        $paypalEnabled = config('payment.paypal.enabled', false);
+        
+        // Récupérer les méthodes de paiement enregistrées de l'utilisateur si disponible
+        $paymentMethods = [];
+        if (Auth::check()) {
+            $user = Auth::user();
+            if ($user->stripe_id) {
+                // Récupérer les méthodes de paiement Stripe
+                $paymentMethods = $this->stripeService->getPaymentMethods($user->stripe_id);
+            }
+        }
+        
+        return view('subscription.checkout', compact('plan', 'stripeEnabled', 'paypalEnabled', 'paymentMethods'));
     }
     
     /**

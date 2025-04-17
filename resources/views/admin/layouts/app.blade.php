@@ -206,6 +206,42 @@
                     </div>
                 </li>
 
+                <!-- Rapports -->
+                <li class="nav-item">
+                    <a class="nav-link" data-bs-toggle="collapse" href="#rapportsSubmenu" role="button">
+                        <i class="fas fa-chart-line me-2"></i> Rapports
+                    </a>
+                    <div class="collapse {{ request()->routeIs('admin.reports.*') ? 'show' : '' }}" id="rapportsSubmenu">
+                        <ul class="nav flex-column ms-3">
+                            <li class="nav-item">
+                                <a class="nav-link {{ request()->routeIs('admin.reports.index') ? 'active' : '' }}" href="{{ route('admin.reports.index') }}">
+                                    <i class="fas fa-tachometer-alt me-2"></i> Tableau de bord
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link {{ request()->routeIs('admin.reports.revenue') ? 'active' : '' }}" href="{{ route('admin.reports.revenue') }}">
+                                    <i class="fas fa-euro-sign me-2"></i> Revenus
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link {{ request()->routeIs('admin.reports.licenses') ? 'active' : '' }}" href="{{ route('admin.reports.licenses') }}">
+                                    <i class="fas fa-key me-2"></i> Licences
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link {{ request()->routeIs('admin.reports.users') ? 'active' : '' }}" href="{{ route('admin.reports.users') }}">
+                                    <i class="fas fa-users me-2"></i> Utilisateurs
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link {{ request()->routeIs('admin.reports.support') ? 'active' : '' }}" href="{{ route('admin.reports.support') }}">
+                                    <i class="fas fa-headset me-2"></i> Support
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+
                 <!-- Gestion des licences -->
                 <li class="nav-item">
                     <a class="nav-link {{ request()->routeIs('admin.projects.*') ? 'active' : '' }}" href="{{ route('admin.projects.index') }}">
@@ -419,7 +455,11 @@
     </div>
 
     <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap5.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.8/clipboard.min.js"></script>
     <script src="{{ asset('js/dark-mode.js') }}"></script>
     @stack('scripts')

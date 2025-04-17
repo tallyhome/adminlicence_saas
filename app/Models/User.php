@@ -105,9 +105,17 @@ class User extends Authenticatable
     
     /**
      * Relation avec l'abonnement actif de l'utilisateur
+     * Note: Dans ce système, les utilisateurs sont liés aux abonnements via le tenant_id
      */
     public function subscription()
     {
-        return $this->hasOne(Subscription::class)->where('status', 'active')->latest();
+        // Vérifier si la table subscriptions existe et a la colonne tenant_id
+        if (\Schema::hasTable('subscriptions') && \Schema::hasColumn('subscriptions', 'tenant_id')) {
+            // Utiliser la relation via tenant_id si l'utilisateur a un tenant_id
+            return $this->hasOne(Subscription::class, 'tenant_id', 'id')->where('status', 'active')->latest();
+        }
+        
+        // Fallback pour éviter les erreurs
+        return $this->hasOne(Subscription::class, 'id', 'id')->where('id', -1); // Relation vide
     }
 }

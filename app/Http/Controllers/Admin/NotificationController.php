@@ -14,16 +14,20 @@ class NotificationController extends Controller
     /**
      * Display a listing of the notifications.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $notifications = Notification::orderBy('created_at', 'desc')->paginate(10);
+        // Récupérer les paramètres de pagination
+        $perPage = $request->input('per_page', 10);
+        $validPerPage = in_array($perPage, [10, 25, 50, 100, 500, 1000]) ? $perPage : 10;
+        
+        $notifications = Notification::orderBy('created_at', 'desc')->paginate($validPerPage);
         
         // Utilise le nouveau dashboard en fonction du rôle de l'utilisateur
         $admin = Auth::guard('admin')->user();
         if ($admin->is_super_admin) {
-            return view('admin.dashboard_superadmin', compact('notifications'));
+            return view('admin.dashboard_superadmin', compact('notifications', 'validPerPage'));
         } else {
-            return view('admin.dashboard_user', compact('notifications'));
+            return view('admin.dashboard_user', compact('notifications', 'validPerPage'));
         }
     }
 

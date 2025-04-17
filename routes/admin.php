@@ -237,6 +237,22 @@ Route::middleware('auth:admin')->group(function () {
     Route::put('/users/{user}', [\App\Http\Controllers\Admin\UserController::class, 'update'])->name('admin.users.update');
     Route::delete('/users/{user}', [\App\Http\Controllers\Admin\UserController::class, 'destroy'])->name('admin.users.destroy');
     
+    // Gestion des administrateurs
+    Route::put('/admins/{admin}', [\App\Http\Controllers\Admin\UserManagementController::class, 'updateAdmin'])->name('admin.admins.update');
+    
+    // Gestion des rôles et permissions
+    Route::prefix('roles')->group(function () {
+        Route::get('/', [\App\Http\Controllers\Admin\RoleController::class, 'index'])->name('admin.roles.index');
+        Route::get('/create', [\App\Http\Controllers\Admin\RoleController::class, 'create'])->name('admin.roles.create');
+        Route::post('/', [\App\Http\Controllers\Admin\RoleController::class, 'store'])->name('admin.roles.store');
+        Route::get('/{role}', [\App\Http\Controllers\Admin\RoleController::class, 'show'])->name('admin.roles.show');
+        Route::get('/{role}/edit', [\App\Http\Controllers\Admin\RoleController::class, 'edit'])->name('admin.roles.edit');
+        Route::put('/{role}', [\App\Http\Controllers\Admin\RoleController::class, 'update'])->name('admin.roles.update');
+        Route::delete('/{role}', [\App\Http\Controllers\Admin\RoleController::class, 'destroy'])->name('admin.roles.destroy');
+        Route::post('/assign-to-admin/{admin}', [\App\Http\Controllers\Admin\RoleController::class, 'assignRolesToAdmin'])->name('admin.roles.assign-to-admin');
+        Route::post('/assign-to-user/{user}', [\App\Http\Controllers\Admin\RoleController::class, 'assignRolesToUser'])->name('admin.roles.assign-to-user');
+    });
+    
     // Gestion des plans d'abonnement
     Route::prefix('subscriptions')->group(function () {
         Route::get('/', [\App\Http\Controllers\Admin\PlanController::class, 'index'])->name('admin.subscriptions.index');
@@ -266,5 +282,15 @@ Route::middleware('auth:admin')->group(function () {
         Route::get('/', [\App\Http\Controllers\Admin\InvoiceController::class, 'index'])->name('admin.invoices.index');
         Route::get('/{invoice}', [\App\Http\Controllers\Admin\InvoiceController::class, 'show'])->name('admin.invoices.show');
         Route::get('/{invoice}/download', [\App\Http\Controllers\Admin\InvoiceController::class, 'download'])->name('admin.invoices.download');
+    });
+    
+    // Routes pour les rapports
+    Route::prefix('reports')->group(function () {
+        Route::get('/', [\App\Http\Controllers\Admin\ReportController::class, 'index'])->name('admin.reports.index');
+        Route::get('/revenue', [\App\Http\Controllers\Admin\ReportController::class, 'revenue'])->name('admin.reports.revenue');
+        Route::get('/licenses', [\App\Http\Controllers\Admin\ReportController::class, 'licenses'])->name('admin.reports.licenses');
+        Route::get('/users', [\App\Http\Controllers\Admin\ReportController::class, 'users'])->name('admin.reports.users');
+        Route::get('/support', [\App\Http\Controllers\Admin\ReportController::class, 'support'])->name('admin.reports.support');
+        Route::get('/export', [\App\Http\Controllers\Admin\ReportController::class, 'export'])->name('admin.reports.export');
     });
 });
