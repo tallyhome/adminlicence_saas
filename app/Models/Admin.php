@@ -77,4 +77,12 @@ class Admin extends Authenticatable implements CanResetPassword
         
         return false;
     }
+    
+    /**
+     * Relation avec les utilisateurs créés par cet admin (multi-tenant)
+     */
+    public function users()
+    {
+        return $this->hasMany(User::class, 'admin_id');
+    }
 }

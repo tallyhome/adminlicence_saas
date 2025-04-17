@@ -4,12 +4,16 @@ namespace App\Http\Controllers;
 
 use App\Models\Subscription;
 use App\Models\Invoice;
+use App\Models\Notification;
+use App\Models\User;
+use App\Models\Admin;
 use App\Events\NewPayment;
 use App\Services\StripeService;
 use App\Services\PayPalService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
 
 class WebhookController extends Controller
 {
@@ -110,6 +114,18 @@ class WebhookController extends Controller
 
             // Émettre l'événement de nouveau paiement
             event(new NewPayment($invoice));
+            
+            // Créer une notification pour l'administrateur et l'utilisateur
+            $this->createPaymentNotification($subscription, $invoice, true);
+            
+            // Mettre à jour le statut de l'abonnement
+            $subscription->update([
+                'status' => 'active',
+                'current_period_end' => $provider === 'stripe' 
+                    ? now()->addDays(30) // Par défaut 30 jours, à ajuster selon les données réelles
+                    : now()->addDays(30),
+                'auto_renew' => true
+            ]);
         }
 
         return response('Webhook traité', 200);
@@ -159,9 +175,156 @@ class WebhookController extends Controller
                     'canceled_at' => null,
                     'auto_renew' => true
                 ]);
+                
+                // Créer une notification pour l'activation de l'abonnement
+                $this->createSubscriptionNotification($subscription, 'active');
             }
         }
 
         return response('Webhook traité', 200);
+    }
+    
+    /**
+     * Gérer un échec de paiement
+     */
+    protected function handleFailedPayment($paymentData, string $provider): Response
+    {
+        $subscriptionId = $provider === 'stripe' 
+            ? $paymentData['subscription']
+            : $paymentData['billing_agreement_id'];
+
+        $subscription = Subscription::where($provider . '_subscription_id', $subscriptionId)->first();
+
+        if ($subscription) {
+            // Créer une facture avec statut échoué
+            $invoice = Invoice::create([
+                'subscription_id' => $subscription->id,
+                'tenant_id' => $subscription->tenant_id,
+                'amount' => $provider === 'stripe' ? $paymentData['amount_due'] / 100 : $paymentData['amount']['total'],
+                'payment_method' => $provider,
+                'status' => 'failed',
+                'provider_invoice_id' => $provider === 'stripe' ? $paymentData['id'] : $paymentData['id']
+            ]);
+            
+            // Créer une notification pour l'échec de paiement
+            $this->createPaymentNotification($subscription, $invoice, false);
+        }
+
+        return response('Webhook traité', 200);
+    }
+    
+    /**
+     * Créer une notification pour un paiement
+     */
+    protected function createPaymentNotification(Subscription $subscription, Invoice $invoice, bool $success): void
+    {
+        // Récupérer l'utilisateur et l'admin associés
+        $user = User::where('tenant_id', $subscription->tenant_id)->first();
+        $admin = $user ? Admin::find($user->admin_id) : null;
+        $superAdmins = Admin::where('is_super_admin', true)->get();
+        
+        // Déterminer le message et le titre en fonction du succès ou de l'échec
+        $title = $success ? 'Paiement réussi' : 'Paiement échoué';
+        $message = $success 
+            ? "Paiement de {$invoice->amount} € reçu pour l'abonnement #{$subscription->id}" 
+            : "Le paiement de {$invoice->amount} € pour l'abonnement #{$subscription->id} a échoué";
+        
+        // Notification pour l'utilisateur
+        if ($user) {
+            Notification::create([
+                'title' => $title,
+                'message' => $message,
+                'sender_id' => null,
+                'sender_type' => Notification::SENDER_SYSTEM,
+                'target_type' => Notification::TARGET_SPECIFIC,
+                'target_ids' => [$user->id],
+                'importance' => $success ? 'normal' : 'high',
+            ]);
+        }
+        
+        // Notification pour l'admin associé
+        if ($admin) {
+            Notification::create([
+                'title' => $title,
+                'message' => $message . ($user ? " (Utilisateur: {$user->name})" : ""),
+                'sender_id' => null,
+                'sender_type' => Notification::SENDER_SYSTEM,
+                'target_type' => Notification::TARGET_SPECIFIC,
+                'target_ids' => [$admin->id],
+                'importance' => $success ? 'normal' : 'high',
+            ]);
+        }
+        
+        // Notification pour tous les superadmins en cas d'échec
+        if (!$success && $superAdmins->count() > 0) {
+            Notification::create([
+                'title' => 'Alerte : ' . $title,
+                'message' => $message . ($user ? " (Utilisateur: {$user->name})" : ""),
+                'sender_id' => null,
+                'sender_type' => Notification::SENDER_SYSTEM,
+                'target_type' => Notification::TARGET_SPECIFIC,
+                'target_ids' => $superAdmins->pluck('id')->toArray(),
+                'importance' => 'high',
+            ]);
+        }
+    }
+    
+    /**
+     * Créer une notification pour un changement de statut d'abonnement
+     */
+    protected function createSubscriptionNotification(Subscription $subscription, string $status): void
+    {
+        // Récupérer l'utilisateur et l'admin associés
+        $user = User::where('tenant_id', $subscription->tenant_id)->first();
+        $admin = $user ? Admin::find($user->admin_id) : null;
+        
+        // Déterminer le message en fonction du statut
+        $statusText = '';
+        $importance = 'normal';
+        
+        switch ($status) {
+            case 'active':
+                $statusText = 'activé';
+                break;
+            case 'canceled':
+                $statusText = 'annulé';
+                $importance = 'high';
+                break;
+            case 'expired':
+                $statusText = 'expiré';
+                $importance = 'high';
+                break;
+            default:
+                $statusText = $status;
+        }
+        
+        $title = "Abonnement $statusText";
+        $message = "Votre abonnement #{$subscription->id} a été $statusText.";
+        
+        // Notification pour l'utilisateur
+        if ($user) {
+            Notification::create([
+                'title' => $title,
+                'message' => $message,
+                'sender_id' => null,
+                'sender_type' => Notification::SENDER_SYSTEM,
+                'target_type' => Notification::TARGET_SPECIFIC,
+                'target_ids' => [$user->id],
+                'importance' => $importance,
+            ]);
+        }
+        
+        // Notification pour l'admin associé
+        if ($admin) {
+            Notification::create([
+                'title' => $title,
+                'message' => $message . ($user ? " (Utilisateur: {$user->name})" : ""),
+                'sender_id' => null,
+                'sender_type' => Notification::SENDER_SYSTEM,
+                'target_type' => Notification::TARGET_SPECIFIC,
+                'target_ids' => [$admin->id],
+                'importance' => $importance,
+            ]);
+        }
     }
 }

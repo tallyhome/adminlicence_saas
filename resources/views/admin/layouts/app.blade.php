@@ -158,29 +158,52 @@
                         <i class="fas fa-tachometer-alt me-2"></i> Tableau de bord
                     </a>
                 </li>
+                @if(auth('admin')->check())
+                <li class="nav-item">
+                    <a class="nav-link {{ request()->routeIs('admin.users.index') ? 'active' : '' }}" href="{{ route('admin.users.index') }}">
+                        <i class="fas fa-users me-2"></i> Utilisateurs
+                    </a>
+                </li>
+                @endif
 
                 <!-- Abonnements -->
                 <li class="nav-item">
-                    <a class="nav-link {{ request()->routeIs('subscription.plans') ? 'active' : '' }}" href="{{ route('subscription.plans') }}">
+                    <a class="nav-link" data-bs-toggle="collapse" href="#abonnementsSubmenu" role="button">
                         <i class="fas fa-credit-card me-2"></i> Abonnements
                     </a>
-                    <ul class="nav flex-column ms-3">
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ route('subscription.plans') }}">
-                                <i class="fas fa-list me-2"></i> Voir les offres
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ route('subscription.checkout', ['planId' => 1]) }}">
-                                <i class="fab fa-cc-stripe me-2"></i> Paiement Stripe
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ route('subscription.checkout', ['planId' => 1]) }}?method=paypal">
-                                <i class="fab fa-cc-paypal me-2"></i> Paiement PayPal
-                            </a>
-                        </li>
-                    </ul>
+                    <div class="collapse {{ request()->routeIs('subscription.*') || request()->routeIs('admin.subscriptions.*') ? 'show' : '' }}" id="abonnementsSubmenu">
+                        <ul class="nav flex-column ms-3">
+                            <li class="nav-item">
+                                <a class="nav-link {{ request()->routeIs('subscription.plans') ? 'active' : '' }}" href="{{ route('subscription.plans') }}">
+                                    <i class="fas fa-list me-2"></i> Voir les offres
+                                </a>
+                            </li>
+                            @if(auth()->guard('admin')->check())
+                            <li class="nav-item">
+                                <a class="nav-link {{ request()->routeIs('admin.subscriptions.index') ? 'active' : '' }}" href="{{ route('admin.subscriptions.index') }}">
+                                    <i class="fas fa-cog me-2"></i> Gérer les plans
+                                </a>
+                            </li>
+                            @endif
+                            @if(auth()->guard('admin')->check() && auth()->guard('admin')->user()->is_super_admin)
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('admin.subscriptions.create-default-plans') }}">
+                                    <i class="fas fa-magic me-2"></i> Créer plans par défaut
+                                </a>
+                            </li>
+                            @endif
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('subscription.checkout', ['planId' => 1]) }}">
+                                    <i class="fab fa-cc-stripe me-2"></i> Paiement Stripe
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('subscription.checkout', ['planId' => 1]) }}?method=paypal">
+                                    <i class="fab fa-cc-paypal me-2"></i> Paiement PayPal
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
                 </li>
 
                 <!-- Gestion des licences -->
@@ -243,21 +266,6 @@
 
                 <!-- Support -->
                 <li class="nav-item">
-                    <a class="nav-link {{ request()->routeIs('subscription.plans') ? 'active' : '' }}" href="{{ route('subscription.plans') }}">
-                        <i class="fas fa-cubes me-2"></i> Abonnements
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link {{ request()->routeIs('admin.tickets.index') ? 'active' : '' }}" href="{{ route('admin.tickets.index') }}">
-                        <i class="fas fa-life-ring me-2"></i> Tickets
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link {{ request()->routeIs('admin.tickets.create') ? 'active' : '' }}" href="{{ route('admin.tickets.create') }}">
-                        <i class="fas fa-plus-circle me-2"></i> Créer ticket
-                    </a>
-                </li>
-                <li class="nav-item">
                     <a class="nav-link {{ request()->routeIs('admin.notifications.index') ? 'active' : '' }}" href="{{ route('admin.notifications.index') }}">
                         <i class="fas fa-bell me-2"></i> Notifications
                     </a>
@@ -269,8 +277,13 @@
                     <div class="collapse {{ request()->routeIs('admin.tickets.*') || request()->routeIs('admin.super.tickets.*') ? 'show' : '' }}" id="supportSubmenu">
                         <ul class="nav flex-column ms-3">
                             <li class="nav-item">
-                                <a class="nav-link {{ request()->routeIs('admin.tickets.*') && !request()->routeIs('admin.super.tickets.*') ? 'active' : '' }}" href="{{ route('admin.tickets.index') }}">
+                                <a class="nav-link {{ request()->routeIs('admin.tickets.*') && !request()->routeIs('admin.super.tickets.*') && !request()->routeIs('admin.tickets.create') ? 'active' : '' }}" href="{{ route('admin.tickets.index') }}">
                                     <i class="fas fa-ticket-alt me-2"></i> Tickets
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link {{ request()->routeIs('admin.tickets.create') ? 'active' : '' }}" href="{{ route('admin.tickets.create') }}">
+                                    <i class="fas fa-plus-circle me-2"></i> Créer ticket
                                 </a>
                             </li>
                             @if(auth()->guard('admin')->user()->is_super_admin)

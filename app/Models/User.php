@@ -23,6 +23,7 @@ class User extends Authenticatable
         'email',
         'password',
         'is_admin',
+        'admin_id',
     ];
 
     /**
@@ -76,5 +77,37 @@ class User extends Authenticatable
         }
         
         return false;
+    }
+    
+    /**
+     * Relation avec l'admin qui a créé cet utilisateur (multi-tenant)
+     */
+    public function admin()
+    {
+        return $this->belongsTo(Admin::class, 'admin_id');
+    }
+    
+    /**
+     * Relation avec les tickets de support créés par l'utilisateur
+     */
+    public function tickets()
+    {
+        return $this->hasMany(SupportTicket::class);
+    }
+    
+    /**
+     * Relation avec les factures de l'utilisateur
+     */
+    public function invoices()
+    {
+        return $this->hasMany(Invoice::class);
+    }
+    
+    /**
+     * Relation avec l'abonnement actif de l'utilisateur
+     */
+    public function subscription()
+    {
+        return $this->hasOne(Subscription::class)->where('status', 'active')->latest();
     }
 }

@@ -24,7 +24,7 @@ class DashboardController extends Controller
         $validPerPage = in_array($perPage, [10, 25, 50, 100, 500, 1000]) ? $perPage : 10;
 
         // Statistiques générales
-        $stats = [
+        $serialKeyStats = [
             'total_keys' => SerialKey::count(),
             'active_keys' => SerialKey::where('status', 'active')->count(),
             'suspended_keys' => SerialKey::where('status', 'suspended')->count(),
@@ -82,7 +82,7 @@ class DashboardController extends Controller
             ->get();
 
         return view('admin.dashboard', compact(
-            'stats',
+            'serialKeyStats',
             'recentKeys',
             'recentActions',
             'projectStats',

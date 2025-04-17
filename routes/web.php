@@ -43,11 +43,12 @@ Route::post('/webhooks/paypal', [WebhookController::class, 'handlePayPalWebhook'
 // Subscription routes (auth required)
 Route::middleware(['auth'])->group(function () {
     // Subscription plans
-    Route::get('/subscription/plans', [SubscriptionController::class, 'plans'])->name('subscription.plans');
-    Route::get('/subscription/checkout/{planId}', [SubscriptionController::class, 'checkout'])->name('subscription.checkout');
-    Route::post('/subscription/process-stripe', [SubscriptionController::class, 'processStripeSubscription'])->name('subscription.process-stripe');
-    Route::post('/subscription/process-paypal', [SubscriptionController::class, 'processPayPalSubscription'])->name('subscription.process-paypal');
-    Route::get('/subscription/success', [SubscriptionController::class, 'success'])->name('subscription.success');
+    Route::get('/subscription/plans', [\App\Http\Controllers\SubscriptionController::class, 'plans'])->name('subscription.plans');
+    Route::get('/subscriptions', [\App\Http\Controllers\SubscriptionController::class, 'plans'])->name('subscriptions'); // Redirection vers le nouveau dashboard
+    Route::get('/subscription/checkout/{planId}', [\App\Http\Controllers\SubscriptionController::class, 'checkout'])->name('subscription.checkout');
+    Route::post('/subscription/process-stripe', [\App\Http\Controllers\SubscriptionController::class, 'processStripeSubscription'])->name('subscription.process-stripe');
+    Route::post('/subscription/process-paypal', [\App\Http\Controllers\SubscriptionController::class, 'processPayPalSubscription'])->name('subscription.process-paypal');
+    Route::get('/subscription/success', [\App\Http\Controllers\SubscriptionController::class, 'success'])->name('subscription.success');
     
     // Payment methods
     Route::get('/subscription/payment-methods', [SubscriptionController::class, 'paymentMethods'])->name('subscription.payment-methods');

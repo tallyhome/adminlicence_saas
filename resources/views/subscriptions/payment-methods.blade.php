@@ -79,7 +79,7 @@
 
     // Soumission du formulaire
     const form = document.getElementById('payment-form');
-    form.addEventListener('submit', async (event) => {
+    form.addEventListener('submit', async function(event) {
         event.preventDefault();
         const isDefault = document.getElementById('default-payment').checked;
 
@@ -90,7 +90,7 @@
                     'Content-Type': 'application/json',
                     'X-CSRF-TOKEN': '{{ csrf_token() }}'
                 }
-            }).then(r => r.json());
+            }).then(function(r) { return r.json(); });
 
             const { error, paymentMethod } = await stripe.confirmCardSetup(setupIntent.client_secret, {
                 payment_method: { card: cardElement }

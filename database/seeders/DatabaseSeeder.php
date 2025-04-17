@@ -20,6 +20,10 @@ class DatabaseSeeder extends Seeder
         
         // Exécuter le seeder des utilisateurs
         $this->call(UsersSeeder::class);
+        
+        // Exécuter le seeder des plans
+        $this->call(PlanSeeder::class);
+        
         // Créer l'administrateur
         Admin::firstOrCreate(
             ['email' => 'admin@example.com'],

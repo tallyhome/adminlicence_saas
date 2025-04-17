@@ -167,8 +167,12 @@ class NotificationManager {
             if (unreadCount > 0) {
                 this.notificationCounter.textContent = unreadCount;
                 this.notificationCounter.classList.remove('hidden');
+                // Ajoute un badge rouge avec animation de pulse
+                this.notificationCounter.classList.add('bg-red-500', 'text-white', 'rounded-full', 'px-2', 'py-1', 'text-xs', 'font-bold', 'animate-pulse');
             } else {
                 this.notificationCounter.classList.add('hidden');
+                // Retire le badge rouge
+                this.notificationCounter.classList.remove('bg-red-500', 'text-white', 'rounded-full', 'px-2', 'py-1', 'text-xs', 'font-bold', 'animate-pulse');
             }
         }
     }

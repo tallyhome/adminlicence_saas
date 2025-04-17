@@ -270,15 +270,15 @@ use Illuminate\Support\Facades\Auth;
         </div>
     </div>
 
-    <!-- Graphiques -->
     <div class="row">
+        <!-- Utilisation des clés (30 derniers jours) -->
         <div class="col-xl-8 col-lg-7">
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
                     <h6 class="m-0 font-weight-bold text-primary">{{ __('Utilisation des clés (30 derniers jours)') }}</h6>
                 </div>
                 <div class="card-body">
-                    <div class="chart-area">
+                    <div class="chart-area" style="height: 300px;">
                         <canvas id="usageChart"></canvas>
                     </div>
                 </div>

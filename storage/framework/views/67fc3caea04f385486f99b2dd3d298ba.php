@@ -158,6 +158,53 @@
                         <i class="fas fa-tachometer-alt me-2"></i> Tableau de bord
                     </a>
                 </li>
+                <?php if(auth('admin')->check()): ?>
+                <li class="nav-item">
+                    <a class="nav-link <?php echo e(request()->routeIs('admin.users.index') ? 'active' : ''); ?>" href="<?php echo e(route('admin.users.index')); ?>">
+                        <i class="fas fa-users me-2"></i> Utilisateurs
+                    </a>
+                </li>
+                <?php endif; ?>
+
+                <!-- Abonnements -->
+                <li class="nav-item">
+                    <a class="nav-link" data-bs-toggle="collapse" href="#abonnementsSubmenu" role="button">
+                        <i class="fas fa-credit-card me-2"></i> Abonnements
+                    </a>
+                    <div class="collapse <?php echo e(request()->routeIs('subscription.*') || request()->routeIs('admin.subscriptions.*') ? 'show' : ''); ?>" id="abonnementsSubmenu">
+                        <ul class="nav flex-column ms-3">
+                            <li class="nav-item">
+                                <a class="nav-link <?php echo e(request()->routeIs('subscription.plans') ? 'active' : ''); ?>" href="<?php echo e(route('subscription.plans')); ?>">
+                                    <i class="fas fa-list me-2"></i> Voir les offres
+                                </a>
+                            </li>
+                            <?php if(auth()->guard('admin')->check()): ?>
+                            <li class="nav-item">
+                                <a class="nav-link <?php echo e(request()->routeIs('admin.subscriptions.index') ? 'active' : ''); ?>" href="<?php echo e(route('admin.subscriptions.index')); ?>">
+                                    <i class="fas fa-cog me-2"></i> Gérer les plans
+                                </a>
+                            </li>
+                            <?php endif; ?>
+                            <?php if(auth()->guard('admin')->check() && auth()->guard('admin')->user()->is_super_admin): ?>
+                            <li class="nav-item">
+                                <a class="nav-link" href="<?php echo e(route('admin.subscriptions.create-default-plans')); ?>">
+                                    <i class="fas fa-magic me-2"></i> Créer plans par défaut
+                                </a>
+                            </li>
+                            <?php endif; ?>
+                            <li class="nav-item">
+                                <a class="nav-link" href="<?php echo e(route('subscription.checkout', ['planId' => 1])); ?>">
+                                    <i class="fab fa-cc-stripe me-2"></i> Paiement Stripe
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="<?php echo e(route('subscription.checkout', ['planId' => 1])); ?>?method=paypal">
+                                    <i class="fab fa-cc-paypal me-2"></i> Paiement PayPal
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
 
                 <!-- Gestion des licences -->
                 <li class="nav-item">
@@ -219,21 +266,6 @@
 
                 <!-- Support -->
                 <li class="nav-item">
-                    <a class="nav-link <?php echo e(request()->routeIs('subscription.plans') ? 'active' : ''); ?>" href="<?php echo e(route('subscription.plans')); ?>">
-                        <i class="fas fa-cubes me-2"></i> Abonnements
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link <?php echo e(request()->routeIs('admin.tickets.index') ? 'active' : ''); ?>" href="<?php echo e(route('admin.tickets.index')); ?>">
-                        <i class="fas fa-life-ring me-2"></i> Tickets
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link <?php echo e(request()->routeIs('admin.tickets.create') ? 'active' : ''); ?>" href="<?php echo e(route('admin.tickets.create')); ?>">
-                        <i class="fas fa-plus-circle me-2"></i> Créer ticket
-                    </a>
-                </li>
-                <li class="nav-item">
                     <a class="nav-link <?php echo e(request()->routeIs('admin.notifications.index') ? 'active' : ''); ?>" href="<?php echo e(route('admin.notifications.index')); ?>">
                         <i class="fas fa-bell me-2"></i> Notifications
                     </a>
@@ -245,8 +277,13 @@
                     <div class="collapse <?php echo e(request()->routeIs('admin.tickets.*') || request()->routeIs('admin.super.tickets.*') ? 'show' : ''); ?>" id="supportSubmenu">
                         <ul class="nav flex-column ms-3">
                             <li class="nav-item">
-                                <a class="nav-link <?php echo e(request()->routeIs('admin.tickets.*') && !request()->routeIs('admin.super.tickets.*') ? 'active' : ''); ?>" href="<?php echo e(route('admin.tickets.index')); ?>">
+                                <a class="nav-link <?php echo e(request()->routeIs('admin.tickets.*') && !request()->routeIs('admin.super.tickets.*') && !request()->routeIs('admin.tickets.create') ? 'active' : ''); ?>" href="<?php echo e(route('admin.tickets.index')); ?>">
                                     <i class="fas fa-ticket-alt me-2"></i> Tickets
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link <?php echo e(request()->routeIs('admin.tickets.create') ? 'active' : ''); ?>" href="<?php echo e(route('admin.tickets.create')); ?>">
+                                    <i class="fas fa-plus-circle me-2"></i> Créer ticket
                                 </a>
                             </li>
                             <?php if(auth()->guard('admin')->user()->is_super_admin): ?>

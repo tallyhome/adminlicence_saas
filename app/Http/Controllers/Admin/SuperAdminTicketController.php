@@ -16,12 +16,17 @@ class SuperAdminTicketController extends Controller
      */
     public function __construct()
     {
-        $this->middleware(function ($request, $next) {
-            if (!Auth::guard('admin')->user()->is_super_admin) {
-                abort(403, 'Unauthorized action. Super Admin access required.');
-            }
-            return $next($request);
-        });
+        // La vérification sera faite dans chaque méthode pour plus de flexibilité
+    }
+    
+    /**
+     * Vérifie si l'utilisateur est un superadmin
+     */
+    private function ensureSuperAdmin()
+    {
+        if (!Auth::guard('admin')->check() || !Auth::guard('admin')->user()->is_super_admin) {
+            abort(403, 'Unauthorized action. Super Admin access required.');
+        }
     }
     
     /**
@@ -29,6 +34,8 @@ class SuperAdminTicketController extends Controller
      */
     public function index(Request $request)
     {
+        $this->ensureSuperAdmin();
+        
         $status = $request->get('status', 'all');
         $query = SupportTicket::with(['client', 'replies'])
             ->where('status', 'forwarded_to_super_admin')
@@ -49,6 +56,8 @@ class SuperAdminTicketController extends Controller
      */
     public function show(SupportTicket $ticket)
     {
+        $this->ensureSuperAdmin();
+        
         // Ensure the ticket is forwarded to super admin or allow super admin to see all tickets
         $ticket->load(['client', 'replies.user']);
         
@@ -60,6 +69,8 @@ class SuperAdminTicketController extends Controller
      */
     public function updateStatus(Request $request, SupportTicket $ticket)
     {
+        $this->ensureSuperAdmin();
+        
         $request->validate([
             'status' => 'required|in:open,in_progress,waiting,closed,forwarded_to_super_admin,resolved_by_super_admin',
         ]);
@@ -95,6 +106,8 @@ class SuperAdminTicketController extends Controller
      */
     public function reply(Request $request, SupportTicket $ticket)
     {
+        $this->ensureSuperAdmin();
+        
         $request->validate([
             'message' => 'required|string',
             'attachments' => 'nullable|array',
@@ -152,6 +165,8 @@ class SuperAdminTicketController extends Controller
      */
     public function returnToAdmin(Request $request, SupportTicket $ticket)
     {
+        $this->ensureSuperAdmin();
+        
         $request->validate([
             'message' => 'required|string',
         ]);
@@ -186,6 +201,8 @@ class SuperAdminTicketController extends Controller
      */
     public function assignToAdmin(Request $request, SupportTicket $ticket)
     {
+        $this->ensureSuperAdmin();
+        
         $request->validate([
             'admin_id' => 'required|exists:admins,id',
             'message' => 'nullable|string',
@@ -219,5 +236,46 @@ class SuperAdminTicketController extends Controller
         
         return redirect()->route('admin.super.tickets.index')
             ->with('success', "Ticket assigned to {$admin->name} successfully.");
+    }
+    
+    /**
+     * Close a ticket.
+     */
+    public function close(Request $request, SupportTicket $ticket)
+    {
+        $this->ensureSuperAdmin();
+        
+        $request->validate([
+            'message' => 'nullable|string',
+        ]);
+        
+        // Add the super admin's message as a reply if provided
+        if ($request->filled('message')) {
+            TicketReply::create([
+                'support_ticket_id' => $ticket->id,
+                'user_type' => TicketReply::USER_TYPE_ADMIN,
+                'user_id' => Auth::id(),
+                'message' => $request->message,
+            ]);
+        }
+        
+        // Create a system reply indicating the ticket was closed
+        TicketReply::create([
+            'support_ticket_id' => $ticket->id,
+            'user_type' => TicketReply::USER_TYPE_SYSTEM,
+            'user_id' => null,
+            'message' => 'Ticket closed by super admin.',
+        ]);
+        
+        // Update the ticket status
+        $ticket->status = 'closed';
+        $ticket->closed_at = now();
+        $ticket->closed_by_id = Auth::id();
+        $ticket->closed_by_type = 'admin';
+        $ticket->last_reply_at = now();
+        $ticket->save();
+        
+        return redirect()->route('admin.super.tickets.index')
+            ->with('success', 'Ticket closed successfully.');
     }
 }

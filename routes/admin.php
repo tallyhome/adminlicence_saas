@@ -186,10 +186,16 @@ Route::middleware('auth:admin')->group(function () {
 
     // Routes pour les paramètres généraux
     Route::get('settings', [SettingsController::class, 'index'])->name('admin.settings.index');
+    Route::post('settings', [SettingsController::class, 'update'])->name('admin.settings.update');
     Route::put('settings/profile', [SettingsController::class, 'updateProfile'])->name('admin.settings.update-profile');
     Route::put('settings/password', [SettingsController::class, 'updatePassword'])->name('admin.settings.update-password');
     Route::put('settings/favicon', [SettingsController::class, 'updateFavicon'])->name('admin.settings.update-favicon');
     Route::put('settings/dark-mode', [SettingsController::class, 'toggleDarkMode'])->name('admin.settings.toggle-dark-mode');
+    
+    // Routes pour la configuration des paiements
+    Route::get('settings/payment-integration', [\App\Http\Controllers\Admin\PaymentSettingsController::class, 'index'])->name('admin.settings.payment-integration');
+    Route::post('settings/update-stripe', [\App\Http\Controllers\Admin\PaymentSettingsController::class, 'updateStripe'])->name('admin.settings.update-stripe');
+    Route::post('settings/update-paypal', [\App\Http\Controllers\Admin\PaymentSettingsController::class, 'updatePayPal'])->name('admin.settings.update-paypal');
     
     // Routes pour l'authentification à deux facteurs
     Route::get('settings/two-factor', [TwoFactorAuthController::class, 'index'])->name('admin.settings.two-factor');
@@ -213,23 +219,52 @@ Route::middleware('auth:admin')->group(function () {
         Route::post('/{ticket}/forward-to-super-admin', [\App\Http\Controllers\Admin\SupportTicketController::class, 'forwardToSuperAdmin'])->name('admin.tickets.forward-to-super-admin');
     });
     
-    // Routes pour les tickets de support (super admin)
-    Route::prefix('super/tickets')->middleware('auth.super_admin')->group(function () {
+    // Routes pour les tickets superadmin
+    Route::prefix('super/tickets')->group(function () {
         Route::get('/', [\App\Http\Controllers\Admin\SuperAdminTicketController::class, 'index'])->name('admin.super.tickets.index');
         Route::get('/{ticket}', [\App\Http\Controllers\Admin\SuperAdminTicketController::class, 'show'])->name('admin.super.tickets.show');
-        Route::patch('/{ticket}/status', [\App\Http\Controllers\Admin\SuperAdminTicketController::class, 'updateStatus'])->name('admin.super.tickets.update-status');
         Route::post('/{ticket}/reply', [\App\Http\Controllers\Admin\SuperAdminTicketController::class, 'reply'])->name('admin.super.tickets.reply');
-        Route::post('/{ticket}/return-to-admin', [\App\Http\Controllers\Admin\SuperAdminTicketController::class, 'returnToAdmin'])->name('admin.super.tickets.return-to-admin');
+        Route::post('/{ticket}/close', [\App\Http\Controllers\Admin\SuperAdminTicketController::class, 'close'])->name('admin.super.tickets.close');
         Route::post('/{ticket}/assign-to-admin', [\App\Http\Controllers\Admin\SuperAdminTicketController::class, 'assignToAdmin'])->name('admin.super.tickets.assign-to-admin');
     });
     
+    // Gestion des utilisateurs (superadmin et admin)
+    Route::get('/users', [\App\Http\Controllers\Admin\UserManagementController::class, 'index'])->name('admin.users.index');
+    Route::get('/users/create', [\App\Http\Controllers\Admin\UserController::class, 'create'])->name('admin.users.create');
+    Route::post('/users', [\App\Http\Controllers\Admin\UserController::class, 'store'])->name('admin.users.store');
+    Route::get('/users/{user}', [\App\Http\Controllers\Admin\UserManagementController::class, 'show'])->name('admin.users.show');
+    Route::get('/users/{user}/edit', [\App\Http\Controllers\Admin\UserController::class, 'edit'])->name('admin.users.edit');
+    Route::put('/users/{user}', [\App\Http\Controllers\Admin\UserController::class, 'update'])->name('admin.users.update');
+    Route::delete('/users/{user}', [\App\Http\Controllers\Admin\UserController::class, 'destroy'])->name('admin.users.destroy');
+    
+    // Gestion des plans d'abonnement
+    Route::prefix('subscriptions')->group(function () {
+        Route::get('/', [\App\Http\Controllers\Admin\PlanController::class, 'index'])->name('admin.subscriptions.index');
+        Route::get('/create', [\App\Http\Controllers\Admin\PlanController::class, 'create'])->name('admin.subscriptions.create');
+        Route::post('/', [\App\Http\Controllers\Admin\PlanController::class, 'store'])->name('admin.subscriptions.store');
+        Route::get('/default-plans', [\App\Http\Controllers\Admin\PlanController::class, 'createDefaultPlans'])->name('admin.subscriptions.create-default-plans');
+        Route::get('/plans', [\App\Http\Controllers\Admin\PlanController::class, 'index'])->name('admin.subscriptions.plans');
+        Route::get('/{plan}/edit', [\App\Http\Controllers\Admin\PlanController::class, 'edit'])->name('admin.subscriptions.edit');
+        Route::put('/{plan}', [\App\Http\Controllers\Admin\PlanController::class, 'update'])->name('admin.subscriptions.update');
+        Route::delete('/{plan}', [\App\Http\Controllers\Admin\PlanController::class, 'destroy'])->name('admin.subscriptions.destroy');
+    });
+
     // Routes pour les notifications
     Route::prefix('notifications')->group(function () {
-        Route::get('/', [\App\Http\Controllers\NotificationController::class, 'index'])->name('admin.notifications.index');
-        Route::get('/unread', [\App\Http\Controllers\NotificationController::class, 'getUnread'])->name('admin.notifications.unread');
-        Route::post('/{id}/read', [\App\Http\Controllers\NotificationController::class, 'markAsRead'])->name('admin.notifications.mark-as-read');
-        Route::post('/mark-all-as-read', [\App\Http\Controllers\NotificationController::class, 'markAllAsRead'])->name('admin.notifications.mark-all-as-read');
-        Route::delete('/{id}', [\App\Http\Controllers\NotificationController::class, 'destroy'])->name('admin.notifications.destroy');
-        Route::put('/preferences', [\App\Http\Controllers\NotificationController::class, 'updatePreferences'])->name('admin.notifications.update-preferences');
+        Route::get('/', [\App\Http\Controllers\Admin\NotificationController::class, 'index'])->name('admin.notifications.index');
+        Route::get('/create', [\App\Http\Controllers\Admin\NotificationController::class, 'create'])->name('admin.notifications.create');
+        Route::post('/', [\App\Http\Controllers\Admin\NotificationController::class, 'store'])->name('admin.notifications.store');
+        Route::get('/unread', [\App\Http\Controllers\Admin\NotificationController::class, 'getUnread'])->name('admin.notifications.unread');
+        Route::post('/mark-as-read/{id}', [\App\Http\Controllers\Admin\NotificationController::class, 'markAsRead'])->name('admin.notifications.mark-as-read');
+        Route::post('/mark-all-as-read', [\App\Http\Controllers\Admin\NotificationController::class, 'markAllAsRead'])->name('admin.notifications.mark-all-as-read');
+        Route::delete('/{id}', [\App\Http\Controllers\Admin\NotificationController::class, 'destroy'])->name('admin.notifications.destroy');
+        Route::put('/preferences', [\App\Http\Controllers\Admin\NotificationController::class, 'updatePreferences'])->name('admin.notifications.update-preferences');
+    });
+    
+    // Routes pour les factures
+    Route::prefix('invoices')->group(function () {
+        Route::get('/', [\App\Http\Controllers\Admin\InvoiceController::class, 'index'])->name('admin.invoices.index');
+        Route::get('/{invoice}', [\App\Http\Controllers\Admin\InvoiceController::class, 'show'])->name('admin.invoices.show');
+        Route::get('/{invoice}/download', [\App\Http\Controllers\Admin\InvoiceController::class, 'download'])->name('admin.invoices.download');
     });
 });

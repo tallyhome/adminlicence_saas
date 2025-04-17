@@ -81,7 +81,7 @@
 
     // Soumission du formulaire Stripe
     const form = document.getElementById('payment-form');
-    form.addEventListener('submit', async (event) => {
+    form.addEventListener('submit', async function(event) {
         event.preventDefault();
         const isDefault = document.getElementById('default-payment').checked;
 
@@ -92,7 +92,7 @@
                     'Content-Type': 'application/json',
                     'X-CSRF-TOKEN': '{{ csrf_token() }}'
                 }
-            }).then(r => r.json());
+            }).then(function(r) { return r.json(); });
 
             const { error, paymentMethod } = await stripe.confirmCardSetup(setupIntent.client_secret, {
                 payment_method: { card: cardElement }
@@ -143,7 +143,7 @@
 
     // Configuration PayPal
     paypal.Buttons({
-        createOrder: async () => {
+        createOrder: async function() {
             const response = await fetch('/payment/paypal/create-order', {
                 method: 'POST',
                 headers: {
@@ -157,7 +157,7 @@
             const data = await response.json();
             return data.id;
         },
-        onApprove: async (data) => {
+        onApprove: async function(data) {
             const response = await fetch('/payment/paypal/capture-order', {
                 method: 'POST',
                 headers: {

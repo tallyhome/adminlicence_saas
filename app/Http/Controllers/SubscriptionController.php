@@ -33,66 +33,24 @@ class SubscriptionController extends Controller
      */
     public function plans()
     {
-        // Accessible à tous les rôles connectés
-        // (si tu veux restreindre, décommente la ligne suivante)
-        // if (!$this->isAdminOrSuperAdmin() && !$this->isSimpleUser()) abort(403);
+        // Vérifie si l'utilisateur est connecté
+        if (!Auth::check() && !Auth::guard('admin')->check()) {
+            return redirect()->route('login');
+        }
         
-        // Get the current tenant
-        $tenant = Auth::user()->tenant;
-        
-        // Get the current subscription if any
-        $subscription = $tenant->subscriptions()->first();
-        
-        // Get available plans (could be fetched from database or config)
-        $plans = [
-            [
-                'id' => 'basic',
-                'name' => 'Basic',
-                'description' => 'Basic plan for small businesses',
-                'price' => 9.99,
-                'currency' => 'EUR',
-                'features' => [
-                    '5 projects',
-                    '100 licences',
-                    'Email support',
-                ],
-                'stripe_price_id' => 'price_basic',
-                'paypal_plan_id' => 'P-BASIC',
-            ],
-            [
-                'id' => 'pro',
-                'name' => 'Professional',
-                'description' => 'Professional plan for growing businesses',
-                'price' => 19.99,
-                'currency' => 'EUR',
-                'features' => [
-                    '20 projects',
-                    '500 licences',
-                    'Priority email support',
-                    'API access',
-                ],
-                'stripe_price_id' => 'price_pro',
-                'paypal_plan_id' => 'P-PRO',
-            ],
-            [
-                'id' => 'enterprise',
-                'name' => 'Enterprise',
-                'description' => 'Enterprise plan for large businesses',
-                'price' => 49.99,
-                'currency' => 'EUR',
-                'features' => [
-                    'Unlimited projects',
-                    'Unlimited licences',
-                    'Priority support 24/7',
-                    'API access',
-                    'Custom branding',
-                ],
-                'stripe_price_id' => 'price_enterprise',
-                'paypal_plan_id' => 'P-ENTERPRISE',
-            ],
-        ];
-        
-        return view('subscription.plans', compact('tenant', 'subscription', 'plans'));
+        // Rediriger vers la nouvelle page d'abonnements dans le dashboard admin
+        if (Auth::guard('admin')->check()) {
+            return redirect()->route('admin.subscriptions.index');
+        } else {
+            // Pour les utilisateurs normaux, récupérer les plans disponibles
+            $plans = \App\Models\Plan::where('is_active', true)->get();
+            $user = Auth::user();
+            
+            return view('subscription.plans', [
+                'plans' => $plans,
+                'user' => $user
+            ]);
+        }
     }
     
     /**
@@ -603,8 +561,15 @@ class SubscriptionController extends Controller
                     ->with('error', 'Failed to cancel subscription.');
             }
             
-            return redirect()->route('subscription.plans')
-                ->with('success', 'Subscription cancelled successfully.');
+            // Rediriger vers le dashboard approprié en fonction du rôle
+            if (Auth::guard('admin')->check()) {
+                $admin = Auth::guard('admin')->user();
+                return redirect()->route('admin.dashboard')
+                    ->with('success', 'Abonnement annulé avec succès.');
+            } else {
+                return redirect()->route('subscription.plans')
+                    ->with('success', 'Abonnement annulé avec succès.');
+            }
         } catch (\Exception $e) {
             Log::error('Cancel subscription error: ' . $e->getMessage());
             
@@ -656,8 +621,15 @@ class SubscriptionController extends Controller
                     ->with('error', 'Resuming PayPal subscriptions is not supported. Please create a new subscription.');
             }
             
-            return redirect()->route('subscription.plans')
-                ->with('success', 'Subscription resumed successfully.');
+            // Rediriger vers le dashboard approprié en fonction du rôle
+            if (Auth::guard('admin')->check()) {
+                $admin = Auth::guard('admin')->user();
+                return redirect()->route('admin.dashboard')
+                    ->with('success', 'Abonnement réactivé avec succès.');
+            } else {
+                return redirect()->route('subscription.plans')
+                    ->with('success', 'Abonnement réactivé avec succès.');
+            }
         } catch (\Exception $e) {
             Log::error('Resume subscription error: ' . $e->getMessage());
             

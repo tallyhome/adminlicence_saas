@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use Illuminate\Routing\Controller;
 use App\Models\Admin;
+use App\Models\User;
 use App\Models\SupportTicket;
 use App\Models\TicketReply;
 use Illuminate\Http\Request;
@@ -12,14 +13,14 @@ use Illuminate\Support\Facades\Auth;
 class SupportTicketController extends Controller
 {
     /**
-     * Constructor to ensure only admins (not superadmins) can access these methods
+     * Constructor pour vérifier l'authentification sans restriction de rôle
      */
     public function __construct()
     {
         $this->middleware(function ($request, $next) {
-            $user = Auth::guard('admin')->user();
-            if (!$user || $user->is_super_admin) {
-                abort(403, 'Unauthorized action. Admin access required.');
+            // Vérifie simplement que l'utilisateur est connecté (admin ou utilisateur normal)
+            if (!Auth::guard('admin')->check() && !Auth::check()) {
+                abort(403, 'Vous devez être connecté pour accéder aux tickets.');
             }
             return $next($request);
         });
@@ -45,14 +46,15 @@ class SupportTicketController extends Controller
         ]);
         $user = Auth::guard('admin')->user();
 
-        $ticket = SupportTicket::create([
-            'client_id' => $user->id, // ou adapter selon la logique de client/admin
-            'subject' => $request->subject,
-            'priority' => $request->priority,
-            'status' => SupportTicket::STATUS_OPEN,
-            'created_by_type' => 'admin',
-            'created_by_id' => $user->id,
-        ]);
+        // Créer le ticket sans client_id pour éviter l'erreur de contrainte d'intégrité
+        $ticket = new SupportTicket();
+        $ticket->subject = $request->subject;
+        $ticket->description = $request->message;
+        $ticket->priority = $request->priority;
+        $ticket->status = SupportTicket::STATUS_OPEN;
+        $ticket->created_by_type = 'admin';
+        $ticket->created_by_id = $user->id;
+        $ticket->save();
 
         TicketReply::create([
             'support_ticket_id' => $ticket->id,
@@ -66,14 +68,46 @@ class SupportTicketController extends Controller
     }
 
     /**
-     * Display a listing of the tickets.
+     * Display a listing of the tickets based on user role (multi-tenant).
      */
     public function index(Request $request)
     {
         $status = $request->get('status', 'all');
-        $query = SupportTicket::with(['client', 'replies'])
-            ->orderBy('created_at', 'desc');
+        
+        // Déterminer le type d'utilisateur connecté et filtrer les tickets en conséquence
+        if (Auth::guard('admin')->check()) {
+            $admin = Auth::guard('admin')->user();
             
+            if ($admin->is_super_admin) {
+                // Superadmin voit tous les tickets
+                $query = SupportTicket::with(['client', 'replies'])
+                    ->orderBy('created_at', 'desc');
+            } else {
+                // Admin normal voit uniquement les tickets de ses utilisateurs (multi-tenant)
+                $userIds = User::where('admin_id', $admin->id)->pluck('id')->toArray();
+                
+                $query = SupportTicket::with(['client', 'replies'])
+                    ->where(function($q) use ($admin, $userIds) {
+                        // Tickets créés par l'admin lui-même
+                        $q->where('created_by_type', 'admin')
+                          ->where('created_by_id', $admin->id)
+                          // OU tickets créés par les utilisateurs de cet admin
+                          ->orWhere(function($subq) use ($userIds) {
+                              $subq->where('created_by_type', 'user')
+                                   ->whereIn('created_by_id', $userIds);
+                          });
+                    })
+                    ->orderBy('created_at', 'desc');
+            }
+        } else {
+            // Utilisateur normal voit uniquement ses propres tickets
+            $user = Auth::user();
+            $query = SupportTicket::with(['client', 'replies'])
+                ->where('created_by_type', 'user')
+                ->where('created_by_id', $user->id)
+                ->orderBy('created_at', 'desc');
+        }
+        
         // Filter by status if provided
         if ($status !== 'all') {
             $query->where('status', $status);

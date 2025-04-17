@@ -20,19 +20,41 @@
 
                 <div class="flex gap-4">
                     @if($subscription->auto_renew)
-                        <form action="{{ route('subscription.cancel-renewal') }}" method="POST">
-                            @csrf
-                            <button type="submit" class="bg-red-600 hover:bg-red-700 text-white py-2 px-4 rounded transition duration-200">
-                                Annuler le renouvellement automatique
-                            </button>
-                        </form>
+                        <button type="button" class="bg-red-600 hover:bg-red-700 text-white py-2 px-4 rounded transition duration-200" data-bs-toggle="modal" data-bs-target="#cancelRenewalModal">
+                            Annuler le renouvellement automatique
+                        </button>
+                        
+                        <!-- Modal de confirmation pour l'annulation du renouvellement -->
+                        @component('components.confirmation-modal')
+                            @slot('id', 'cancelRenewalModal')
+                            @slot('title', 'Confirmer l\'annulation')
+                            @slot('message')
+                                Êtes-vous sûr de vouloir annuler le renouvellement automatique de votre abonnement ? 
+                                <br><br>
+                                Votre abonnement restera actif jusqu'à la fin de la période en cours, mais ne sera pas renouvelé automatiquement.
+                            @endslot
+                            @slot('formAction', route('subscription.cancel-renewal'))
+                            @slot('confirmButtonText', 'Annuler le renouvellement')
+                            @slot('confirmButtonClass', 'btn-danger')
+                        @endcomponent
                     @else
-                        <form action="{{ route('subscription.enable-renewal') }}" method="POST">
-                            @csrf
-                            <button type="submit" class="bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded transition duration-200">
-                                Activer le renouvellement automatique
-                            </button>
-                        </form>
+                        <button type="button" class="bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded transition duration-200" data-bs-toggle="modal" data-bs-target="#resumeRenewalModal">
+                            Activer le renouvellement automatique
+                        </button>
+                        
+                        <!-- Modal de confirmation pour l'activation du renouvellement -->
+                        @component('components.confirmation-modal')
+                            @slot('id', 'resumeRenewalModal')
+                            @slot('title', 'Confirmer l\'activation')
+                            @slot('message')
+                                Êtes-vous sûr de vouloir activer le renouvellement automatique de votre abonnement ? 
+                                <br><br>
+                                Votre abonnement sera automatiquement renouvelé à la fin de la période en cours.
+                            @endslot
+                            @slot('formAction', route('subscription.resume'))
+                            @slot('confirmButtonText', 'Activer le renouvellement')
+                            @slot('confirmButtonClass', 'btn-success')
+                        @endcomponent
                     @endif
                     
                     <a href="{{ route('subscription.plans') }}" class="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded transition duration-200">
