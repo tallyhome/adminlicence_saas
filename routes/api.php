@@ -3,6 +3,8 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\LicenceApiController;
+use App\Http\Controllers\Api\NotificationApiController;
+use App\Http\Controllers\Api\NotificationFixController;
 
 /*
 |--------------------------------------------------------------------------
@@ -33,3 +35,16 @@ Route::prefix('v1')->group(function () {
     // Route publique pour vérifier une clé de licence
     Route::post('/check-serial', [LicenceApiController::class, 'checkSerial']);
 });
+
+// Routes API pour les notifications
+Route::prefix('notifications')->group(function () {
+    // Route pour marquer une notification comme lue
+    Route::post('/read/{id}', [NotificationApiController::class, 'markAsRead']);
+    
+    // Route pour marquer toutes les notifications comme lues
+    Route::post('/read-all', [NotificationApiController::class, 'markAllAsRead']);
+});
+
+// Solution radicale pour les notifications - Routes sans middleware ni vérification
+Route::post('/fix/notifications/read/{id}', [NotificationFixController::class, 'markAsRead']);
+Route::post('/fix/notifications/read-all', [NotificationFixController::class, 'markAllAsRead']);

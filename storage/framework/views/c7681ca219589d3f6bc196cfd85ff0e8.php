@@ -103,16 +103,14 @@ use Illuminate\Support\Facades\Auth;
                         </div>
                     </div>
                     
-                    <!-- Bouton pour créer une notification (réservé aux superadmins) -->
-                    <?php if(Auth::guard('admin')->check() && Auth::guard('admin')->user()->is_super_admin): ?>
-                    <div class="row">
-                        <div class="col-12 text-end">
-                            <a href="<?php echo e(route('admin.notifications.create')); ?>" class="btn btn-sm btn-primary">
+                    <!-- Bouton pour créer une notification (visible pour tous les admins) -->
+                    <div class="row mt-4">
+                        <div class="col-12">
+                            <a href="<?php echo e(route('admin.notifications.create')); ?>" class="btn btn-primary">
                                 <i class="fas fa-plus"></i> Créer une notification
                             </a>
                         </div>
                     </div>
-                    <?php endif; ?>
                 </div>
             </div>
         </div>

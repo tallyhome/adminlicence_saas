@@ -55,11 +55,12 @@ class UserManagementController extends Controller
     {
         try {
             // Vérifier explicitement le type d'entité (admin ou user) en fonction de l'ID
+            // Utiliser des tables différentes pour les admins et les utilisateurs
             $adminExists = Admin::where('id', $id)->exists();
             $userExists = User::where('id', $id)->exists();
             
             // Si l'ID correspond à un administrateur, afficher les détails de l'admin
-            if ($adminExists) {
+            if ($adminExists && $type === 'admin') {
                 return $this->showAdmin($id);
             }
             
@@ -77,6 +78,9 @@ class UserManagementController extends Controller
             
             // Créer des données de démonstration pour l'affichage
             // Au lieu d'utiliser les relations qui pourraient échouer
+            
+            // Vérifier explicitement si c'est un utilisateur normal ou un superadmin
+            $is_super_admin = false; // Par défaut, c'est un utilisateur normal
             
             // Données d'abonnement fictives
             $subscription = (object)[
@@ -106,15 +110,14 @@ class UserManagementController extends Controller
             for ($i = 1; $i <= 3; $i++) {
                 $invoices->push((object)[
                     'id' => $i,
-                    'number' => 'INV-' . str_pad($i, 6, '0', STR_PAD_LEFT),
-                    'total' => rand(29, 99) . '.99',
-                    'status' => 'paid',
-                    'created_at' => now()->subMonths($i)
+                    'number' => 'INV-' . str_pad($i, 5, '0', STR_PAD_LEFT),
+                    'amount' => rand(1000, 5000) / 100,
+                    'status' => ['paid', 'pending', 'overdue'][rand(0, 2)],
+                    'created_at' => now()->subDays(rand(1, 60))
                 ]);
             }
             
-            // Utiliser notre nouvelle vue
-            return view('admin.users.user_details', compact('user', 'subscription', 'tickets', 'invoices'));
+            return view('admin.users.user_details', compact('user', 'subscription', 'tickets', 'invoices', 'is_super_admin'));
             
         } catch (\Exception $e) {
             // En cas d'erreur, rediriger vers la liste des utilisateurs avec un message d'erreur

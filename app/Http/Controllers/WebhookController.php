@@ -43,13 +43,20 @@ class WebhookController extends Controller
             
             switch ($event->type) {
                 case 'invoice.payment_succeeded':
-                    return $this->handleSuccessfulPayment($event->data->object, 'stripe');
+                    $this->handleSuccessfulPayment($event->data->object, 'stripe');
+                    return response('Webhook traité', 200);
 
                 case 'customer.subscription.deleted':
-                    return $this->handleSubscriptionCanceled($event->data->object, 'stripe');
+                    $this->handleSubscriptionCanceled($event->data->object, 'stripe');
+                    return response('Webhook traité', 200);
 
                 case 'customer.subscription.updated':
-                    return $this->handleSubscriptionUpdated($event->data->object, 'stripe');
+                    $this->handleSubscriptionUpdated($event->data->object, 'stripe');
+                    return response('Webhook traité', 200);
+                    
+                case 'invoice.payment_failed':
+                    $this->handleFailedPayment($event->data->object, 'stripe');
+                    return response('Webhook traité', 200);
 
                 default:
                     return response('Webhook traité', 200);
@@ -73,13 +80,20 @@ class WebhookController extends Controller
             
             switch ($event['event_type']) {
                 case 'PAYMENT.SALE.COMPLETED':
-                    return $this->handleSuccessfulPayment($event['resource'], 'paypal');
+                    $this->handleSuccessfulPayment($event['resource'], 'paypal');
+                    return response('Webhook traité', 200);
 
                 case 'BILLING.SUBSCRIPTION.CANCELLED':
-                    return $this->handleSubscriptionCanceled($event['resource'], 'paypal');
+                    $this->handleSubscriptionCanceled($event['resource'], 'paypal');
+                    return response('Webhook traité', 200);
 
                 case 'BILLING.SUBSCRIPTION.UPDATED':
-                    return $this->handleSubscriptionUpdated($event['resource'], 'paypal');
+                    $this->handleSubscriptionUpdated($event['resource'], 'paypal');
+                    return response('Webhook traité', 200);
+                    
+                case 'BILLING.SUBSCRIPTION.EXPIRED':
+                    $this->handleSubscriptionCanceled($event['resource'], 'paypal');
+                    return response('Webhook traité', 200);
 
                 default:
                     return response('Webhook traité', 200);

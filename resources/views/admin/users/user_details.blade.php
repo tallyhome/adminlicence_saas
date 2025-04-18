@@ -56,6 +56,15 @@
                             </span>
                         </p>
                     </div>
+                    
+                    <div class="mb-3">
+                        <label class="text-xs font-weight-bold text-primary text-uppercase mb-1">Type d'utilisateur</label>
+                        <p class="h5 mb-0 font-weight-bold text-gray-800">
+                            <span class="badge bg-info">
+                                {{ isset($is_super_admin) && $is_super_admin ? 'Super Admin' : 'Utilisateur standard' }}
+                            </span>
+                        </p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -129,7 +138,7 @@
                                     <tr>
                                         <td>{{ $invoice->number }}</td>
                                         <td>{{ $invoice->created_at->format('d/m/Y') }}</td>
-                                        <td>{{ number_format($invoice->total, 2) }} €</td>
+                                        <td>{{ number_format($invoice->amount, 2) }} €</td>
                                         <td>
                                             <span class="badge bg-success">{{ $invoice->status }}</span>
                                         </td>

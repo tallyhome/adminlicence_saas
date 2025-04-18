@@ -299,13 +299,26 @@ class NotificationManager {
             this.updateNotificationCounter();
             this.renderNotifications();
             
-            // Envoyer une requête au serveur pour marquer comme lu
-            fetch(`/admin/notifications/${notificationId}/read`, {
+            // Utiliser la nouvelle API dédiée pour marquer comme lu
+            fetch(`/api/notifications/read/${notificationId}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                    'Accept': 'application/json'
                 }
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`Erreur HTTP: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Notification marquée comme lue:', data);
+            })
+            .catch(error => {
+                console.error('Erreur lors du marquage de la notification:', error);
             });
         }
     }
@@ -318,13 +331,26 @@ class NotificationManager {
         this.updateNotificationCounter();
         this.renderNotifications();
         
-        // Envoyer une requête au serveur pour marquer toutes comme lues
-        fetch('/admin/notifications/mark-all-as-read', {
+        // Utiliser la nouvelle API dédiée pour marquer toutes comme lues
+        fetch('/api/notifications/read-all', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                'Accept': 'application/json'
             }
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`Erreur HTTP: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log('Toutes les notifications marquées comme lues:', data);
+        })
+        .catch(error => {
+            console.error('Erreur lors du marquage des notifications:', error);
         });
     }
 

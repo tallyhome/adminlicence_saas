@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\Plan;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class PlanSeeder extends Seeder
 {
@@ -12,6 +13,9 @@ class PlanSeeder extends Seeder
      */
     public function run(): void
     {
+        // Désactiver temporairement les contraintes de clé étrangère
+        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+        
         // Supprime les plans existants pour éviter les doublons
         Plan::truncate();
         
@@ -63,5 +67,8 @@ class PlanSeeder extends Seeder
             'max_projects' => 999,
             'max_clients' => 999
         ]);
+        
+        // Réactiver les contraintes de clé étrangère
+        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
     }
 }

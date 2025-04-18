@@ -646,4 +646,158 @@ class SubscriptionController extends Controller
                 ->with('error', 'An error occurred: ' . $e->getMessage());
         }
     }
+    
+    /**
+     * Affiche le tableau de bord de test des paiements.
+     *
+     * @return \Illuminate\View\View
+     */
+    public function paymentTestDashboard()
+    {
+        // Vérifier si l'utilisateur est un super-admin
+        if (!Auth::guard('admin')->check() || !Auth::guard('admin')->user()->is_super_admin) {
+            abort(403, 'Accès non autorisé');
+        }
+        
+        // Récupérer les informations de configuration des passerelles de paiement
+        $stripeEnabled = config('payment.stripe.enabled', false);
+        $stripeKey = config('payment.stripe.key');
+        $stripeSecret = config('payment.stripe.secret');
+        
+        $paypalEnabled = config('payment.paypal.enabled', false);
+        $paypalClientId = config('payment.paypal.client_id');
+        $paypalSecret = config('payment.paypal.secret');
+        
+        // Récupérer les dernières factures pour afficher les résultats des tests
+        $recentInvoices = Invoice::orderBy('created_at', 'desc')->take(5)->get();
+        
+        return view('admin.payment-test', compact(
+            'stripeEnabled', 'stripeKey', 'stripeSecret',
+            'paypalEnabled', 'paypalClientId', 'paypalSecret',
+            'recentInvoices'
+        ));
+    }
+    
+    /**
+     * Teste un paiement Stripe.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function testStripePayment(Request $request)
+    {
+        // Vérifier si l'utilisateur est un super-admin
+        if (!Auth::guard('admin')->check() || !Auth::guard('admin')->user()->is_super_admin) {
+            abort(403, 'Accès non autorisé');
+        }
+        
+        $request->validate([
+            'amount' => 'required|numeric|min:1',
+            'currency' => 'required|string|size:3',
+            'description' => 'required|string|max:255',
+        ]);
+        
+        try {
+            // Créer une facture de test
+            $invoice = new Invoice();
+            $invoice->tenant_id = Auth::guard('admin')->user()->id; // Utiliser l'ID de l'admin comme tenant_id pour le test
+            $invoice->number = 'TEST-' . time();
+            $invoice->total = $request->amount * 100; // Convertir en centimes
+            $invoice->currency = strtolower($request->currency);
+            $invoice->status = Invoice::STATUS_PAID;
+            $invoice->billing_reason = 'test_payment';
+            $invoice->provider = Invoice::PROVIDER_STRIPE;
+            $invoice->provider_id = 'test_' . uniqid();
+            $invoice->paid_at = now();
+            $invoice->save();
+            
+            // Simuler un événement de paiement réussi
+            $this->stripeService->handleInvoicePaymentSucceeded((object) [
+                'id' => $invoice->provider_id,
+                'subscription' => null,
+                'number' => $invoice->number,
+                'total' => $invoice->total,
+                'currency' => $invoice->currency,
+                'billing_reason' => $invoice->billing_reason,
+                'due_date' => now()->timestamp,
+                'lines' => (object) [
+                    'data' => [
+                        (object) [
+                            'description' => $request->description,
+                            'amount' => $invoice->total,
+                            'quantity' => 1,
+                            'period' => (object) [
+                                'start' => now()->timestamp,
+                                'end' => now()->addMonth()->timestamp,
+                            ],
+                            'type' => 'invoice_item',
+                        ],
+                    ],
+                ],
+            ]);
+            
+            return redirect()->route('admin.payment-test')
+                ->with('success', 'Test de paiement Stripe effectué avec succès. Facture #' . $invoice->number . ' créée.');
+        } catch (\Exception $e) {
+            Log::error('Test Stripe payment error: ' . $e->getMessage());
+            
+            return redirect()->route('admin.payment-test')
+                ->with('error', 'Erreur lors du test de paiement Stripe: ' . $e->getMessage());
+        }
+    }
+    
+    /**
+     * Teste un paiement PayPal.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function testPayPalPayment(Request $request)
+    {
+        // Vérifier si l'utilisateur est un super-admin
+        if (!Auth::guard('admin')->check() || !Auth::guard('admin')->user()->is_super_admin) {
+            abort(403, 'Accès non autorisé');
+        }
+        
+        $request->validate([
+            'amount' => 'required|numeric|min:1',
+            'currency' => 'required|string|size:3',
+            'description' => 'required|string|max:255',
+        ]);
+        
+        try {
+            // Créer une facture de test
+            $invoice = new Invoice();
+            $invoice->tenant_id = Auth::guard('admin')->user()->id; // Utiliser l'ID de l'admin comme tenant_id pour le test
+            $invoice->number = 'TEST-PAYPAL-' . time();
+            $invoice->total = $request->amount * 100; // Convertir en centimes
+            $invoice->currency = strtolower($request->currency);
+            $invoice->status = Invoice::STATUS_PAID;
+            $invoice->billing_reason = 'test_payment';
+            $invoice->provider = Invoice::PROVIDER_PAYPAL;
+            $invoice->provider_id = 'test_paypal_' . uniqid();
+            $invoice->paid_at = now();
+            $invoice->save();
+            
+            // Simuler un événement de paiement réussi
+            $this->paypalService->handlePaymentCompleted([
+                'resource' => [
+                    'id' => $invoice->provider_id,
+                    'billing_agreement_id' => null,
+                    'amount' => [
+                        'total' => $request->amount,
+                        'currency' => strtoupper($request->currency),
+                    ],
+                ],
+            ]);
+            
+            return redirect()->route('admin.payment-test')
+                ->with('success', 'Test de paiement PayPal effectué avec succès. Facture #' . $invoice->number . ' créée.');
+        } catch (\Exception $e) {
+            Log::error('Test PayPal payment error: ' . $e->getMessage());
+            
+            return redirect()->route('admin.payment-test')
+                ->with('error', 'Erreur lors du test de paiement PayPal: ' . $e->getMessage());
+        }
+    }
 }

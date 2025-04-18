@@ -232,10 +232,26 @@ Route::middleware('auth:admin')->group(function () {
     Route::get('/users', [\App\Http\Controllers\Admin\UserManagementController::class, 'index'])->name('admin.users.index');
     Route::get('/users/create', [\App\Http\Controllers\Admin\UserController::class, 'create'])->name('admin.users.create');
     Route::post('/users', [\App\Http\Controllers\Admin\UserController::class, 'store'])->name('admin.users.store');
-    Route::get('/users/{user}', [\App\Http\Controllers\Admin\UserManagementController::class, 'show'])->name('admin.users.show');
+    Route::get('/users/{id}/{type?}', [\App\Http\Controllers\Admin\UserManagementController::class, 'show'])->name('admin.users.show')->where('type', 'user|admin');
     Route::get('/users/{user}/edit', [\App\Http\Controllers\Admin\UserController::class, 'edit'])->name('admin.users.edit');
     Route::put('/users/{user}', [\App\Http\Controllers\Admin\UserController::class, 'update'])->name('admin.users.update');
     Route::delete('/users/{user}', [\App\Http\Controllers\Admin\UserController::class, 'destroy'])->name('admin.users.destroy');
+    
+    // Subscriptions routes
+    Route::get('/subscriptions', [SubscriptionController::class, 'index'])->name('admin.subscriptions.index');
+    Route::get('/subscriptions/create', [SubscriptionController::class, 'create'])->name('admin.subscriptions.create');
+    Route::post('/subscriptions', [SubscriptionController::class, 'store'])->name('admin.subscriptions.store');
+    Route::get('/subscriptions/{id}', [SubscriptionController::class, 'show'])->name('admin.subscriptions.show');
+    Route::get('/subscriptions/{id}/edit', [SubscriptionController::class, 'edit'])->name('admin.subscriptions.edit');
+    Route::put('/subscriptions/{id}', [SubscriptionController::class, 'update'])->name('admin.subscriptions.update');
+    Route::delete('/subscriptions/{id}', [SubscriptionController::class, 'destroy'])->name('admin.subscriptions.destroy');
+    
+    // Routes de test pour les paiements (réservées aux super-admins)
+    Route::middleware(['super_admin'])->group(function () {
+        Route::get('/payment-test', [SubscriptionController::class, 'paymentTestDashboard'])->name('admin.payment-test');
+        Route::post('/payment-test/stripe', [SubscriptionController::class, 'testStripePayment'])->name('admin.test-stripe-payment');
+        Route::post('/payment-test/paypal', [SubscriptionController::class, 'testPayPalPayment'])->name('admin.test-paypal-payment');
+    });
     
     // Gestion des administrateurs
     Route::put('/admins/{admin}', [\App\Http\Controllers\Admin\UserManagementController::class, 'updateAdmin'])->name('admin.admins.update');
@@ -251,6 +267,19 @@ Route::middleware('auth:admin')->group(function () {
         Route::delete('/{role}', [\App\Http\Controllers\Admin\RoleController::class, 'destroy'])->name('admin.roles.destroy');
         Route::post('/assign-to-admin/{admin}', [\App\Http\Controllers\Admin\RoleController::class, 'assignRolesToAdmin'])->name('admin.roles.assign-to-admin');
         Route::post('/assign-to-user/{user}', [\App\Http\Controllers\Admin\RoleController::class, 'assignRolesToUser'])->name('admin.roles.assign-to-user');
+    });
+    
+    // Gestion des notifications
+    Route::prefix('notifications')->group(function () {
+        Route::get('/', [\App\Http\Controllers\Admin\NotificationController::class, 'index'])->name('admin.notifications.index');
+        Route::get('/create', [\App\Http\Controllers\Admin\NotificationController::class, 'create'])->name('admin.notifications.create');
+        Route::post('/', [\App\Http\Controllers\Admin\NotificationController::class, 'store'])->name('admin.notifications.store');
+        Route::get('/unread', [\App\Http\Controllers\Admin\NotificationController::class, 'getUnread'])->name('admin.notifications.unread');
+        Route::post('/{id}/read', [\App\Http\Controllers\Admin\NotificationController::class, 'markAsRead'])->name('admin.notifications.mark-as-read');
+        // Route additionnelle pour supporter l'ancienne URL utilisée dans le JavaScript
+        Route::post('/mark-as-read/{id}', [\App\Http\Controllers\Admin\NotificationController::class, 'markAsRead']);
+        Route::post('/mark-all-as-read', [\App\Http\Controllers\Admin\NotificationController::class, 'markAllAsRead'])->name('admin.notifications.mark-all-as-read');
+        Route::delete('/{id}', [\App\Http\Controllers\Admin\NotificationController::class, 'destroy'])->name('admin.notifications.destroy');
     });
     
     // Gestion des plans d'abonnement
@@ -270,8 +299,11 @@ Route::middleware('auth:admin')->group(function () {
         Route::get('/', [\App\Http\Controllers\Admin\NotificationController::class, 'index'])->name('admin.notifications.index');
         Route::get('/create', [\App\Http\Controllers\Admin\NotificationController::class, 'create'])->name('admin.notifications.create');
         Route::post('/', [\App\Http\Controllers\Admin\NotificationController::class, 'store'])->name('admin.notifications.store');
+        Route::get('/debug', [\App\Http\Controllers\Admin\NotificationController::class, 'debug'])->name('admin.notifications.debug');
         Route::get('/unread', [\App\Http\Controllers\Admin\NotificationController::class, 'getUnread'])->name('admin.notifications.unread');
         Route::post('/mark-as-read/{id}', [\App\Http\Controllers\Admin\NotificationController::class, 'markAsRead'])->name('admin.notifications.mark-as-read');
+        // Route temporaire pour gérer l'ancienne URL utilisée par le JavaScript
+        Route::post('/{id}/read', [\App\Http\Controllers\Admin\NotificationController::class, 'markAsRead']);
         Route::post('/mark-all-as-read', [\App\Http\Controllers\Admin\NotificationController::class, 'markAllAsRead'])->name('admin.notifications.mark-all-as-read');
         Route::delete('/{id}', [\App\Http\Controllers\Admin\NotificationController::class, 'destroy'])->name('admin.notifications.destroy');
         Route::put('/preferences', [\App\Http\Controllers\Admin\NotificationController::class, 'updatePreferences'])->name('admin.notifications.update-preferences');

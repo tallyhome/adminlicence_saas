@@ -129,7 +129,13 @@
                 const deleteForm = document.getElementById('deleteRoleForm');
                 
                 roleNameElement.textContent = roleName;
-                deleteForm.action = "{{ route('admin.roles.destroy', '') }}/" + roleId;
+                deleteForm.action = "{{ url('/roles') }}/" + roleId;
+                // Ajouter la méthode DELETE au formulaire
+                const methodInput = document.createElement('input');
+                methodInput.type = 'hidden';
+                methodInput.name = '_method';
+                methodInput.value = 'DELETE';
+                deleteForm.appendChild(methodInput);
             });
         }
     });

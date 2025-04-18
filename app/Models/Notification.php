@@ -29,13 +29,22 @@ class Notification extends Model
         'target_ids',
         'read',
         'read_by',
+        'read_at',
         'importance',
+        'data',
     ];
     
     protected $casts = [
         'target_ids' => 'array',
         'read' => 'boolean',
         'read_by' => 'array',
+        'data' => 'array',
+    ];
+    
+    protected $dates = [
+        'read_at',
+        'created_at',
+        'updated_at',
     ];
     
     // Cette méthode a été supprimée pour éviter la duplication

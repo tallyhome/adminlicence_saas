@@ -164,6 +164,11 @@
                         <i class="fas fa-users me-2"></i> Utilisateurs
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link <?php echo e(request()->routeIs('admin.roles.*') ? 'active' : ''); ?>" href="<?php echo e(route('admin.roles.index')); ?>">
+                        <i class="fas fa-user-tag me-2"></i> Rôles et permissions
+                    </a>
+                </li>
                 <?php endif; ?>
 
                 <!-- Abonnements -->
@@ -271,6 +276,13 @@
                                     <i class="fas fa-cog me-2"></i>Paramètres
                                 </a>
                             </li>
+                            <?php if(Auth::guard('admin')->user()->is_super_admin): ?>
+                            <li class="nav-item">
+                                <a class="nav-link" href="<?php echo e(route('admin.payment-test')); ?>">
+                                    <i class="fas fa-credit-card me-2"></i> Test des paiements
+                                </a>
+                            </li>
+                            <?php endif; ?>
                             <li class="nav-item">
                                 <a class="nav-link" href="<?php echo e(route('admin.mail.providers.phpmail.index')); ?>">
                                     <i class="fas fa-mail-bulk me-2"></i>PHPMail

@@ -5,6 +5,9 @@ use App\Http\Controllers\DocumentationController;
 use App\Http\Controllers\SubscriptionController;
 use App\Http\Controllers\WebhookController;
 use App\Http\Controllers\Admin\VersionController;
+use App\Http\Controllers\DirectNotificationController;
+use App\Http\Controllers\DirectFixController;
+use App\Http\Controllers\SolutionFinaleController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -70,6 +73,38 @@ Route::middleware(['auth'])->group(function () {
 // Routes de documentation
 Route::get('/documentation', [DocumentationController::class, 'index'])->name('documentation.index');
 Route::get('/documentation/api', [DocumentationController::class, 'apiIntegration'])->name('documentation.api');
+
+// Redirection de /notifications vers /admin/notifications
+Route::get('/notifications', function () {
+    return redirect()->route('admin.notifications.index');
+});
+
+// Routes publiques pour les notifications (pour compatibilité avec le JavaScript)
+Route::get('/api/notifications/unread', [\App\Http\Controllers\Admin\NotificationController::class, 'getUnreadPublic']);
+Route::post('/api/notifications/mark-as-read/{id}', [\App\Http\Controllers\Admin\NotificationController::class, 'markAsReadPublic']);
+Route::post('/api/notifications/mark-all-as-read', [\App\Http\Controllers\Admin\NotificationController::class, 'markAllAsReadPublic']);
+
+// Routes directes pour les notifications sans middleware auth
+Route::middleware('web')->group(function () {
+    Route::post('/notifications/mark-as-read/{id}', [\App\Http\Controllers\Admin\NotificationController::class, 'markAsRead']);
+    Route::post('/notifications/mark-all-as-read', [\App\Http\Controllers\Admin\NotificationController::class, 'markAllAsRead']);
+    Route::get('/notifications/unread', [\App\Http\Controllers\Admin\NotificationController::class, 'getUnread']);
+    
+    // Routes directes pour les notifications avec préfixe admin
+    Route::post('/admin/notifications/mark-as-read/{id}', [\App\Http\Controllers\Admin\NotificationController::class, 'markAsRead']);
+    Route::post('/admin/notifications/mark-all-as-read', [\App\Http\Controllers\Admin\NotificationController::class, 'markAllAsRead']);
+    Route::get('/admin/notifications/unread', [\App\Http\Controllers\Admin\NotificationController::class, 'getUnread']);
+});
+
+// Route directe pour la mise à jour des notifications (solution radicale)
+Route::post('/admin/direct-update-notification', [DirectNotificationController::class, 'update']);
+
+// Route de correction directe pour les notifications (solution ultra-radicale)
+Route::post('/fix-notification', [DirectFixController::class, 'fixNotification']);
+
+// Routes pour la solution finale (liens directs)
+Route::get('/solution-finale/marquer-comme-lu/{id}', [SolutionFinaleController::class, 'marquerCommeLu'])->name('solution-finale.marquer-comme-lu');
+Route::get('/solution-finale/marquer-tout-comme-lu', [SolutionFinaleController::class, 'marquerToutCommeLu'])->name('solution-finale.marquer-tout-comme-lu');
 
 // Inclure les routes admin
 require __DIR__.'/admin.php';

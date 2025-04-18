@@ -16,6 +16,7 @@ class StripeService
 {
     protected $stripe;
     protected $webSocketService;
+    protected $stripeEndpointSecret;
     
     /**
      * Create a new Stripe service instance.
@@ -24,6 +25,7 @@ class StripeService
     {
         $this->stripe = new StripeClient(config('services.stripe.secret'));
         $this->webSocketService = $webSocketService;
+        $this->stripeEndpointSecret = config('services.stripe.webhook_secret');
     }
     
     /**
@@ -223,9 +225,7 @@ class StripeService
     public function handleWebhook(string $payload, string $sigHeader)
     {
         try {
-            $event = $this->stripe->webhooks->constructEvent(
-                $payload, $sigHeader, config('services.stripe.webhook_secret')
-            );
+            $event = $this->constructEvent($payload, $sigHeader);
             
             switch ($event->type) {
                 case 'invoice.payment_succeeded':
@@ -424,6 +424,26 @@ class StripeService
         } catch (Exception $e) {
             Log::error('Failed to handle customer.subscription.deleted: ' . $e->getMessage());
             return false;
+        }
+    }
+    
+    /**
+     * Construire un événement Stripe à partir du payload et de la signature.
+     *
+     * @param string $payload Le contenu brut du webhook
+     * @param string $sigHeader L'en-tête de signature Stripe
+     * @return \Stripe\Event L'événement Stripe construit
+     * @throws \Exception Si la signature est invalide
+     */
+    public function constructEvent(string $payload, string $sigHeader)
+    {
+        try {
+            return \Stripe\Webhook::constructEvent(
+                $payload, $sigHeader, $this->stripeEndpointSecret
+            );
+        } catch (\Exception $e) {
+            Log::error('Erreur lors de la construction de l\'événement Stripe: ' . $e->getMessage());
+            throw $e;
         }
     }
 }

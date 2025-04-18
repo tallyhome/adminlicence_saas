@@ -11,9 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('notifications', function (Blueprint $table) {
-            $table->json('read_by')->nullable()->after('read');
-            $table->string('importance')->default('normal')->after('read_by');
+        Schema::table('users', function (Blueprint $table) {
+            //
         });
     }
 
@@ -22,9 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('notifications', function (Blueprint $table) {
-            $table->dropColumn('read_by');
-            $table->dropColumn('importance');
+        Schema::table('users', function (Blueprint $table) {
+            //
         });
     }
 };

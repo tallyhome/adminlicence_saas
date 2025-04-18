@@ -23,6 +23,14 @@ class Role extends Model
     {
         return $this->belongsToMany(User::class);
     }
+    
+    /**
+     * Les administrateurs qui ont ce rôle
+     */
+    public function admins(): BelongsToMany
+    {
+        return $this->belongsToMany(Admin::class);
+    }
 
     /**
      * Les permissions associées à ce rôle
