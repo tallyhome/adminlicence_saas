@@ -34,6 +34,13 @@ Route::prefix('v1')->group(function () {
     
     // Route publique pour vérifier une clé de licence
     Route::post('/check-serial', [LicenceApiController::class, 'checkSerial']);
+    
+    // Routes pour le nouveau système de vérification de licence
+    Route::prefix('licence')->group(function () {
+        Route::post('/verify', [\App\Http\Controllers\Api\LicenceVerificationController::class, 'verify']);
+        Route::post('/activate', [\App\Http\Controllers\Api\LicenceVerificationController::class, 'activate']);
+        Route::post('/deactivate', [\App\Http\Controllers\Api\LicenceVerificationController::class, 'deactivate']);
+    });
 });
 
 // Routes API pour les notifications

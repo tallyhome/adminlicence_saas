@@ -34,10 +34,99 @@ Route::get('/install', function () {
 // Route publique pour la page de version
 Route::get('/version', [VersionController::class, 'index'])->name('version');
 
-// Define the login route that redirects to admin login
+// Routes d'authentification utilisateur
 Route::get('/login', function () {
     return redirect()->route('admin.login');
 })->name('login');
+
+// Routes d'inscription utilisateur avec vérification d'email
+Route::middleware('guest')->group(function () {
+    Route::get('/register', [\App\Http\Controllers\Auth\RegisterController::class, 'showRegistrationForm'])->name('register');
+    Route::post('/register', [\App\Http\Controllers\Auth\RegisterController::class, 'register']);
+});
+
+// Routes de vérification d'email
+Route::get('/email/verify', function () {
+    return view('auth.verify-email');
+})->middleware('auth')->name('verification.notice');
+
+Route::get('/email/verify/{id}/{hash}', function (\Illuminate\Foundation\Auth\EmailVerificationRequest $request) {
+    $request->fulfill();
+    return redirect('/welcome');
+})->middleware(['auth', 'signed'])->name('verification.verify');
+
+Route::get('/welcome', function() {
+    return view('auth.welcome');
+})->middleware(['auth'])->name('welcome');
+
+Route::get('/subscriptions', function() {
+    // Récupération des plans d'abonnement (à remplacer par une logique réelle)
+    $plans = [
+        [
+            'id' => 1,
+            'name' => 'Essentiel',
+            'description' => 'Idéal pour les petites entreprises',
+            'price' => 29.99,
+            'features' => [
+                'Gestion de 50 licences',
+                'Support par email',
+                'Mises à jour automatiques',
+                'Tableau de bord basique'
+            ]
+        ],
+        [
+            'id' => 2,
+            'name' => 'Professionnel',
+            'description' => 'Pour les entreprises en croissance',
+            'price' => 59.99,
+            'features' => [
+                'Gestion de 200 licences',
+                'Support prioritaire',
+                'Mises à jour automatiques',
+                'Tableau de bord avancé',
+                'API d\'intégration',
+                'Rapports détaillés'
+            ]
+        ],
+        [
+            'id' => 3,
+            'name' => 'Entreprise',
+            'description' => 'Solution complète pour grandes entreprises',
+            'price' => 99.99,
+            'features' => [
+                'Licences illimitées',
+                'Support 24/7',
+                'Mises à jour prioritaires',
+                'Tableau de bord personnalisable',
+                'API complète',
+                'Rapports avancés',
+                'Intégration SSO',
+                'Déploiement sur site disponible'
+            ]
+        ]
+    ];
+    
+    return view('subscriptions.plans', ['plans' => $plans]);
+})->middleware(['auth'])->name('subscriptions');
+
+Route::post('/email/verification-notification', function (\Illuminate\Http\Request $request) {
+    $request->user()->sendEmailVerificationNotification();
+    return back()->with('success', 'Un nouveau lien de vérification a été envoyé à votre adresse e-mail.');
+})->middleware(['auth', 'throttle:6,1'])->name('verification.send');
+
+// Routes pour les conditions d'utilisation et politique de confidentialité
+Route::get('/terms', function() {
+    $page = \App\Models\LegalPage::getTerms();
+    return view('auth.terms', compact('page'));
+})->name('terms');
+
+Route::get('/privacy', function() {
+    $page = \App\Models\LegalPage::getPrivacy();
+    return view('auth.privacy', compact('page'));
+})->name('privacy');
+
+// Route pour la page de bienvenue après inscription
+Route::get('/welcome', [\App\Http\Controllers\WelcomeController::class, 'index'])->name('welcome');
 
 // Webhook routes (no auth required)
 Route::post('/webhooks/stripe', [WebhookController::class, 'handleStripeWebhook']);

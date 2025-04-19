@@ -294,6 +294,27 @@ Route::middleware('auth:admin')->group(function () {
         Route::delete('/{plan}', [\App\Http\Controllers\Admin\PlanController::class, 'destroy'])->name('admin.subscriptions.destroy');
     });
 
+    // Routes pour les pages légales (superadmin uniquement)
+    Route::prefix('legal')->middleware(['super_admin'])->group(function () {
+        Route::get('/', [\App\Http\Controllers\Admin\LegalPageController::class, 'index'])->name('admin.legal.index');
+        Route::get('/terms/edit', [\App\Http\Controllers\Admin\LegalPageController::class, 'editTerms'])->name('admin.legal.edit.terms');
+        Route::get('/privacy/edit', [\App\Http\Controllers\Admin\LegalPageController::class, 'editPrivacy'])->name('admin.legal.edit.privacy');
+        Route::put('/{type}', [\App\Http\Controllers\Admin\LegalPageController::class, 'update'])->name('admin.legal.update');
+    });
+    
+    // Routes pour la gestion des licences
+    Route::prefix('licences')->group(function () {
+        Route::get('/', [\App\Http\Controllers\Admin\LicenceController::class, 'index'])->name('admin.licences.index');
+        Route::get('/create', [\App\Http\Controllers\Admin\LicenceController::class, 'create'])->name('admin.licences.create');
+        Route::post('/', [\App\Http\Controllers\Admin\LicenceController::class, 'store'])->name('admin.licences.store');
+        Route::get('/{licence}', [\App\Http\Controllers\Admin\LicenceController::class, 'show'])->name('admin.licences.show');
+        Route::get('/{licence}/edit', [\App\Http\Controllers\Admin\LicenceController::class, 'edit'])->name('admin.licences.edit');
+        Route::put('/{licence}', [\App\Http\Controllers\Admin\LicenceController::class, 'update'])->name('admin.licences.update');
+        Route::delete('/{licence}', [\App\Http\Controllers\Admin\LicenceController::class, 'destroy'])->name('admin.licences.destroy');
+        Route::post('/{licence}/revoke', [\App\Http\Controllers\Admin\LicenceController::class, 'revoke'])->name('admin.licences.revoke');
+        Route::post('/{licence}/regenerate-key', [\App\Http\Controllers\Admin\LicenceController::class, 'regenerateKey'])->name('admin.licences.regenerate-key');
+    });
+
     // Routes pour les notifications
     Route::prefix('notifications')->group(function () {
         Route::get('/', [\App\Http\Controllers\Admin\NotificationController::class, 'index'])->name('admin.notifications.index');

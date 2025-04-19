@@ -1,74 +1,124 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Connexion - Administration des Licences</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-</head>
-<body class="bg-gray-100">
-    <div class="min-h-screen flex items-center justify-center">
-        <div class="max-w-md w-full space-y-8 p-8 bg-white rounded-lg shadow-md">
-            <div>
-                <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
-                    Administration des Licences
-                </h2>
-                <p class="mt-2 text-center text-sm text-gray-600">
-                    Connectez-vous pour accéder au tableau de bord
-                </p>
+@extends('layouts.app')
+
+@section('title', 'Connexion')
+
+@section('content')
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card shadow-lg border-0 rounded-lg overflow-hidden">
+                <div class="card-header bg-primary text-white text-center py-4">
+                    <h2 class="fs-4 fw-bold mb-0">{{ __('Connexion') }}</h2>
+                </div>
+                <div class="card-body p-4 p-md-5">
+                    <div class="text-center mb-4">
+                        <p class="lead fw-normal text-muted">{{ __('Accédez à votre espace personnel') }}</p>
+                    </div>
+
+                    @if ($errors->any())
+                        <div class="alert alert-danger">
+                            <ul class="mb-0">
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
+
+                    <form method="POST" action="{{ route('admin.login') }}">
+                        @csrf
+
+                        <div class="form-floating mb-4">
+                            <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" required autocomplete="email" autofocus placeholder="Votre adresse e-mail">
+                            <label for="email"><i class="fas fa-envelope me-2"></i>{{ __('Adresse e-mail') }}</label>
+                            @error('email')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="form-floating mb-4">
+                            <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" required autocomplete="current-password" placeholder="Votre mot de passe">
+                            <label for="password"><i class="fas fa-lock me-2"></i>{{ __('Mot de passe') }}</label>
+                            @error('password')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="form-check mb-4">
+                            <input class="form-check-input" type="checkbox" name="remember" id="remember" {{ old('remember') ? 'checked' : '' }}>
+                            <label class="form-check-label" for="remember">
+                                {{ __('Se souvenir de moi') }}
+                            </label>
+                        </div>
+
+                        <div class="d-grid mb-4">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="fas fa-sign-in-alt me-2"></i>{{ __('Se connecter') }}
+                            </button>
+                        </div>
+
+                        <div class="text-center">
+                            @if (Route::has('password.request'))
+                                <a class="text-decoration-none" href="{{ route('password.request') }}">
+                                    {{ __('Mot de passe oublié ?') }}
+                                </a>
+                            @endif
+                        </div>
+                    </form>
+                </div>
+                <div class="card-footer text-center py-4 bg-light">
+                    <div class="small">
+                        <p class="mb-2">{{ __('Pas encore de compte ?') }}</p>
+                        <a href="{{ route('register') }}" class="btn btn-success">
+                            <i class="fas fa-user-plus me-2"></i>{{ __('Créer un compte') }}
+                        </a>
+                    </div>
+                </div>
             </div>
-
-            @if ($errors->any())
-                <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
-                    <ul class="list-disc list-inside">
-                        @foreach ($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
-                </div>
-            @endif
-
-            <form class="mt-8 space-y-6" action="{{ route('admin.login') }}" method="POST">
-                @csrf
-                <div class="rounded-md shadow-sm -space-y-px">
-                    <div>
-                        <label for="email" class="sr-only">Adresse e-mail</label>
-                        <input id="email" name="email" type="email" required 
-                               class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm" 
-                               placeholder="Adresse e-mail"
-                               value="{{ old('email') }}">
-                    </div>
-                    <div>
-                        <label for="password" class="sr-only">Mot de passe</label>
-                        <input id="password" name="password" type="password" required 
-                               class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm" 
-                               placeholder="Mot de passe">
-                    </div>
-                </div>
-
-                <div class="flex items-center justify-between">
-                    <div class="flex items-center">
-                        <input id="remember" name="remember" type="checkbox" 
-                               class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded">
-                        <label for="remember" class="ml-2 block text-sm text-gray-900">
-                            Se souvenir de moi
-                        </label>
-                    </div>
-                </div>
-
-                <div>
-                    <button type="submit" 
-                            class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                        <span class="absolute left-0 inset-y-0 flex items-center pl-3">
-                            <svg class="h-5 w-5 text-indigo-500 group-hover:text-indigo-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                                <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd" />
-                            </svg>
-                        </span>
-                        Se connecter
-                    </button>
-                </div>
-            </form>
         </div>
     </div>
-</body>
-</html>
+</div>
+@endsection
+
+@section('styles')
+<style>
+    /* Styles personnalisés pour le formulaire de connexion */
+    body {
+        background-color: #f8f9fa;
+    }
+    .form-floating > .form-control {
+        padding: 1rem 0.75rem;
+        height: calc(3.5rem + 2px);
+    }
+    .form-floating > label {
+        padding: 1rem 0.75rem;
+    }
+    .form-floating > .form-control:focus {
+        border-color: #0d6efd;
+        box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+    }
+    .btn-primary {
+        background-color: #0d6efd;
+        border-color: #0d6efd;
+        padding: 0.75rem 1rem;
+        font-weight: 500;
+    }
+    .btn-primary:hover {
+        background-color: #0b5ed7;
+        border-color: #0a58ca;
+    }
+    .card {
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1) !important;
+    }
+    /* Styles pour les appareils mobiles */
+    @media (max-width: 767.98px) {
+        .container {
+            padding-left: 1rem;
+            padding-right: 1rem;
+        }
+        .card-body {
+            padding: 1.5rem;
+        }
+    }
+</style>
+@endsection

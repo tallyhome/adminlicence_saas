@@ -171,6 +171,13 @@
                 </li>
                 @endif
 
+                <!-- Licences -->
+                <li class="nav-item">
+                    <a class="nav-link {{ request()->routeIs('admin.licences.*') ? 'active' : '' }}" href="{{ route('admin.licences.index') }}">
+                        <i class="fas fa-key me-2"></i> Licences
+                    </a>
+                </li>
+                
                 <!-- Abonnements -->
                 <li class="nav-item">
                     <a class="nav-link" data-bs-toggle="collapse" href="#abonnementsSubmenu" role="button">

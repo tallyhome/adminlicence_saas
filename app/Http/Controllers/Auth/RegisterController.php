@@ -18,7 +18,7 @@ class RegisterController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = '/dashboard';
+    protected $redirectTo = '/welcome';
 
     /**
      * Create a new controller instance.
@@ -27,7 +27,17 @@ class RegisterController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('guest');
+        // Le middleware sera appliqué via les routes
+    }
+    
+    /**
+     * Affiche le formulaire d'inscription
+     *
+     * @return \Illuminate\View\View
+     */
+    public function showRegistrationForm()
+    {
+        return view('auth.register');
     }
 
     /**
@@ -42,6 +52,10 @@ class RegisterController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
+            'terms' => ['required', 'accepted'],
+        ], [
+            'terms.required' => 'Vous devez accepter les conditions d\'utilisation et la politique de confidentialité.',
+            'terms.accepted' => 'Vous devez accepter les conditions d\'utilisation et la politique de confidentialité.'
         ]);
     }
 
@@ -66,6 +80,8 @@ class RegisterController extends Controller
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
             'admin_id' => $adminId,
+            'terms_accepted' => true,
+            'terms_accepted_at' => now(),
         ]);
     }
 }
