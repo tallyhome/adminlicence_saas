@@ -21,6 +21,9 @@
                 @csrf
                 @method('PUT')
                 
+                <!-- Ajouter un champ caché pour l'ID du plan -->
+                <input type="hidden" name="plan_id" value="{{ $plan->id }}">
+                
                 <div class="mb-3">
                     <label for="name" class="form-label">Nom du plan</label>
                     <input type="text" class="form-control @error('name') is-invalid @enderror" id="name" name="name" value="{{ old('name', $plan->name) }}" required>

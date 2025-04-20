@@ -87,9 +87,12 @@ use Illuminate\Support\Facades\Auth;
                                                 </button>
                                             </form>
                                         @else
-                                            <a href="{{ route('subscription.checkout', $plan->id) }}" class="btn btn-primary w-100">
-                                                Souscrire
-                                            </a>
+                                            <form action="{{ route('subscription.checkout.post', $plan->id) }}" method="POST">
+                                                @csrf
+                                                <button type="submit" class="btn btn-primary w-100">
+                                                    Souscrire
+                                                </button>
+                                            </form>
                                         @endif
                                     </div>
                                 </div>

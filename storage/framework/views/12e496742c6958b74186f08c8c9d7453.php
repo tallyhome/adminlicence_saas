@@ -1,28 +1,28 @@
-@extends('admin.layouts.app')
+<?php $__env->startSection('title', 'Configuration des paiements'); ?>
 
-@section('title', 'Configuration des paiements')
-
-@section('content')
+<?php $__env->startSection('content'); ?>
 <div class="container-fluid px-4">
     <h1 class="mt-4">Configuration des paiements</h1>
     <ol class="breadcrumb mb-4">
-        <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Tableau de bord</a></li>
+        <li class="breadcrumb-item"><a href="<?php echo e(route('admin.dashboard')); ?>">Tableau de bord</a></li>
         <li class="breadcrumb-item active">Configuration des paiements</li>
     </ol>
 
-    @if(session('success'))
+    <?php if(session('success')): ?>
         <div class="alert alert-success alert-dismissible fade show" role="alert">
-            {{ session('success') }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-    @endif
+            <?php echo e(session('success')); ?>
 
-    @if(session('error'))
-        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-            {{ session('error') }}
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
-    @endif
+    <?php endif; ?>
+
+    <?php if(session('error')): ?>
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <?php echo e(session('error')); ?>
+
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    <?php endif; ?>
 
     <!-- Activation/Désactivation des méthodes de paiement -->
     <div class="row mb-4">
@@ -33,12 +33,12 @@
                     Activer/Désactiver les méthodes de paiement
                 </div>
                 <div class="card-body">
-                    <form action="{{ route('admin.settings.update-payment-methods') }}" method="POST" class="row g-3">
-                        @csrf
+                    <form action="<?php echo e(route('admin.settings.update-payment-methods')); ?>" method="POST" class="row g-3">
+                        <?php echo csrf_field(); ?>
                         
                         <div class="col-md-6">
                             <div class="form-check form-switch">
-                                <input class="form-check-input" type="checkbox" id="stripe_enabled" name="stripe_enabled" {{ config('services.stripe.enabled', false) ? 'checked' : '' }}>
+                                <input class="form-check-input" type="checkbox" id="stripe_enabled" name="stripe_enabled" <?php echo e(config('services.stripe.enabled', false) ? 'checked' : ''); ?>>
                                 <label class="form-check-label" for="stripe_enabled">
                                     <i class="fab fa-stripe me-1"></i> Activer Stripe
                                 </label>
@@ -47,7 +47,7 @@
                         
                         <div class="col-md-6">
                             <div class="form-check form-switch">
-                                <input class="form-check-input" type="checkbox" id="paypal_enabled" name="paypal_enabled" {{ config('services.paypal.enabled', false) ? 'checked' : '' }}>
+                                <input class="form-check-input" type="checkbox" id="paypal_enabled" name="paypal_enabled" <?php echo e(config('services.paypal.enabled', false) ? 'checked' : ''); ?>>
                                 <label class="form-check-label" for="paypal_enabled">
                                     <i class="fab fa-paypal me-1"></i> Activer PayPal
                                 </label>
@@ -72,18 +72,18 @@
                     Configuration Stripe
                 </div>
                 <div class="card-body">
-                    <form action="{{ route('admin.settings.update-stripe') }}" method="POST">
-                        @csrf
+                    <form action="<?php echo e(route('admin.settings.update-stripe')); ?>" method="POST">
+                        <?php echo csrf_field(); ?>
                         
                         <div class="mb-3">
                             <label for="stripe_key" class="form-label">Clé publique</label>
-                            <input type="text" class="form-control" id="stripe_key" name="stripe_key" value="{{ config('services.stripe.key') }}" required>
+                            <input type="text" class="form-control" id="stripe_key" name="stripe_key" value="<?php echo e(config('services.stripe.key')); ?>" required>
                         </div>
                         
                         <div class="mb-3">
                             <label for="stripe_secret" class="form-label">Clé secrète</label>
                             <div class="input-group">
-                                <input type="password" class="form-control" id="stripe_secret" name="stripe_secret" value="{{ config('services.stripe.secret') }}" required>
+                                <input type="password" class="form-control" id="stripe_secret" name="stripe_secret" value="<?php echo e(config('services.stripe.secret')); ?>" required>
                                 <button class="btn btn-outline-secondary toggle-password" type="button" data-target="stripe_secret">
                                     <i class="fas fa-eye"></i>
                                 </button>
@@ -93,7 +93,7 @@
                         <div class="mb-3">
                             <label for="stripe_webhook_secret" class="form-label">Secret de webhook</label>
                             <div class="input-group">
-                                <input type="password" class="form-control" id="stripe_webhook_secret" name="stripe_webhook_secret" value="{{ config('services.stripe.webhook_secret') }}">
+                                <input type="password" class="form-control" id="stripe_webhook_secret" name="stripe_webhook_secret" value="<?php echo e(config('services.stripe.webhook_secret')); ?>">
                                 <button class="btn btn-outline-secondary toggle-password" type="button" data-target="stripe_webhook_secret">
                                     <i class="fas fa-eye"></i>
                                 </button>
@@ -103,8 +103,8 @@
                         <div class="mb-3">
                             <label class="form-label">URL du webhook</label>
                             <div class="input-group">
-                                <input type="text" class="form-control" value="{{ url('/webhooks/stripe') }}" readonly>
-                                <button class="btn btn-outline-secondary copy-to-clipboard" type="button" data-clipboard-text="{{ url('/webhooks/stripe') }}">
+                                <input type="text" class="form-control" value="<?php echo e(url('/webhooks/stripe')); ?>" readonly>
+                                <button class="btn btn-outline-secondary copy-to-clipboard" type="button" data-clipboard-text="<?php echo e(url('/webhooks/stripe')); ?>">
                                     <i class="fas fa-copy"></i>
                                 </button>
                             </div>
@@ -140,18 +140,18 @@
                     Configuration PayPal
                 </div>
                 <div class="card-body">
-                    <form action="{{ route('admin.settings.update-paypal') }}" method="POST">
-                        @csrf
+                    <form action="<?php echo e(route('admin.settings.update-paypal')); ?>" method="POST">
+                        <?php echo csrf_field(); ?>
                         
                         <div class="mb-3">
                             <label for="paypal_client_id" class="form-label">Client ID</label>
-                            <input type="text" class="form-control" id="paypal_client_id" name="paypal_client_id" value="{{ config('services.paypal.client_id') }}" required>
+                            <input type="text" class="form-control" id="paypal_client_id" name="paypal_client_id" value="<?php echo e(config('services.paypal.client_id')); ?>" required>
                         </div>
                         
                         <div class="mb-3">
                             <label for="paypal_secret" class="form-label">Secret</label>
                             <div class="input-group">
-                                <input type="password" class="form-control" id="paypal_secret" name="paypal_secret" value="{{ config('services.paypal.secret') }}" required>
+                                <input type="password" class="form-control" id="paypal_secret" name="paypal_secret" value="<?php echo e(config('services.paypal.secret')); ?>" required>
                                 <button class="btn btn-outline-secondary toggle-password" type="button" data-target="paypal_secret">
                                     <i class="fas fa-eye"></i>
                                 </button>
@@ -160,12 +160,12 @@
                         
                         <div class="mb-3">
                             <label for="paypal_webhook_id" class="form-label">ID du webhook</label>
-                            <input type="text" class="form-control" id="paypal_webhook_id" name="paypal_webhook_id" value="{{ config('services.paypal.webhook_id') }}">
+                            <input type="text" class="form-control" id="paypal_webhook_id" name="paypal_webhook_id" value="<?php echo e(config('services.paypal.webhook_id')); ?>">
                         </div>
                         
                         <div class="mb-3">
                             <div class="form-check form-switch">
-                                <input class="form-check-input" type="checkbox" id="paypal_sandbox" name="paypal_sandbox" {{ config('services.paypal.sandbox') ? 'checked' : '' }}>
+                                <input class="form-check-input" type="checkbox" id="paypal_sandbox" name="paypal_sandbox" <?php echo e(config('services.paypal.sandbox') ? 'checked' : ''); ?>>
                                 <label class="form-check-label" for="paypal_sandbox">Mode Sandbox</label>
                             </div>
                         </div>
@@ -173,8 +173,8 @@
                         <div class="mb-3">
                             <label class="form-label">URL du webhook</label>
                             <div class="input-group">
-                                <input type="text" class="form-control" value="{{ url('/webhooks/paypal') }}" readonly>
-                                <button class="btn btn-outline-secondary copy-to-clipboard" type="button" data-clipboard-text="{{ url('/webhooks/paypal') }}">
+                                <input type="text" class="form-control" value="<?php echo e(url('/webhooks/paypal')); ?>" readonly>
+                                <button class="btn btn-outline-secondary copy-to-clipboard" type="button" data-clipboard-text="<?php echo e(url('/webhooks/paypal')); ?>">
                                     <i class="fas fa-copy"></i>
                                 </button>
                             </div>
@@ -265,9 +265,9 @@
         </div>
     </div>
 </div>
-@endsection
+<?php $__env->stopSection(); ?>
 
-@section('scripts')
+<?php $__env->startSection('scripts'); ?>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.8/clipboard.min.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
@@ -340,4 +340,6 @@
         });
     });
 </script>
-@endsection
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('admin.layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH R:\Adev\200  -  test\adminlicence_saas\resources\views/admin/settings/payment_integration.blade.php ENDPATH**/ ?>

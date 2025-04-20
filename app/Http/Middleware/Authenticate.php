@@ -17,6 +17,12 @@ class Authenticate extends Middleware
             return null;
         }
         
+        // Ne pas rediriger si l'URL contient 'payment', 'subscription' ou 'checkout'
+        $path = $request->path();
+        if (str_contains($path, 'payment') || str_contains($path, 'subscription') || str_contains($path, 'checkout')) {
+            return null;
+        }
+        
         // Rediriger directement vers l'URL de connexion admin au lieu d'utiliser route()
         return '/admin/login';
     }

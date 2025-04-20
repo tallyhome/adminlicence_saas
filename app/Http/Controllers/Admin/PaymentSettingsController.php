@@ -10,16 +10,13 @@ use Illuminate\Support\Facades\Auth;
 class PaymentSettingsController extends Controller
 {
     /**
-     * Constructeur - Restreint l'accès aux superadmins uniquement
+     * Vérifie si l'utilisateur est un superadmin
      */
-    public function __construct()
+    private function checkSuperAdmin()
     {
-        $this->middleware(function ($request, $next) {
-            if (!Auth::guard('admin')->check() || !Auth::guard('admin')->user()->is_super_admin) {
-                abort(403, 'Accès non autorisé. Seuls les superadmins peuvent accéder à cette page.');
-            }
-            return $next($request);
-        });
+        if (!Auth::guard('admin')->check() || !Auth::guard('admin')->user()->is_super_admin) {
+            abort(403, 'Accès non autorisé. Seuls les superadmins peuvent accéder à cette page.');
+        }
     }
     
     /**
@@ -27,6 +24,7 @@ class PaymentSettingsController extends Controller
      */
     public function index()
     {
+        $this->checkSuperAdmin();
         return view('admin.settings.payment_integration');
     }
     
@@ -35,6 +33,8 @@ class PaymentSettingsController extends Controller
      */
     public function updateStripe(Request $request)
     {
+        $this->checkSuperAdmin();
+        
         $request->validate([
             'stripe_key' => 'required|string',
             'stripe_secret' => 'required|string',
@@ -60,6 +60,8 @@ class PaymentSettingsController extends Controller
      */
     public function updatePayPal(Request $request)
     {
+        $this->checkSuperAdmin();
+        
         $request->validate([
             'paypal_client_id' => 'required|string',
             'paypal_secret' => 'required|string',
@@ -79,6 +81,26 @@ class PaymentSettingsController extends Controller
         
         return redirect()->route('admin.settings.payment-integration')
             ->with('success', 'Configuration PayPal mise à jour avec succès.');
+    }
+    
+    /**
+     * Met à jour les méthodes de paiement activées
+     */
+    public function updatePaymentMethods(Request $request)
+    {
+        $this->checkSuperAdmin();
+        
+        // Mettre à jour le fichier .env
+        $this->updateEnvironmentFile([
+            'STRIPE_ENABLED' => $request->has('stripe_enabled') ? 'true' : 'false',
+            'PAYPAL_ENABLED' => $request->has('paypal_enabled') ? 'true' : 'false',
+        ]);
+        
+        // Vider le cache de configuration
+        Artisan::call('config:clear');
+        
+        return redirect()->route('admin.settings.payment-integration')
+            ->with('success', 'Préférences des méthodes de paiement mises à jour avec succès.');
     }
     
     /**

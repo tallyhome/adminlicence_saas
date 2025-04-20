@@ -97,23 +97,15 @@
                                     </ul>
                                     <div class="mt-auto">
                                         @if($stripeEnabled)
-                                            <form action="{{ route('subscription.checkout', $plan->id) }}" method="POST" class="mb-2">
-                                                @csrf
-                                                <input type="hidden" name="payment_method" value="stripe">
-                                                <button type="submit" class="btn btn-outline-primary w-100">
-                                                    <i class="fab fa-stripe-s me-2"></i> Payer avec Stripe
-                                                </button>
-                                            </form>
+                                            <a href="{{ route('payment.stripe.form', $plan->id) }}" class="btn btn-outline-primary w-100 mb-2">
+                                                <i class="fab fa-stripe-s me-2"></i> Payer avec Stripe
+                                            </a>
                                         @endif
                                         
                                         @if($paypalEnabled)
-                                            <form action="{{ route('subscription.checkout', $plan->id) }}" method="POST">
-                                                @csrf
-                                                <input type="hidden" name="payment_method" value="paypal">
-                                                <button type="submit" class="btn btn-outline-info w-100">
-                                                    <i class="fab fa-paypal me-2"></i> Payer avec PayPal
-                                                </button>
-                                            </form>
+                                            <a href="{{ route('payment.paypal.form', $plan->id) }}" class="btn btn-outline-info w-100">
+                                                <i class="fab fa-paypal me-2"></i> Payer avec PayPal
+                                            </a>
                                         @endif
                                         
                                         @if(!$stripeEnabled && !$paypalEnabled)

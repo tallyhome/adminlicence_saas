@@ -88,9 +88,12 @@ use Illuminate\Support\Facades\Auth;
                                                 </button>
                                             </form>
                                         <?php else: ?>
-                                            <a href="<?php echo e(route('subscription.checkout', $plan->id)); ?>" class="btn btn-primary w-100">
-                                                Souscrire
-                                            </a>
+                                            <form action="<?php echo e(route('subscription.checkout.post', $plan->id)); ?>" method="POST">
+                                                <?php echo csrf_field(); ?>
+                                                <button type="submit" class="btn btn-primary w-100">
+                                                    Souscrire
+                                                </button>
+                                            </form>
                                         <?php endif; ?>
                                     </div>
                                 </div>

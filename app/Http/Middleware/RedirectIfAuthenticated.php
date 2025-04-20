@@ -19,6 +19,12 @@ class RedirectIfAuthenticated
     {
         $guards = empty($guards) ? [null] : $guards;
 
+        // Ne pas rediriger si l'URL contient 'subscription' ou 'checkout'
+        $path = $request->path();
+        if (str_contains($path, 'subscription') || str_contains($path, 'checkout')) {
+            return $next($request);
+        }
+
         foreach ($guards as $guard) {
             if (Auth::guard($guard)->check()) {
                 // Si l'utilisateur est authentifié en tant qu'admin, redirigez-le vers le tableau de bord admin

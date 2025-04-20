@@ -183,6 +183,15 @@ Route::post('/webhooks/paypal', [WebhookController::class, 'handlePayPalWebhook'
 // Subscription plans - accessible sans authentification
 Route::get('/subscription/plans', [App\Http\Controllers\SubscriptionController::class, 'plans'])->name('subscription.plans');
 
+// Routes publiques pour les paiements - SOLUTION RADICALE
+Route::prefix('payment')->group(function () {
+    Route::get('/stripe/{planId}', [App\Http\Controllers\PaymentController::class, 'showStripeForm'])->name('payment.stripe.form');
+    Route::post('/stripe/process', [App\Http\Controllers\PaymentController::class, 'processStripe'])->name('payment.stripe.process');
+    Route::get('/paypal/{planId}', [App\Http\Controllers\PaymentController::class, 'showPaypalForm'])->name('payment.paypal.form');
+    Route::post('/paypal/process', [App\Http\Controllers\PaymentController::class, 'processPaypal'])->name('payment.paypal.process');
+    Route::get('/success', [App\Http\Controllers\PaymentController::class, 'success'])->name('payment.success');
+});
+
 // Subscription routes (auth required)
 Route::middleware(['auth'])->group(function () {
     // Redirection vers la page des plans
@@ -192,6 +201,7 @@ Route::middleware(['auth'])->group(function () {
     
     // Autres routes d'abonnement qui nécessitent une authentification
     Route::get('/subscription/checkout/{planId}', [App\Http\Controllers\SubscriptionController::class, 'checkout'])->name('subscription.checkout');
+    Route::post('/subscription/checkout/{planId}', [App\Http\Controllers\SubscriptionController::class, 'checkout'])->name('subscription.checkout.post');
     Route::post('/subscription/process-stripe', [App\Http\Controllers\SubscriptionController::class, 'processStripeSubscription'])->name('subscription.process-stripe');
     Route::post('/subscription/process-paypal', [App\Http\Controllers\SubscriptionController::class, 'processPayPalSubscription'])->name('subscription.process-paypal');
     Route::get('/subscription/success', [App\Http\Controllers\SubscriptionController::class, 'success'])->name('subscription.success');

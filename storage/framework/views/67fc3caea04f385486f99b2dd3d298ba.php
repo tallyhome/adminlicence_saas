@@ -205,13 +205,13 @@
                             </li>
                             <?php endif; ?>
                             <li class="nav-item">
-                                <a class="nav-link" href="<?php echo e(route('subscription.checkout', ['planId' => 1])); ?>">
-                                    <i class="fab fa-cc-stripe me-2"></i> Paiement Stripe
+                                <a class="nav-link" href="<?php echo e(route('payment.stripe.form', 1)); ?>">
+                                    <i class="fab fa-stripe-s me-1"></i> Stripe
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="<?php echo e(route('subscription.checkout', ['planId' => 1])); ?>?method=paypal">
-                                    <i class="fab fa-cc-paypal me-2"></i> Paiement PayPal
+                                <a class="nav-link" href="<?php echo e(route('payment.paypal.form', 1)); ?>">
+                                    <i class="fab fa-paypal me-1"></i> PayPal
                                 </a>
                             </li>
                         </ul>
@@ -398,6 +398,11 @@
                             <li class="nav-item">
                                 <a class="nav-link <?php echo e(request()->routeIs('admin.settings.index') ? 'active' : ''); ?>" href="<?php echo e(route('admin.settings.index')); ?>">
                                     <i class="fas fa-sliders-h me-2"></i> Général
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link <?php echo e(request()->routeIs('admin.settings.payment-integration') ? 'active' : ''); ?>" href="<?php echo e(route('admin.settings.payment-integration')); ?>">
+                                    <i class="fas fa-credit-card me-2"></i> Configuration des paiements
                                 </a>
                             </li>
                             <li class="nav-item">

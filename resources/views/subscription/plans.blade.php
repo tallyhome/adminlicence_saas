@@ -58,14 +58,14 @@
                             @endphp
                             
                             @if($stripeEnabled)
-                            <a href="{{ url('/subscription/checkout/' . $plan->id) }}" class="btn btn-primary">
-                                <i class="fas fa-credit-card me-2"></i> Souscrire avec Stripe
+                            <a href="{{ route('payment.stripe.form', $plan->id) }}" class="btn btn-primary">
+                                <i class="fab fa-stripe-s me-2"></i> Payer avec Stripe
                             </a>
                             @endif
                             
                             @if($paypalEnabled)
-                            <a href="{{ url('/subscription/checkout/' . $plan->id . '?method=paypal') }}" class="btn btn-info">
-                                <i class="fab fa-paypal me-2"></i> Souscrire avec PayPal
+                            <a href="{{ route('payment.paypal.form', $plan->id) }}" class="btn btn-info">
+                                <i class="fab fa-paypal me-2"></i> Payer avec PayPal
                             </a>
                             @endif
                             

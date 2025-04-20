@@ -13,7 +13,7 @@
                         <div class="d-flex flex-column h-100 p-4 p-xl-5 text-white">
                             <div class="text-center mb-4">
                                 <h2 class="display-6 fw-bold">Bienvenue sur AdminLicence</h2>
-                                <p class="lead">Gérez vos licences en toute simplicité avec notre plateforme intuitive et sécurisée.</p>
+                                <p class="lead">Connectez-vous pour gérer vos licences</p>
                             </div>
                             <div class="my-4">
                                 <div class="d-flex align-items-center mb-3">
@@ -38,12 +38,12 @@
                             <div class="mt-auto text-center">
                                 <p class="mb-3">Pas encore de compte ?</p>
                                 <a href="{{ route('register') }}" class="btn btn-outline-light btn-lg px-4">
-                                    <i class="fas fa-user-plus me-2"></i> Inscription
+                                    <i class="fas fa-user-plus me-2"></i> S'inscrire
                                 </a>
                             </div>
                         </div>
                     </div>
-                    
+
                     <!-- Colonne droite avec le formulaire de connexion -->
                     <div class="col-lg-7">
                         <div class="card-header bg-white py-3 border-0">
@@ -59,12 +59,11 @@
                                     </ul>
                                 </div>
                             @endif
-                            
+
                             <form method="POST" action="{{ route('login') }}" class="needs-validation" novalidate>
                                 @csrf
-                                
                                 <div class="form-floating mb-4">
-                                    <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" required autocomplete="email" autofocus placeholder="Votre adresse e-mail">
+                                    <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" required placeholder="Adresse e-mail">
                                     <label for="email"><i class="fas fa-envelope me-2"></i>{{ __('Adresse e-mail') }}</label>
                                     @error('email')
                                         <div class="invalid-feedback">{{ $message }}</div>
@@ -72,39 +71,35 @@
                                 </div>
 
                                 <div class="form-floating mb-4">
-                                    <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" required autocomplete="current-password" placeholder="Mot de passe">
+                                    <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" required placeholder="Mot de passe">
                                     <label for="password"><i class="fas fa-lock me-2"></i>{{ __('Mot de passe') }}</label>
                                     @error('password')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                 </div>
-                                
-                                <div class="row align-items-center mb-4">
-                                    <div class="col">
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" name="remember" id="remember" {{ old('remember') ? 'checked' : '' }}>
-                                            <label class="form-check-label" for="remember">
-                                                {{ __('Se souvenir de moi') }}
-                                            </label>
-                                        </div>
+
+                                <div class="d-flex justify-content-between align-items-center mb-4">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="remember" id="remember" {{ old('remember') ? 'checked' : '' }}>
+                                        <label class="form-check-label" for="remember">
+                                            Se souvenir de moi
+                                        </label>
                                     </div>
-                                    <div class="col text-end">
-                                        @if (Route::has('password.request'))
-                                            <a class="text-decoration-none" href="{{ route('password.request') }}">
-                                                {{ __('Mot de passe oublié ?') }}
-                                            </a>
-                                        @endif
-                                    </div>
+                                    @if (Route::has('password.request'))
+                                        <a class="text-primary text-decoration-none" href="{{ route('password.request') }}">
+                                            Mot de passe oublié ?
+                                        </a>
+                                    @endif
                                 </div>
-                                
-                                <div class="d-grid mb-4">
-                                    <button type="submit" class="btn btn-primary btn-lg">
-                                        <i class="fas fa-sign-in-alt me-2"></i>{{ __('Se connecter') }}
+
+                                <div class="d-grid mb-4 mt-4">
+                                    <button type="submit" class="btn btn-primary btn-lg py-2">
+                                        <i class="fas fa-sign-in-alt me-2"></i> Se connecter
                                     </button>
                                 </div>
                                 
                                 <div class="text-center d-lg-none">
-                                    <p>Pas encore de compte ? <a href="{{ route('register') }}" class="text-decoration-none">Créer un compte</a></p>
+                                    <p>Pas encore de compte ? <a href="{{ route('register') }}" class="text-decoration-none">Inscrivez-vous</a></p>
                                 </div>
                             </form>
                         </div>
@@ -114,27 +109,6 @@
         </div>
     </div>
 </div>
-@endsection
-
-@section('scripts')
-<script>
-    // Validation côté client
-    (function() {
-        'use strict';
-        window.addEventListener('load', function() {
-            var forms = document.getElementsByClassName('needs-validation');
-            Array.prototype.filter.call(forms, function(form) {
-                form.addEventListener('submit', function(event) {
-                    if (form.checkValidity() === false) {
-                        event.preventDefault();
-                        event.stopPropagation();
-                    }
-                    form.classList.add('was-validated');
-                }, false);
-            });
-        }, false);
-    })();
-</script>
 @endsection
 
 @section('styles')
@@ -169,14 +143,8 @@
         transform: translateY(-2px);
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     }
-    .btn-outline-light:hover {
-        background-color: rgba(255, 255, 255, 0.1);
-    }
     .card {
         box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1) !important;
-    }
-    .card-header {
-        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
     }
     /* Styles pour les appareils mobiles */
     @media (max-width: 767.98px) {

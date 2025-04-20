@@ -196,6 +196,7 @@ Route::middleware('auth:admin')->group(function () {
     Route::get('settings/payment-integration', [\App\Http\Controllers\Admin\PaymentSettingsController::class, 'index'])->name('admin.settings.payment-integration');
     Route::post('settings/update-stripe', [\App\Http\Controllers\Admin\PaymentSettingsController::class, 'updateStripe'])->name('admin.settings.update-stripe');
     Route::post('settings/update-paypal', [\App\Http\Controllers\Admin\PaymentSettingsController::class, 'updatePayPal'])->name('admin.settings.update-paypal');
+    Route::post('settings/update-payment-methods', [\App\Http\Controllers\Admin\PaymentSettingsController::class, 'updatePaymentMethods'])->name('admin.settings.update-payment-methods');
     
     // Routes pour l'authentification à deux facteurs
     Route::get('settings/two-factor', [TwoFactorAuthController::class, 'index'])->name('admin.settings.two-factor');
@@ -242,10 +243,15 @@ Route::middleware('auth:admin')->group(function () {
     });
     
     // Gestion des utilisateurs
-    Route::get('/users', [\App\Http\Controllers\Admin\UserController::class, 'index'])->name('admin.users.index');
-    Route::get('/users/{user}/edit', [\App\Http\Controllers\Admin\UserController::class, 'edit'])->name('admin.users.edit');
-    Route::put('/users/{user}', [\App\Http\Controllers\Admin\UserController::class, 'update'])->name('admin.users.update');
-    Route::delete('/users/{user}', [\App\Http\Controllers\Admin\UserController::class, 'destroy'])->name('admin.users.destroy');
+    Route::prefix('users')->group(function () {
+        Route::get('/', [App\Http\Controllers\Admin\UserController::class, 'index'])->name('admin.users.index');
+        Route::get('/create', [App\Http\Controllers\Admin\UserController::class, 'create'])->name('admin.users.create');
+        Route::post('/', [App\Http\Controllers\Admin\UserController::class, 'store'])->name('admin.users.store');
+        Route::get('/{id}', [App\Http\Controllers\Admin\UserController::class, 'show'])->name('admin.users.show');
+        Route::get('/{user}/edit', [App\Http\Controllers\Admin\UserController::class, 'edit'])->name('admin.users.edit');
+        Route::put('/{user}', [App\Http\Controllers\Admin\UserController::class, 'update'])->name('admin.users.update');
+        Route::delete('/{user}', [App\Http\Controllers\Admin\UserController::class, 'destroy'])->name('admin.users.destroy');
+    });
     
     // Gestion des plans d'abonnement
     Route::prefix('subscriptions')->group(function () {

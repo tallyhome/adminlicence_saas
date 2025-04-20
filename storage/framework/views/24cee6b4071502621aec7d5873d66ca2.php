@@ -96,23 +96,15 @@
                                     </ul>
                                     <div class="mt-auto">
                                         <?php if($stripeEnabled): ?>
-                                            <form action="<?php echo e(route('subscription.checkout', $plan->id)); ?>" method="POST" class="mb-2">
-                                                <?php echo csrf_field(); ?>
-                                                <input type="hidden" name="payment_method" value="stripe">
-                                                <button type="submit" class="btn btn-outline-primary w-100">
-                                                    <i class="fab fa-stripe-s me-2"></i> Payer avec Stripe
-                                                </button>
-                                            </form>
+                                            <a href="<?php echo e(route('payment.stripe.form', $plan->id)); ?>" class="btn btn-outline-primary w-100 mb-2">
+                                                <i class="fab fa-stripe-s me-2"></i> Payer avec Stripe
+                                            </a>
                                         <?php endif; ?>
                                         
                                         <?php if($paypalEnabled): ?>
-                                            <form action="<?php echo e(route('subscription.checkout', $plan->id)); ?>" method="POST">
-                                                <?php echo csrf_field(); ?>
-                                                <input type="hidden" name="payment_method" value="paypal">
-                                                <button type="submit" class="btn btn-outline-info w-100">
-                                                    <i class="fab fa-paypal me-2"></i> Payer avec PayPal
-                                                </button>
-                                            </form>
+                                            <a href="<?php echo e(route('payment.paypal.form', $plan->id)); ?>" class="btn btn-outline-info w-100">
+                                                <i class="fab fa-paypal me-2"></i> Payer avec PayPal
+                                            </a>
                                         <?php endif; ?>
                                         
                                         <?php if(!$stripeEnabled && !$paypalEnabled): ?>
