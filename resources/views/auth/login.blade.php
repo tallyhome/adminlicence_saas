@@ -1,83 +1,140 @@
-@extends('layouts.app')
+@extends('layouts.auth')
 
 @section('title', 'Connexion')
 
 @section('content')
 <div class="container py-5">
     <div class="row justify-content-center">
-        <div class="col-md-8 col-lg-6">
+        <div class="col-xl-20 col-xxl-18">
             <div class="card shadow-lg border-0 rounded-lg overflow-hidden">
-                <div class="card-header bg-primary text-white text-center py-4">
-                    <h2 class="fs-4 fw-bold mb-0">{{ __('Connexion') }}</h2>
-                </div>
-                <div class="card-body p-4 p-md-5">
-                    <div class="text-center mb-4">
-                        <p class="lead fw-normal text-muted">{{ __('Accédez à votre espace personnel') }}</p>
-                    </div>
-
-                    @if ($errors->any())
-                        <div class="alert alert-danger">
-                            <ul class="mb-0">
-                                @foreach ($errors->all() as $error)
-                                    <li>{{ $error }}</li>
-                                @endforeach
-                            </ul>
-                        </div>
-                    @endif
-
-                    <form method="POST" action="{{ route('admin.login') }}">
-                        @csrf
-
-                        <div class="form-floating mb-4">
-                            <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" required autocomplete="email" autofocus placeholder="Votre adresse e-mail">
-                            <label for="email"><i class="fas fa-envelope me-2"></i>{{ __('Adresse e-mail') }}</label>
-                            @error('email')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <div class="form-floating mb-4">
-                            <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" required autocomplete="current-password" placeholder="Votre mot de passe">
-                            <label for="password"><i class="fas fa-lock me-2"></i>{{ __('Mot de passe') }}</label>
-                            @error('password')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <div class="form-check mb-4">
-                            <input class="form-check-input" type="checkbox" name="remember" id="remember" {{ old('remember') ? 'checked' : '' }}>
-                            <label class="form-check-label" for="remember">
-                                {{ __('Se souvenir de moi') }}
-                            </label>
-                        </div>
-
-                        <div class="d-grid mb-4">
-                            <button type="submit" class="btn btn-primary btn-lg">
-                                <i class="fas fa-sign-in-alt me-2"></i>{{ __('Se connecter') }}
-                            </button>
-                        </div>
-
-                        <div class="text-center">
-                            @if (Route::has('password.request'))
-                                <a class="text-decoration-none" href="{{ route('password.request') }}">
-                                    {{ __('Mot de passe oublié ?') }}
+                <div class="row g-0">
+                    <!-- Colonne gauche avec texte de bienvenue -->
+                    <div class="col-lg-5 d-none d-lg-block bg-primary">
+                        <div class="d-flex flex-column h-100 p-4 p-xl-5 text-white">
+                            <div class="text-center mb-4">
+                                <h2 class="display-6 fw-bold">Bienvenue sur AdminLicence</h2>
+                                <p class="lead">Gérez vos licences en toute simplicité avec notre plateforme intuitive et sécurisée.</p>
+                            </div>
+                            <div class="my-4">
+                                <div class="d-flex align-items-center mb-3">
+                                    <div class="bg-white rounded-circle p-2 me-3">
+                                        <i class="fas fa-shield-alt text-primary fa-fw"></i>
+                                    </div>
+                                    <div>Gestion sécurisée de vos licences</div>
+                                </div>
+                                <div class="d-flex align-items-center mb-3">
+                                    <div class="bg-white rounded-circle p-2 me-3">
+                                        <i class="fas fa-chart-line text-primary fa-fw"></i>
+                                    </div>
+                                    <div>Suivi et analyse de l'utilisation</div>
+                                </div>
+                                <div class="d-flex align-items-center mb-3">
+                                    <div class="bg-white rounded-circle p-2 me-3">
+                                        <i class="fas fa-headset text-primary fa-fw"></i>
+                                    </div>
+                                    <div>Support client prioritaire</div>
+                                </div>
+                            </div>
+                            <div class="mt-auto text-center">
+                                <p class="mb-3">Pas encore de compte ?</p>
+                                <a href="{{ route('register') }}" class="btn btn-outline-light btn-lg px-4">
+                                    <i class="fas fa-user-plus me-2"></i> Inscription
                                 </a>
-                            @endif
+                            </div>
                         </div>
-                    </form>
-                </div>
-                <div class="card-footer text-center py-4 bg-light">
-                    <div class="small">
-                        <p class="mb-2">{{ __('Pas encore de compte ?') }}</p>
-                        <a href="{{ route('register') }}" class="btn btn-success">
-                            <i class="fas fa-user-plus me-2"></i>{{ __('Créer un compte') }}
-                        </a>
+                    </div>
+                    
+                    <!-- Colonne droite avec le formulaire de connexion -->
+                    <div class="col-lg-7">
+                        <div class="card-header bg-white py-3 border-0">
+                            <h3 class="text-center fw-bold text-primary mb-0">Connexion</h3>
+                        </div>
+                        <div class="card-body p-4 p-xl-5">
+                            @if ($errors->any())
+                                <div class="alert alert-danger mb-4">
+                                    <ul class="mb-0">
+                                        @foreach ($errors->all() as $error)
+                                            <li>{{ $error }}</li>
+                                        @endforeach
+                                    </ul>
+                                </div>
+                            @endif
+                            
+                            <form method="POST" action="{{ route('login') }}" class="needs-validation" novalidate>
+                                @csrf
+                                
+                                <div class="form-floating mb-4">
+                                    <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" required autocomplete="email" autofocus placeholder="Votre adresse e-mail">
+                                    <label for="email"><i class="fas fa-envelope me-2"></i>{{ __('Adresse e-mail') }}</label>
+                                    @error('email')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+
+                                <div class="form-floating mb-4">
+                                    <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" required autocomplete="current-password" placeholder="Mot de passe">
+                                    <label for="password"><i class="fas fa-lock me-2"></i>{{ __('Mot de passe') }}</label>
+                                    @error('password')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                                
+                                <div class="row align-items-center mb-4">
+                                    <div class="col">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" name="remember" id="remember" {{ old('remember') ? 'checked' : '' }}>
+                                            <label class="form-check-label" for="remember">
+                                                {{ __('Se souvenir de moi') }}
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col text-end">
+                                        @if (Route::has('password.request'))
+                                            <a class="text-decoration-none" href="{{ route('password.request') }}">
+                                                {{ __('Mot de passe oublié ?') }}
+                                            </a>
+                                        @endif
+                                    </div>
+                                </div>
+                                
+                                <div class="d-grid mb-4">
+                                    <button type="submit" class="btn btn-primary btn-lg">
+                                        <i class="fas fa-sign-in-alt me-2"></i>{{ __('Se connecter') }}
+                                    </button>
+                                </div>
+                                
+                                <div class="text-center d-lg-none">
+                                    <p>Pas encore de compte ? <a href="{{ route('register') }}" class="text-decoration-none">Créer un compte</a></p>
+                                </div>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+@endsection
+
+@section('scripts')
+<script>
+    // Validation côté client
+    (function() {
+        'use strict';
+        window.addEventListener('load', function() {
+            var forms = document.getElementsByClassName('needs-validation');
+            Array.prototype.filter.call(forms, function(form) {
+                form.addEventListener('submit', function(event) {
+                    if (form.checkValidity() === false) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                    form.classList.add('was-validated');
+                }, false);
+            });
+        }, false);
+    })();
+</script>
 @endsection
 
 @section('styles')
@@ -97,18 +154,29 @@
         border-color: #0d6efd;
         box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
     }
-    .btn-primary {
+    .form-check-input:checked {
         background-color: #0d6efd;
         border-color: #0d6efd;
-        padding: 0.75rem 1rem;
-        font-weight: 500;
+    }
+    .form-check-input:focus {
+        border-color: #0d6efd;
+        box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+    }
+    .btn-primary {
+        transition: all 0.3s ease;
     }
     .btn-primary:hover {
-        background-color: #0b5ed7;
-        border-color: #0a58ca;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    .btn-outline-light:hover {
+        background-color: rgba(255, 255, 255, 0.1);
     }
     .card {
         box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1) !important;
+    }
+    .card-header {
+        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
     }
     /* Styles pour les appareils mobiles */
     @media (max-width: 767.98px) {

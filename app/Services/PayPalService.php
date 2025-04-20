@@ -29,12 +29,47 @@ class PayPalService
      */
     public function __construct()
     {
-        $environment = config('services.paypal.sandbox') 
-            ? new SandboxEnvironment(config('services.paypal.client_id'), config('services.paypal.secret')) 
-            : new ProductionEnvironment(config('services.paypal.client_id'), config('services.paypal.secret'));
+        // Vérifier si les classes PayPal existent
+        if (!class_exists('PayPalCheckoutSdk\Core\PayPalHttpClient') || 
+            !class_exists('PayPalCheckoutSdk\Core\SandboxEnvironment') || 
+            !class_exists('PayPalCheckoutSdk\Core\ProductionEnvironment')) {
+            
+            // Les classes PayPal ne sont pas disponibles, journaliser l'erreur
+            Log::warning('Les classes PayPal ne sont pas disponibles. Le package PayPal n\'est probablement pas installé.');
+            $this->client = null;
+            $this->webhookId = null;
+            return;
+        }
+        
+        // Récupérer les configurations depuis payment.php avec fallback vers services.php
+        $sandbox = config('payment.paypal.sandbox', null);
+        if ($sandbox === null) {
+            $sandbox = config('services.paypal.sandbox', true);
+        }
+        
+        $clientId = config('payment.paypal.client_id');
+        if (empty($clientId)) {
+            $clientId = config('services.paypal.client_id');
+        }
+        
+        $secret = config('payment.paypal.secret');
+        if (empty($secret)) {
+            $secret = config('services.paypal.secret');
+        }
+        
+        $environment = $sandbox
+            ? new SandboxEnvironment($clientId, $secret)
+            : new ProductionEnvironment($clientId, $secret);
         
         $this->client = new PayPalHttpClient($environment);
-        $this->webhookId = config('services.paypal.webhook_id');
+        
+        // Récupérer l'ID du webhook depuis payment.php avec fallback vers services.php
+        $webhookId = config('payment.paypal.webhook_id');
+        if (empty($webhookId)) {
+            $webhookId = config('services.paypal.webhook_id');
+        }
+        
+        $this->webhookId = $webhookId;
     }
     
     /**

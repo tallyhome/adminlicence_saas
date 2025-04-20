@@ -35,7 +35,7 @@
                     <ul class="nav nav-tabs" id="paymentTabs" role="tablist">
                         @if($stripeEnabled)
                         <li class="nav-item" role="presentation">
-                            <button class="nav-link active" id="stripe-tab" data-bs-toggle="tab" data-bs-target="#stripe" type="button" role="tab" aria-controls="stripe" aria-selected="true">
+                            <button class="nav-link {{ (!isset($preferredMethod) || $preferredMethod != 'paypal') ? 'active' : '' }}" id="stripe-tab" data-bs-toggle="tab" data-bs-target="#stripe" type="button" role="tab" aria-controls="stripe" aria-selected="{{ (!isset($preferredMethod) || $preferredMethod != 'paypal') ? 'true' : 'false' }}">
                                 <i class="fab fa-stripe fa-lg me-2"></i> Carte de crédit
                             </button>
                         </li>
@@ -43,7 +43,7 @@
                         
                         @if($paypalEnabled)
                         <li class="nav-item" role="presentation">
-                            <button class="nav-link {{ !$stripeEnabled ? 'active' : '' }}" id="paypal-tab" data-bs-toggle="tab" data-bs-target="#paypal" type="button" role="tab" aria-controls="paypal" aria-selected="{{ !$stripeEnabled ? 'true' : 'false' }}">
+                            <button class="nav-link {{ (isset($preferredMethod) && $preferredMethod == 'paypal') ? 'active' : '' }}" id="paypal-tab" data-bs-toggle="tab" data-bs-target="#paypal" type="button" role="tab" aria-controls="paypal" aria-selected="{{ (isset($preferredMethod) && $preferredMethod == 'paypal') ? 'true' : 'false' }}">
                                 <i class="fab fa-paypal fa-lg me-2"></i> PayPal
                             </button>
                         </li>
@@ -52,8 +52,8 @@
                     
                     <div class="tab-content mt-4" id="paymentTabsContent">
                         @if($stripeEnabled)
-                        <div class="tab-pane fade show active" id="stripe" role="tabpanel" aria-labelledby="stripe-tab">
-                            <form id="payment-form" action="{{ route('subscription.process.stripe') }}" method="POST">
+                        <div class="tab-pane fade {{ (!isset($preferredMethod) || $preferredMethod != 'paypal') ? 'show active' : '' }}" id="stripe" role="tabpanel" aria-labelledby="stripe-tab">
+                            <form id="payment-form" action="{{ url('/subscription/process-stripe') }}" method="POST">
                                 @csrf
                                 <input type="hidden" name="plan_id" value="{{ $plan->id }}">
                                 
@@ -127,10 +127,10 @@
                         @endif
                         
                         @if($paypalEnabled)
-                        <div class="tab-pane fade {{ !$stripeEnabled ? 'show active' : '' }}" id="paypal" role="tabpanel" aria-labelledby="paypal-tab">
+                        <div class="tab-pane fade {{ (isset($preferredMethod) && $preferredMethod == 'paypal') ? 'show active' : '' }}" id="paypal" role="tabpanel" aria-labelledby="paypal-tab">
                             <div class="text-center mb-4">
                                 <p>Vous allez être redirigé vers PayPal pour effectuer votre paiement.</p>
-                                <form action="{{ route('subscription.process.paypal') }}" method="POST">
+                                <form action="{{ url('/subscription/process-paypal') }}" method="POST">
                                     @csrf
                                     <input type="hidden" name="plan_id" value="{{ $plan->id }}">
                                     <button type="submit" class="btn btn-primary">

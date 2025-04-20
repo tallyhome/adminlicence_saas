@@ -1,4 +1,4 @@
-@extends('admin.layouts.app')
+@extends('layouts.app')
 
 @section('title', 'Plans d\'abonnement')
 
@@ -6,7 +6,7 @@
 <div class="container-fluid px-4">
     <h1 class="mt-4">Plans d'abonnement</h1>
     <ol class="breadcrumb mb-4">
-        <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Tableau de bord</a></li>
+        <li class="breadcrumb-item"><a href="{{ url('/') }}">Accueil</a></li>
         <li class="breadcrumb-item active">Plans d'abonnement</li>
     </ol>
     
@@ -16,9 +16,9 @@
         </div>
     @endif
     
-    @if(session('error'))
+    @if(session('error') || isset($error))
         <div class="alert alert-danger">
-            {{ session('error') }}
+            {{ session('error') ?? $error ?? 'Une erreur est survenue.' }}
         </div>
     @endif
     
@@ -33,8 +33,16 @@
                         <h3 class="card-title pricing-card-title">{{ number_format($plan->price, 2) }} €<small class="text-muted">/ {{ $plan->billing_cycle === 'monthly' ? 'mois' : 'an' }}</small></h3>
                         <p class="card-text">{{ $plan->description }}</p>
                         <ul class="list-unstyled mt-3 mb-4">
-                            @if(is_array($plan->features))
-                                @foreach($plan->features as $feature)
+                            @php
+                                // Assurer que les features sont correctement décodées
+                                $features = $plan->features;
+                                if (is_string($features)) {
+                                    $features = json_decode($features, true);
+                                }
+                            @endphp
+                            
+                            @if(is_array($features))
+                                @foreach($features as $feature)
                                     <li><i class="fas fa-check text-success me-2"></i> {{ $feature }}</li>
                                 @endforeach
                             @endif
@@ -43,12 +51,29 @@
                             @endif
                         </ul>
                         <div class="d-grid gap-2">
-                            <a href="{{ route('subscription.checkout', ['planId' => $plan->id]) }}" class="btn btn-primary">
+                            @php
+                                // Vérifier si les variables sont définies, sinon utiliser des valeurs par défaut
+                                $stripeEnabled = isset($stripeEnabled) ? $stripeEnabled : false;
+                                $paypalEnabled = isset($paypalEnabled) ? $paypalEnabled : false;
+                            @endphp
+                            
+                            @if($stripeEnabled)
+                            <a href="{{ url('/subscription/checkout/' . $plan->id) }}" class="btn btn-primary">
                                 <i class="fas fa-credit-card me-2"></i> Souscrire avec Stripe
                             </a>
-                            <a href="{{ route('subscription.checkout', ['planId' => $plan->id, 'method' => 'paypal']) }}" class="btn btn-info">
+                            @endif
+                            
+                            @if($paypalEnabled)
+                            <a href="{{ url('/subscription/checkout/' . $plan->id . '?method=paypal') }}" class="btn btn-info">
                                 <i class="fab fa-paypal me-2"></i> Souscrire avec PayPal
                             </a>
+                            @endif
+                            
+                            @if(!$stripeEnabled && !$paypalEnabled)
+                            <div class="alert alert-warning">
+                                Les passerelles de paiement ne sont pas configurées. Veuillez contacter l'administrateur.
+                            </div>
+                            @endif
                         </div>
                     </div>
                 </div>

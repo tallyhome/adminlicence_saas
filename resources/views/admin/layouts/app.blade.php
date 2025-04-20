@@ -186,7 +186,7 @@
                     <div class="collapse {{ request()->routeIs('subscription.*') || request()->routeIs('admin.subscriptions.*') ? 'show' : '' }}" id="abonnementsSubmenu">
                         <ul class="nav flex-column ms-3">
                             <li class="nav-item">
-                                <a class="nav-link {{ request()->routeIs('subscription.plans') ? 'active' : '' }}" href="{{ route('subscription.plans') }}">
+                                <a class="nav-link {{ request()->routeIs('admin.subscriptions.plans') ? 'active' : '' }}" href="{{ route('admin.subscriptions.plans') }}">
                                     <i class="fas fa-list me-2"></i> Voir les offres
                                 </a>
                             </li>

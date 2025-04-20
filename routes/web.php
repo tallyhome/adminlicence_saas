@@ -59,55 +59,103 @@ Route::get('/welcome', function() {
     return view('auth.welcome');
 })->middleware(['auth'])->name('welcome');
 
-Route::get('/subscriptions', function() {
-    // Récupération des plans d'abonnement (à remplacer par une logique réelle)
-    $plans = [
-        [
-            'id' => 1,
-            'name' => 'Essentiel',
-            'description' => 'Idéal pour les petites entreprises',
-            'price' => 29.99,
-            'features' => [
-                'Gestion de 50 licences',
-                'Support par email',
-                'Mises à jour automatiques',
-                'Tableau de bord basique'
-            ]
-        ],
-        [
-            'id' => 2,
-            'name' => 'Professionnel',
-            'description' => 'Pour les entreprises en croissance',
-            'price' => 59.99,
-            'features' => [
-                'Gestion de 200 licences',
-                'Support prioritaire',
-                'Mises à jour automatiques',
-                'Tableau de bord avancé',
-                'API d\'intégration',
-                'Rapports détaillés'
-            ]
-        ],
-        [
-            'id' => 3,
-            'name' => 'Entreprise',
-            'description' => 'Solution complète pour grandes entreprises',
-            'price' => 99.99,
-            'features' => [
-                'Licences illimitées',
-                'Support 24/7',
-                'Mises à jour prioritaires',
-                'Tableau de bord personnalisable',
-                'API complète',
-                'Rapports avancés',
-                'Intégration SSO',
-                'Déploiement sur site disponible'
-            ]
-        ]
-    ];
+Route::get('/subscriptions/plans', function() {
+    // Si l'utilisateur est connecté en tant qu'admin, rediriger vers la vue admin
+    if (auth()->guard('admin')->check()) {
+        return redirect('/admin/subscriptions/plans');
+    }
+    // Sinon, rediriger vers la vue publique
+    return redirect('/subscription/plans');
+})->name('subscriptions.plans');
+
+// Redirection de la création de plan vers le dashboard admin
+Route::get('/subscriptions/create', function() {
+    // Rediriger vers la route de création de plan dans le dashboard admin
+    return redirect('/admin/subscriptions/create');
+})->name('subscriptions.create');
+
+// Redirection de l'édition de plan vers le dashboard admin
+Route::get('/subscriptions/{id}/edit', function($id) {
+    // Vérifier si le plan existe
+    $plan = \App\Models\Plan::find($id);
     
-    return view('subscriptions.plans', ['plans' => $plans]);
-})->middleware(['auth'])->name('subscriptions');
+    if (!$plan) {
+        // Si le plan n'existe pas, rediriger vers la liste des plans
+        return redirect('/admin/subscriptions/plans')->with('error', 'Le plan demandé n\'existe pas.');
+    }
+    
+    // Rediriger vers la route d'édition de plan dans le dashboard admin en utilisant une URL absolue
+    return redirect("/admin/subscriptions/{$id}/edit");
+})->name('subscriptions.edit');
+
+// Redirection pour la création de plans par défaut
+Route::get('/subscriptions/default-plans', function() {
+    // Rediriger vers la route de création de plans par défaut dans le dashboard admin
+    return redirect('/admin/subscriptions/default-plans');
+})->name('subscriptions.default-plans');
+
+// Route temporaire pour créer des plans par défaut (à utiliser uniquement en développement)
+Route::get('/create-default-plans', function() {
+    // Créer le plan Basic
+    \App\Models\Plan::updateOrCreate(
+        ['slug' => 'basic'],
+        [
+            'name' => 'Basique',
+            'description' => 'Plan de base pour les petites équipes',
+            'price' => 9.99,
+            'billing_cycle' => 'monthly',
+            'features' => ['5 projets', '10 licences', 'Support standard'],
+            'is_active' => true,
+            'stripe_price_id' => 'price_basic',
+            'paypal_plan_id' => 'P-BASIC',
+            'trial_days' => 14,
+            'max_licenses' => 10,
+            'max_projects' => 5,
+            'max_clients' => 10
+        ]
+    );
+    
+    // Créer le plan Pro
+    \App\Models\Plan::updateOrCreate(
+        ['slug' => 'pro'],
+        [
+            'name' => 'Pro',
+            'description' => 'Plan professionnel pour PME',
+            'price' => 19.99,
+            'billing_cycle' => 'monthly',
+            'features' => ['20 projets', '50 licences', 'Support premium', 'API accès'],
+            'is_active' => true,
+            'stripe_price_id' => 'price_pro',
+            'paypal_plan_id' => 'P-PRO',
+            'trial_days' => 7,
+            'max_licenses' => 50,
+            'max_projects' => 20,
+            'max_clients' => 50
+        ]
+    );
+    
+    // Créer le plan Enterprise
+    \App\Models\Plan::updateOrCreate(
+        ['slug' => 'enterprise'],
+        [
+            'name' => 'Enterprise',
+            'description' => 'Plan entreprise pour grandes sociétés',
+            'price' => 49.99,
+            'billing_cycle' => 'monthly',
+            'features' => ['Projets illimités', 'Licences illimitées', 'Support prioritaire 24/7', 'API accès', 'Personnalisation'],
+            'is_active' => true,
+            'stripe_price_id' => 'price_enterprise',
+            'paypal_plan_id' => 'P-ENTERPRISE',
+            'trial_days' => 0,
+            'max_licenses' => 999,
+            'max_projects' => 999,
+            'max_clients' => 999
+        ]
+    );
+    
+    return redirect('/admin/subscriptions/plans')
+        ->with('success', 'Plans par défaut créés avec succès.');
+});
 
 Route::post('/email/verification-notification', function (\Illuminate\Http\Request $request) {
     $request->user()->sendEmailVerificationNotification();
@@ -132,31 +180,37 @@ Route::get('/welcome', [\App\Http\Controllers\WelcomeController::class, 'index']
 Route::post('/webhooks/stripe', [WebhookController::class, 'handleStripeWebhook']);
 Route::post('/webhooks/paypal', [WebhookController::class, 'handlePayPalWebhook']);
 
+// Subscription plans - accessible sans authentification
+Route::get('/subscription/plans', [App\Http\Controllers\SubscriptionController::class, 'plans'])->name('subscription.plans');
+
 // Subscription routes (auth required)
 Route::middleware(['auth'])->group(function () {
-    // Subscription plans
-    Route::get('/subscription/plans', [\App\Http\Controllers\SubscriptionController::class, 'plans'])->name('subscription.plans');
-    Route::get('/subscriptions', [\App\Http\Controllers\SubscriptionController::class, 'plans'])->name('subscriptions'); // Redirection vers le nouveau dashboard
-    Route::get('/subscription/checkout/{planId}', [\App\Http\Controllers\SubscriptionController::class, 'checkout'])->name('subscription.checkout');
-    Route::post('/subscription/process-stripe', [\App\Http\Controllers\SubscriptionController::class, 'processStripeSubscription'])->name('subscription.process-stripe');
-    Route::post('/subscription/process-paypal', [\App\Http\Controllers\SubscriptionController::class, 'processPayPalSubscription'])->name('subscription.process-paypal');
-    Route::get('/subscription/success', [\App\Http\Controllers\SubscriptionController::class, 'success'])->name('subscription.success');
+    // Redirection vers la page des plans
+    Route::get('/subscriptions', function() {
+        return redirect('/subscription/plans');
+    })->name('subscriptions');
+    
+    // Autres routes d'abonnement qui nécessitent une authentification
+    Route::get('/subscription/checkout/{planId}', [App\Http\Controllers\SubscriptionController::class, 'checkout'])->name('subscription.checkout');
+    Route::post('/subscription/process-stripe', [App\Http\Controllers\SubscriptionController::class, 'processStripeSubscription'])->name('subscription.process-stripe');
+    Route::post('/subscription/process-paypal', [App\Http\Controllers\SubscriptionController::class, 'processPayPalSubscription'])->name('subscription.process-paypal');
+    Route::get('/subscription/success', [App\Http\Controllers\SubscriptionController::class, 'success'])->name('subscription.success');
     
     // Payment methods
-    Route::get('/subscription/payment-methods', [SubscriptionController::class, 'paymentMethods'])->name('subscription.payment-methods');
-    Route::get('/subscription/add-payment-method/{type?}', [SubscriptionController::class, 'addPaymentMethod'])->name('subscription.add-payment-method');
-    Route::post('/subscription/store-stripe-payment-method', [SubscriptionController::class, 'storeStripePaymentMethod'])->name('subscription.store-stripe-payment-method');
-    Route::post('/subscription/store-paypal-payment-method', [SubscriptionController::class, 'storePayPalPaymentMethod'])->name('subscription.store-paypal-payment-method');
-    Route::post('/subscription/set-default-payment-method/{id}', [SubscriptionController::class, 'setDefaultPaymentMethod'])->name('subscription.set-default-payment-method');
-    Route::delete('/subscription/delete-payment-method/{id}', [SubscriptionController::class, 'deletePaymentMethod'])->name('subscription.delete-payment-method');
+    Route::get('/subscription/payment-methods', [App\Http\Controllers\SubscriptionController::class, 'paymentMethods'])->name('subscription.payment-methods');
+    Route::get('/subscription/add-payment-method/{type?}', [App\Http\Controllers\SubscriptionController::class, 'addPaymentMethod'])->name('subscription.add-payment-method');
+    Route::post('/subscription/store-stripe-payment-method', [App\Http\Controllers\SubscriptionController::class, 'storeStripePaymentMethod'])->name('subscription.store-stripe-payment-method');
+    Route::post('/subscription/store-paypal-payment-method', [App\Http\Controllers\SubscriptionController::class, 'storePayPalPaymentMethod'])->name('subscription.store-paypal-payment-method');
+    Route::post('/subscription/set-default-payment-method/{id}', [App\Http\Controllers\SubscriptionController::class, 'setDefaultPaymentMethod'])->name('subscription.set-default-payment-method');
+    Route::delete('/subscription/delete-payment-method/{id}', [App\Http\Controllers\SubscriptionController::class, 'deletePaymentMethod'])->name('subscription.delete-payment-method');
     
     // Invoices
-    Route::get('/subscription/invoices', [SubscriptionController::class, 'invoices'])->name('subscription.invoices');
-    Route::get('/subscription/invoices/{id}', [SubscriptionController::class, 'showInvoice'])->name('subscription.show-invoice');
+    Route::get('/subscription/invoices', [App\Http\Controllers\SubscriptionController::class, 'invoices'])->name('subscription.invoices');
+    Route::get('/subscription/invoices/{id}', [App\Http\Controllers\SubscriptionController::class, 'showInvoice'])->name('subscription.show-invoice');
     
     // Subscription management
-    Route::post('/subscription/cancel', [SubscriptionController::class, 'cancelSubscription'])->name('subscription.cancel');
-    Route::post('/subscription/resume', [SubscriptionController::class, 'resumeSubscription'])->name('subscription.resume');
+    Route::post('/subscription/cancel', [App\Http\Controllers\SubscriptionController::class, 'cancelSubscription'])->name('subscription.cancel');
+    Route::post('/subscription/resume', [App\Http\Controllers\SubscriptionController::class, 'resumeSubscription'])->name('subscription.resume');
 });
 
 // Routes de documentation

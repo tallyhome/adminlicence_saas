@@ -23,9 +23,32 @@ class StripeService
      */
     public function __construct(WebSocketService $webSocketService)
     {
-        $this->stripe = new StripeClient(config('services.stripe.secret'));
+        // Vérifier si la classe Stripe\StripeClient existe
+        if (class_exists('Stripe\StripeClient')) {
+            // Utiliser la configuration depuis payment.php
+            $stripeSecret = config('payment.stripe.secret');
+            // Fallback vers services.php si non défini dans payment.php
+            if (empty($stripeSecret)) {
+                $stripeSecret = config('services.stripe.secret');
+            }
+            
+            $this->stripe = new StripeClient($stripeSecret);
+        } else {
+            // La classe Stripe n'est pas disponible, journaliser l'erreur
+            Log::warning('La classe Stripe\StripeClient n\'est pas disponible. Le package stripe/stripe-php n\'est probablement pas installé.');
+            $this->stripe = null;
+        }
+        
         $this->webSocketService = $webSocketService;
-        $this->stripeEndpointSecret = config('services.stripe.webhook_secret');
+        
+        // Utiliser la configuration depuis payment.php
+        $webhookSecret = config('payment.stripe.webhook_secret');
+        // Fallback vers services.php si non défini dans payment.php
+        if (empty($webhookSecret)) {
+            $webhookSecret = config('services.stripe.webhook_secret');
+        }
+        
+        $this->stripeEndpointSecret = $webhookSecret;
     }
     
     /**
@@ -36,6 +59,11 @@ class StripeService
      */
     public function createCustomer(Tenant $tenant)
     {
+        // Si Stripe n'est pas disponible, retourner null
+        if ($this->stripe === null) {
+            return null;
+        }
+        
         try {
             $customer = $this->stripe->customers->create([
                 'name' => $tenant->name,
@@ -79,6 +107,11 @@ class StripeService
      */
     public function createPaymentMethod(Tenant $tenant, string $paymentMethodId)
     {
+        // Si Stripe n'est pas disponible, retourner null
+        if ($this->stripe === null) {
+            return null;
+        }
+        
         try {
             // Retrieve the payment method from Stripe
             $stripePaymentMethod = $this->stripe->paymentMethods->retrieve($paymentMethodId);
@@ -132,6 +165,11 @@ class StripeService
      */
     public function createSubscription(Tenant $tenant, string $priceId, PaymentMethod $paymentMethod, int $trialDays = 0)
     {
+        // Si Stripe n'est pas disponible, retourner null
+        if ($this->stripe === null) {
+            return null;
+        }
+        
         try {
             // Create the subscription in Stripe
             $stripeSubscription = $this->stripe->subscriptions->create([
@@ -187,6 +225,11 @@ class StripeService
      */
     public function cancelSubscription(Subscription $subscription, bool $atPeriodEnd = true)
     {
+        // Si Stripe n'est pas disponible, retourner false
+        if ($this->stripe === null) {
+            return false;
+        }
+        
         try {
             if ($atPeriodEnd) {
                 $this->stripe->subscriptions->update($subscription->stripe_id, [
@@ -224,6 +267,11 @@ class StripeService
      */
     public function handleWebhook(string $payload, string $sigHeader)
     {
+        // Si Stripe n'est pas disponible, retourner false
+        if ($this->stripe === null) {
+            return false;
+        }
+        
         try {
             $event = $this->constructEvent($payload, $sigHeader);
             

@@ -205,52 +205,11 @@ Route::middleware('auth:admin')->group(function () {
     Route::post('settings/verify-code', [TwoFactorAuthController::class, 'verifyCode'])->name('admin.settings.verify-code');
     Route::get('settings/test-google2fa', [TwoFactorController::class, 'testGoogle2FA'])->name('admin.settings.test-google2fa');
     
-    // Documentation API - Route déjà définie à la ligne 54
-    // Route supprimée pour éviter les conflits de redirection
-    
-    // Routes pour les tickets de support (admin standard)
-    Route::prefix('tickets')->group(function () {
-        Route::get('/', [\App\Http\Controllers\Admin\SupportTicketController::class, 'index'])->name('admin.tickets.index');
-        Route::get('/create', [\App\Http\Controllers\Admin\SupportTicketController::class, 'create'])->name('admin.tickets.create');
-        Route::post('/', [\App\Http\Controllers\Admin\SupportTicketController::class, 'store'])->name('admin.tickets.store');
-        Route::get('/{ticket}', [\App\Http\Controllers\Admin\SupportTicketController::class, 'show'])->name('admin.tickets.show');
-        Route::patch('/{ticket}/status', [\App\Http\Controllers\Admin\SupportTicketController::class, 'updateStatus'])->name('admin.tickets.update-status');
-        Route::post('/{ticket}/reply', [\App\Http\Controllers\Admin\SupportTicketController::class, 'reply'])->name('admin.tickets.reply');
-        Route::post('/{ticket}/forward-to-super-admin', [\App\Http\Controllers\Admin\SupportTicketController::class, 'forwardToSuperAdmin'])->name('admin.tickets.forward-to-super-admin');
-    });
-    
-    // Routes pour les tickets superadmin
-    Route::prefix('super/tickets')->group(function () {
-        Route::get('/', [\App\Http\Controllers\Admin\SuperAdminTicketController::class, 'index'])->name('admin.super.tickets.index');
-        Route::get('/{ticket}', [\App\Http\Controllers\Admin\SuperAdminTicketController::class, 'show'])->name('admin.super.tickets.show');
-        Route::post('/{ticket}/reply', [\App\Http\Controllers\Admin\SuperAdminTicketController::class, 'reply'])->name('admin.super.tickets.reply');
-        Route::post('/{ticket}/close', [\App\Http\Controllers\Admin\SuperAdminTicketController::class, 'close'])->name('admin.super.tickets.close');
-        Route::post('/{ticket}/assign-to-admin', [\App\Http\Controllers\Admin\SuperAdminTicketController::class, 'assignToAdmin'])->name('admin.super.tickets.assign-to-admin');
-    });
-    
-    // Gestion des utilisateurs (superadmin et admin)
-    Route::get('/users', [\App\Http\Controllers\Admin\UserManagementController::class, 'index'])->name('admin.users.index');
-    Route::get('/users/create', [\App\Http\Controllers\Admin\UserController::class, 'create'])->name('admin.users.create');
-    Route::post('/users', [\App\Http\Controllers\Admin\UserController::class, 'store'])->name('admin.users.store');
-    Route::get('/users/{id}/{type?}', [\App\Http\Controllers\Admin\UserManagementController::class, 'show'])->name('admin.users.show')->where('type', 'user|admin');
-    Route::get('/users/{user}/edit', [\App\Http\Controllers\Admin\UserController::class, 'edit'])->name('admin.users.edit');
-    Route::put('/users/{user}', [\App\Http\Controllers\Admin\UserController::class, 'update'])->name('admin.users.update');
-    Route::delete('/users/{user}', [\App\Http\Controllers\Admin\UserController::class, 'destroy'])->name('admin.users.destroy');
-    
-    // Subscriptions routes
-    Route::get('/subscriptions', [SubscriptionController::class, 'index'])->name('admin.subscriptions.index');
-    Route::get('/subscriptions/create', [SubscriptionController::class, 'create'])->name('admin.subscriptions.create');
-    Route::post('/subscriptions', [SubscriptionController::class, 'store'])->name('admin.subscriptions.store');
-    Route::get('/subscriptions/{id}', [SubscriptionController::class, 'show'])->name('admin.subscriptions.show');
-    Route::get('/subscriptions/{id}/edit', [SubscriptionController::class, 'edit'])->name('admin.subscriptions.edit');
-    Route::put('/subscriptions/{id}', [SubscriptionController::class, 'update'])->name('admin.subscriptions.update');
-    Route::delete('/subscriptions/{id}', [SubscriptionController::class, 'destroy'])->name('admin.subscriptions.destroy');
-    
     // Routes de test pour les paiements (réservées aux super-admins)
     Route::middleware(['super_admin'])->group(function () {
-        Route::get('/payment-test', [SubscriptionController::class, 'paymentTestDashboard'])->name('admin.payment-test');
-        Route::post('/payment-test/stripe', [SubscriptionController::class, 'testStripePayment'])->name('admin.test-stripe-payment');
-        Route::post('/payment-test/paypal', [SubscriptionController::class, 'testPayPalPayment'])->name('admin.test-paypal-payment');
+        Route::get('/payment-test', [\App\Http\Controllers\Admin\PaymentTestController::class, 'dashboard'])->name('admin.payment-test');
+        Route::post('/payment-test/stripe', [\App\Http\Controllers\Admin\PaymentTestController::class, 'testStripePayment'])->name('admin.test-stripe-payment');
+        Route::post('/payment-test/paypal', [\App\Http\Controllers\Admin\PaymentTestController::class, 'testPayPalPayment'])->name('admin.test-paypal-payment');
     });
     
     // Gestion des administrateurs
@@ -282,18 +241,24 @@ Route::middleware('auth:admin')->group(function () {
         Route::delete('/{id}', [\App\Http\Controllers\Admin\NotificationController::class, 'destroy'])->name('admin.notifications.destroy');
     });
     
+    // Gestion des utilisateurs
+    Route::get('/users', [\App\Http\Controllers\Admin\UserController::class, 'index'])->name('admin.users.index');
+    Route::get('/users/{user}/edit', [\App\Http\Controllers\Admin\UserController::class, 'edit'])->name('admin.users.edit');
+    Route::put('/users/{user}', [\App\Http\Controllers\Admin\UserController::class, 'update'])->name('admin.users.update');
+    Route::delete('/users/{user}', [\App\Http\Controllers\Admin\UserController::class, 'destroy'])->name('admin.users.destroy');
+    
     // Gestion des plans d'abonnement
     Route::prefix('subscriptions')->group(function () {
-        Route::get('/', [\App\Http\Controllers\Admin\PlanController::class, 'index'])->name('admin.subscriptions.index');
+        Route::get('/', [\App\Http\Controllers\Admin\PlanController::class, 'showPlans'])->name('admin.subscriptions.index');
         Route::get('/create', [\App\Http\Controllers\Admin\PlanController::class, 'create'])->name('admin.subscriptions.create');
         Route::post('/', [\App\Http\Controllers\Admin\PlanController::class, 'store'])->name('admin.subscriptions.store');
         Route::get('/default-plans', [\App\Http\Controllers\Admin\PlanController::class, 'createDefaultPlans'])->name('admin.subscriptions.create-default-plans');
         Route::get('/plans', [\App\Http\Controllers\Admin\PlanController::class, 'index'])->name('admin.subscriptions.plans');
-        Route::get('/{plan}/edit', [\App\Http\Controllers\Admin\PlanController::class, 'edit'])->name('admin.subscriptions.edit');
-        Route::put('/{plan}', [\App\Http\Controllers\Admin\PlanController::class, 'update'])->name('admin.subscriptions.update');
-        Route::delete('/{plan}', [\App\Http\Controllers\Admin\PlanController::class, 'destroy'])->name('admin.subscriptions.destroy');
+        Route::get('/{id}/edit', [\App\Http\Controllers\Admin\PlanController::class, 'edit'])->name('admin.subscriptions.edit');
+        Route::put('/{id}', [\App\Http\Controllers\Admin\PlanController::class, 'update'])->name('admin.subscriptions.update');
+        Route::delete('/{id}', [\App\Http\Controllers\Admin\PlanController::class, 'destroy'])->name('admin.subscriptions.destroy');
     });
-
+    
     // Routes pour les pages légales (superadmin uniquement)
     Route::prefix('legal')->middleware(['super_admin'])->group(function () {
         Route::get('/', [\App\Http\Controllers\Admin\LegalPageController::class, 'index'])->name('admin.legal.index');
@@ -302,7 +267,7 @@ Route::middleware('auth:admin')->group(function () {
         Route::put('/{type}', [\App\Http\Controllers\Admin\LegalPageController::class, 'update'])->name('admin.legal.update');
     });
     
-    // Routes pour la gestion des licences
+    // Gestion des licences
     Route::prefix('licences')->group(function () {
         Route::get('/', [\App\Http\Controllers\Admin\LicenceController::class, 'index'])->name('admin.licences.index');
         Route::get('/create', [\App\Http\Controllers\Admin\LicenceController::class, 'create'])->name('admin.licences.create');
@@ -345,5 +310,25 @@ Route::middleware('auth:admin')->group(function () {
         Route::get('/users', [\App\Http\Controllers\Admin\ReportController::class, 'users'])->name('admin.reports.users');
         Route::get('/support', [\App\Http\Controllers\Admin\ReportController::class, 'support'])->name('admin.reports.support');
         Route::get('/export', [\App\Http\Controllers\Admin\ReportController::class, 'export'])->name('admin.reports.export');
+    });
+
+    // Routes pour les tickets de support (admin standard)
+    Route::prefix('tickets')->group(function () {
+        Route::get('/', [\App\Http\Controllers\Admin\SupportTicketController::class, 'index'])->name('admin.tickets.index');
+        Route::get('/create', [\App\Http\Controllers\Admin\SupportTicketController::class, 'create'])->name('admin.tickets.create');
+        Route::post('/', [\App\Http\Controllers\Admin\SupportTicketController::class, 'store'])->name('admin.tickets.store');
+        Route::get('/{ticket}', [\App\Http\Controllers\Admin\SupportTicketController::class, 'show'])->name('admin.tickets.show');
+        Route::patch('/{ticket}/status', [\App\Http\Controllers\Admin\SupportTicketController::class, 'updateStatus'])->name('admin.tickets.update-status');
+        Route::post('/{ticket}/reply', [\App\Http\Controllers\Admin\SupportTicketController::class, 'reply'])->name('admin.tickets.reply');
+        Route::post('/{ticket}/forward-to-super-admin', [\App\Http\Controllers\Admin\SupportTicketController::class, 'forwardToSuperAdmin'])->name('admin.tickets.forward-to-super-admin');
+    });
+    
+    // Routes pour les tickets superadmin
+    Route::prefix('super/tickets')->group(function () {
+        Route::get('/', [\App\Http\Controllers\Admin\SuperAdminTicketController::class, 'index'])->name('admin.super.tickets.index');
+        Route::get('/{ticket}', [\App\Http\Controllers\Admin\SuperAdminTicketController::class, 'show'])->name('admin.super.tickets.show');
+        Route::post('/{ticket}/reply', [\App\Http\Controllers\Admin\SuperAdminTicketController::class, 'reply'])->name('admin.super.tickets.reply');
+        Route::post('/{ticket}/close', [\App\Http\Controllers\Admin\SuperAdminTicketController::class, 'close'])->name('admin.super.tickets.close');
+        Route::post('/{ticket}/assign-to-admin', [\App\Http\Controllers\Admin\SuperAdminTicketController::class, 'assignToAdmin'])->name('admin.super.tickets.assign-to-admin');
     });
 });

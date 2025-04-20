@@ -76,10 +76,10 @@ use Illuminate\Support\Facades\Auth;
                                     </div>
                                     <div class="card-footer bg-light d-flex justify-content-between">
                                         @if(Auth::guard('admin')->check() && Auth::guard('admin')->user()->is_super_admin)
-                                            <a href="{{ route('admin.subscriptions.edit', $plan) }}" class="btn btn-sm btn-outline-primary">
+                                            <a href="{{ route('admin.subscriptions.edit', ['id' => $plan->id]) }}" class="btn btn-sm btn-outline-primary">
                                                 <i class="fas fa-edit"></i> Modifier
                                             </a>
-                                            <form action="{{ route('admin.subscriptions.destroy', $plan) }}" method="POST" class="d-inline">
+                                            <form action="{{ route('admin.subscriptions.destroy', ['id' => $plan->id]) }}" method="POST" class="d-inline">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce plan ?')">

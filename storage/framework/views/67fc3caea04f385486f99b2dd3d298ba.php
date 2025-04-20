@@ -171,6 +171,13 @@
                 </li>
                 <?php endif; ?>
 
+                <!-- Licences -->
+                <li class="nav-item">
+                    <a class="nav-link <?php echo e(request()->routeIs('admin.licences.*') ? 'active' : ''); ?>" href="<?php echo e(route('admin.licences.index')); ?>">
+                        <i class="fas fa-key me-2"></i> Licences
+                    </a>
+                </li>
+                
                 <!-- Abonnements -->
                 <li class="nav-item">
                     <a class="nav-link" data-bs-toggle="collapse" href="#abonnementsSubmenu" role="button">
@@ -179,7 +186,7 @@
                     <div class="collapse <?php echo e(request()->routeIs('subscription.*') || request()->routeIs('admin.subscriptions.*') ? 'show' : ''); ?>" id="abonnementsSubmenu">
                         <ul class="nav flex-column ms-3">
                             <li class="nav-item">
-                                <a class="nav-link <?php echo e(request()->routeIs('subscription.plans') ? 'active' : ''); ?>" href="<?php echo e(route('subscription.plans')); ?>">
+                                <a class="nav-link <?php echo e(request()->routeIs('admin.subscriptions.plans') ? 'active' : ''); ?>" href="<?php echo e(route('admin.subscriptions.plans')); ?>">
                                     <i class="fas fa-list me-2"></i> Voir les offres
                                 </a>
                             </li>

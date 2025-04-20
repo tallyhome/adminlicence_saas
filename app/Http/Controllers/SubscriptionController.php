@@ -33,23 +33,112 @@ class SubscriptionController extends Controller
      */
     public function plans()
     {
-        // Vérifie si l'utilisateur est connecté
-        if (!Auth::check() && !Auth::guard('admin')->check()) {
-            return redirect()->route('login');
-        }
-        
-        // Rediriger vers la nouvelle page d'abonnements dans le dashboard admin
-        if (Auth::guard('admin')->check()) {
-            return redirect()->route('admin.subscriptions.index');
-        } else {
-            // Pour les utilisateurs normaux, récupérer les plans disponibles
+        try {
+            // Récupérer les plans disponibles
             $plans = \App\Models\Plan::where('is_active', true)->get();
-            $user = Auth::user();
             
+            // Si aucun plan n'est trouvé, créer des plans par défaut pour le développement
+            if ($plans->isEmpty() && config('app.env') === 'local') {
+                // Créer des plans par défaut pour le développement
+                $this->createDefaultPlans();
+                $plans = \App\Models\Plan::where('is_active', true)->get();
+            }
+            
+            // Récupérer l'utilisateur s'il est connecté
+            $user = null;
+            if (Auth::check()) {
+                $user = Auth::user();
+            }
+            
+            // Vérifier si les services de paiement sont disponibles
+            $stripeEnabled = class_exists('Stripe\StripeClient') && 
+                             (config('payment.stripe.enabled', false) || 
+                              !empty(config('services.stripe.key')));
+            
+            $paypalEnabled = class_exists('PayPalCheckoutSdk\Core\PayPalHttpClient') && 
+                             (config('payment.paypal.enabled', false) || 
+                              !empty(config('services.paypal.client_id')));
+            
+            // Toujours afficher la vue des plans, sans redirection
             return view('subscription.plans', [
                 'plans' => $plans,
-                'user' => $user
+                'user' => $user,
+                'stripeEnabled' => $stripeEnabled,
+                'paypalEnabled' => $paypalEnabled
             ]);
+        } catch (\Exception $e) {
+            // Journaliser l'erreur
+            Log::error('Erreur lors de l\'affichage des plans : ' . $e->getMessage());
+            
+            // Afficher un message d'erreur à l'utilisateur
+            return view('subscription.plans', [
+                'plans' => [],
+                'user' => null,
+                'stripeEnabled' => false,
+                'paypalEnabled' => false,
+                'error' => 'Une erreur est survenue lors du chargement des plans. Veuillez réessayer ultérieurement.'
+            ]);
+        }
+    }
+    
+    /**
+     * Créer des plans par défaut pour le développement
+     */
+    private function createDefaultPlans()
+    {
+        $plans = [
+            [
+                'name' => 'Essentiel',
+                'description' => 'Idéal pour les petites entreprises',
+                'price' => 29.99,
+                'billing_cycle' => 'monthly',
+                'features' => json_encode([
+                    'Gestion de 50 licences',
+                    'Support par email',
+                    'Mises à jour automatiques',
+                    'Tableau de bord basique'
+                ]),
+                'is_active' => true,
+                'trial_days' => 14
+            ],
+            [
+                'name' => 'Professionnel',
+                'description' => 'Pour les entreprises en croissance',
+                'price' => 59.99,
+                'billing_cycle' => 'monthly',
+                'features' => json_encode([
+                    'Gestion de 200 licences',
+                    'Support prioritaire',
+                    'Mises à jour automatiques',
+                    'Tableau de bord avancé',
+                    'API d\'intégration',
+                    'Rapports détaillés'
+                ]),
+                'is_active' => true,
+                'trial_days' => 7
+            ],
+            [
+                'name' => 'Entreprise',
+                'description' => 'Solution complète pour grandes entreprises',
+                'price' => 99.99,
+                'billing_cycle' => 'monthly',
+                'features' => json_encode([
+                    'Licences illimitées',
+                    'Support 24/7',
+                    'Mises à jour prioritaires',
+                    'Tableau de bord personnalisable',
+                    'API complète',
+                    'Rapports avancés',
+                    'Intégration SSO',
+                    'Déploiement sur site disponible'
+                ]),
+                'is_active' => true,
+                'trial_days' => 0
+            ]
+        ];
+        
+        foreach ($plans as $planData) {
+            \App\Models\Plan::create($planData);
         }
     }
     
@@ -61,35 +150,43 @@ class SubscriptionController extends Controller
      */
     public function checkout($planId)
     {
-        // Vérifier si l'utilisateur est connecté
-        if (!Auth::check() && !Auth::guard('admin')->check()) {
-            return redirect()->route('login')
-                ->with('error', 'Vous devez être connecté pour souscrire à un abonnement.');
-        }
-        
         // Récupérer le plan depuis la base de données
         $plan = \App\Models\Plan::findOrFail($planId);
         
         if (!$plan->is_active) {
-            return redirect()->route('subscription.plans')
+            return redirect()->to('/subscription/plans')
                 ->with('error', 'Ce plan n\'est pas disponible actuellement.');
         }
         
         // Récupérer les méthodes de paiement disponibles
-        $stripeEnabled = config('payment.stripe.enabled', false);
-        $paypalEnabled = config('payment.paypal.enabled', false);
+        $stripeEnabled = config('payment.stripe.enabled', false) || !empty(config('services.stripe.key'));
+        $paypalEnabled = config('payment.paypal.enabled', false) || !empty(config('services.paypal.client_id'));
+        
+        // Si aucune méthode de paiement n'est activée, rediriger avec un message d'erreur
+        if (!$stripeEnabled && !$paypalEnabled) {
+            return redirect()->to('/subscription/plans')
+                ->with('error', 'Aucune méthode de paiement n\'est configurée. Veuillez contacter l\'administrateur.');
+        }
         
         // Récupérer les méthodes de paiement enregistrées de l'utilisateur si disponible
         $paymentMethods = [];
         if (Auth::check()) {
             $user = Auth::user();
             if ($user->stripe_id) {
-                // Récupérer les méthodes de paiement Stripe
-                $paymentMethods = $this->stripeService->getPaymentMethods($user->stripe_id);
+                try {
+                    // Récupérer les méthodes de paiement Stripe
+                    $paymentMethods = $this->stripeService->getPaymentMethods($user->stripe_id);
+                } catch (\Exception $e) {
+                    // Journaliser l'erreur mais continuer
+                    Log::error('Erreur lors de la récupération des méthodes de paiement Stripe: ' . $e->getMessage());
+                }
             }
         }
         
-        return view('subscription.checkout', compact('plan', 'stripeEnabled', 'paypalEnabled', 'paymentMethods'));
+        // Déterminer la méthode de paiement préférée (Stripe par défaut si disponible)
+        $preferredMethod = request('method', $stripeEnabled ? 'stripe' : 'paypal');
+        
+        return view('subscription.checkout', compact('plan', 'stripeEnabled', 'paypalEnabled', 'paymentMethods', 'preferredMethod'));
     }
     
     /**

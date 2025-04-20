@@ -1,4 +1,4 @@
-@extends('layouts.admin')
+@extends('admin.layouts.app')
 
 @section('title', 'Modifier un plan d\'abonnement')
 
@@ -17,7 +17,7 @@
             Modifier le plan: {{ $plan->name }}
         </div>
         <div class="card-body">
-            <form action="{{ route('admin.subscriptions.update', $plan) }}" method="POST">
+            <form action="{{ route('admin.subscriptions.update', ['id' => $plan->id]) }}" method="POST">
                 @csrf
                 @method('PUT')
                 
@@ -65,7 +65,7 @@
                     <label for="features" class="form-label">Caractéristiques</label>
                     <div id="features-container">
                         @php
-                            $features = old('features', json_decode($plan->features, true) ?? []);
+                            $features = old('features', is_array($plan->features) ? $plan->features : json_decode($plan->features, true) ?? []);
                         @endphp
                         @if(count($features) > 0)
                             @foreach($features as $feature)
@@ -129,7 +129,7 @@
 
 @endsection
 
-@section('scripts')
+@push('scripts')
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         // Ajouter une caractéristique
@@ -163,4 +163,4 @@
         });
     });
 </script>
-@endsection
+@endpush

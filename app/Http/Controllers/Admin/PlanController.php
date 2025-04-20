@@ -32,7 +32,43 @@ class PlanController extends Controller
             }
         }
         
-        return view('admin.subscriptions.plans', compact('plans', 'subscriptions'));
+        // Vérifier si les services de paiement sont disponibles
+        $stripeEnabled = class_exists('Stripe\StripeClient') && 
+                         (config('payment.stripe.enabled', false) || 
+                          !empty(config('services.stripe.key')));
+        
+        $paypalEnabled = class_exists('PayPalCheckoutSdk\Core\PayPalHttpClient') && 
+                         (config('payment.paypal.enabled', false) || 
+                          !empty(config('services.paypal.client_id')));
+        
+        return view('admin.subscriptions.index', compact('plans', 'subscriptions', 'stripeEnabled', 'paypalEnabled'));
+    }
+
+    /**
+     * Display a detailed view of subscription plans.
+     * 
+     * @return \Illuminate\View\View
+     */
+    public function showPlans()
+    {
+        $plans = Plan::where('is_active', true)->orderBy('price')->get();
+        
+        // Vérifier si les services de paiement sont disponibles
+        $stripeEnabled = class_exists('Stripe\StripeClient') && 
+                         (config('payment.stripe.enabled', false) || 
+                          !empty(config('services.stripe.key')));
+        
+        $paypalEnabled = class_exists('PayPalCheckoutSdk\Core\PayPalHttpClient') && 
+                         (config('payment.paypal.enabled', false) || 
+                          !empty(config('services.paypal.client_id')));
+        
+        // Si aucun plan n'existe et que nous sommes en environnement local, créer des plans par défaut
+        if ($plans->isEmpty() && config('app.env') === 'local') {
+            $this->createDefaultPlans();
+            $plans = Plan::where('is_active', true)->orderBy('price')->get();
+        }
+        
+        return view('admin.subscriptions.plans', compact('plans', 'stripeEnabled', 'paypalEnabled'));
     }
 
     /**
@@ -86,16 +122,30 @@ class PlanController extends Controller
     /**
      * Show the form for editing the specified plan.
      */
-    public function edit(Plan $plan)
+    public function edit($id)
     {
+        $plan = Plan::find($id);
+        
+        if (!$plan) {
+            return redirect()->route('admin.subscriptions.plans')
+                ->with('error', 'Le plan demandé n\'existe pas.');
+        }
+        
         return view('admin.subscriptions.edit', compact('plan'));
     }
 
     /**
      * Update the specified plan in storage.
      */
-    public function update(Request $request, Plan $plan)
+    public function update(Request $request, $id)
     {
+        $plan = Plan::find($id);
+        
+        if (!$plan) {
+            return redirect()->route('admin.subscriptions.plans')
+                ->with('error', 'Le plan demandé n\'existe pas.');
+        }
+        
         $request->validate([
             'name' => 'required|string|max:255',
             'price' => 'required|numeric|min:0',
@@ -133,8 +183,15 @@ class PlanController extends Controller
     /**
      * Remove the specified plan from storage.
      */
-    public function destroy(Plan $plan)
+    public function destroy($id)
     {
+        $plan = Plan::find($id);
+        
+        if (!$plan) {
+            return redirect()->route('admin.subscriptions.plans')
+                ->with('error', 'Le plan demandé n\'existe pas.');
+        }
+        
         // Vérifier si le plan a des abonnements actifs
         if ($plan->subscriptions()->count() > 0) {
             return redirect()->route('admin.subscriptions.index')
