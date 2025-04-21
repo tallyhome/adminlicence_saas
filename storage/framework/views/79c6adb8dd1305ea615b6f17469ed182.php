@@ -7,7 +7,7 @@
             </div>
             <div>
                 <a href="<?php echo e(route('admin.version')); ?>" class="text-decoration-none">
-                    Version 3.0.0
+                    <i class="fas fa-info-circle me-1"></i> Version 5.0.1
                 </a>
             </div>
         </div>

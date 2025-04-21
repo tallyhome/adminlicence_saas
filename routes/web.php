@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\AdminAuthController;
 use App\Http\Controllers\DocumentationController;
+use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\SubscriptionController;
 use App\Http\Controllers\WebhookController;
 use App\Http\Controllers\Admin\VersionController;
@@ -31,16 +32,18 @@ Route::get('/install', function () {
     return redirect('/install.php');
 })->name('install');
 
-// Route publique pour la page de version
-Route::get('/version', [VersionController::class, 'index'])->name('version');
+// Route de version accessible sans préfixe admin
+Route::get('/version', [App\Http\Controllers\Admin\VersionController::class, 'index'])->name('version');
 
 // Routes d'authentification utilisateur
 Route::middleware('guest')->group(function () {
     Route::get('/login', [\App\Http\Controllers\Auth\LoginController::class, 'showLoginForm'])->name('login');
     Route::post('/login', [\App\Http\Controllers\Auth\LoginController::class, 'login']);
-    Route::get('/register', [\App\Http\Controllers\Auth\RegisterController::class, 'showRegistrationForm'])->name('register');
-    Route::post('/register', [\App\Http\Controllers\Auth\RegisterController::class, 'register']);
 });
+
+// Solution ULTRA-RADICALE : route d'inscription sans AUCUN middleware
+Route::get('/register', [\App\Http\Controllers\Auth\DirectRegisterController::class, 'showForm'])->name('register');
+Route::post('/register', [\App\Http\Controllers\Auth\DirectRegisterController::class, 'register'])->name('custom.register.submit');
 
 // Routes de vérification d'email
 Route::get('/email/verify', function () {
@@ -160,15 +163,8 @@ Route::post('/email/verification-notification', function (\Illuminate\Http\Reque
 })->middleware(['auth', 'throttle:6,1'])->name('verification.send');
 
 // Routes pour les conditions d'utilisation et politique de confidentialité
-Route::get('/terms', function() {
-    $page = \App\Models\LegalPage::getTerms();
-    return view('auth.terms', compact('page'));
-})->name('terms');
-
-Route::get('/privacy', function() {
-    $page = \App\Models\LegalPage::getPrivacy();
-    return view('auth.privacy', compact('page'));
-})->name('privacy');
+Route::get('/terms', [App\Http\Controllers\Admin\LegalPagesController::class, 'showTerms'])->name('terms');
+Route::get('/privacy', [App\Http\Controllers\Admin\LegalPagesController::class, 'showPrivacy'])->name('privacy');
 
 // Route pour la page de bienvenue après inscription
 Route::get('/welcome', [\App\Http\Controllers\WelcomeController::class, 'index'])->name('welcome');
@@ -180,14 +176,7 @@ Route::post('/webhooks/paypal', [WebhookController::class, 'handlePayPalWebhook'
 // Subscription plans - accessible sans authentification
 Route::get('/subscription/plans', [App\Http\Controllers\SubscriptionController::class, 'plans'])->name('subscription.plans');
 
-// Routes publiques pour les paiements - SOLUTION RADICALE
-Route::prefix('payment')->group(function () {
-    Route::get('/stripe/{planId}', [App\Http\Controllers\PaymentController::class, 'showStripeForm'])->name('payment.stripe.form');
-    Route::post('/stripe/process', [App\Http\Controllers\PaymentController::class, 'processStripe'])->name('payment.stripe.process');
-    Route::get('/paypal/{planId}', [App\Http\Controllers\PaymentController::class, 'showPaypalForm'])->name('payment.paypal.form');
-    Route::post('/paypal/process', [App\Http\Controllers\PaymentController::class, 'processPaypal'])->name('payment.paypal.process');
-    Route::get('/success', [App\Http\Controllers\PaymentController::class, 'success'])->name('payment.success');
-});
+// Routes de paiement ont été déplacées vers routes/payment.php
 
 // Subscription routes (auth required)
 Route::middleware(['auth'])->group(function () {
@@ -244,6 +233,13 @@ Route::middleware('web')->group(function () {
     Route::post('/admin/notifications/mark-as-read/{id}', [\App\Http\Controllers\Admin\NotificationController::class, 'markAsRead']);
     Route::post('/admin/notifications/mark-all-as-read', [\App\Http\Controllers\Admin\NotificationController::class, 'markAllAsRead']);
     Route::get('/admin/notifications/unread', [\App\Http\Controllers\Admin\NotificationController::class, 'getUnread']);
+    
+    // SOLUTION ULTRA-RADICALE : Routes de paiement directement dans web.php avec un contrôleur dédié
+    Route::get('/payment/stripe/{planId}', [\App\Http\Controllers\DirectPaymentController::class, 'showStripeForm'])->name('payment.stripe.form');
+    Route::post('/payment/stripe/process', [\App\Http\Controllers\DirectPaymentController::class, 'processStripe'])->name('payment.stripe.process');
+    Route::get('/payment/paypal/{planId}', [\App\Http\Controllers\DirectPaymentController::class, 'showPaypalForm'])->name('payment.paypal.form');
+    Route::post('/payment/paypal/process', [\App\Http\Controllers\DirectPaymentController::class, 'processPaypal'])->name('payment.paypal.process');
+    Route::get('/payment/success', [\App\Http\Controllers\DirectPaymentController::class, 'success'])->name('payment.success');
 });
 
 // Route directe pour la mise à jour des notifications (solution radicale)

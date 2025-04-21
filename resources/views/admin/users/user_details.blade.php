@@ -188,6 +188,28 @@
                         <label for="password_confirmation" class="form-label">Confirmer le mot de passe</label>
                         <input type="password" class="form-control" id="password_confirmation" name="password_confirmation">
                     </div>
+                    
+                    <hr>
+                    <h5 class="mb-3">Abonnement</h5>
+                    
+                    <div class="mb-3">
+                        <label for="plan_id" class="form-label">Plan d'abonnement</label>
+                        <select class="form-select" id="plan_id" name="plan_id">
+                            <option value="">Aucun plan</option>
+                            @foreach(\App\Models\Plan::where('is_active', true)->get() as $planOption)
+                                <option value="{{ $planOption->id }}" {{ optional($subscription)->plan_id == $planOption->id ? 'selected' : '' }}>
+                                    {{ $planOption->name }} ({{ number_format($planOption->price, 2) }} € / {{ $planOption->billing_cycle === 'monthly' ? 'mois' : 'an' }})
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="subscription_ends_at" class="form-label">Date de fin d'abonnement</label>
+                        <input type="date" class="form-control" id="subscription_ends_at" name="subscription_ends_at" 
+                            value="{{ optional(optional($subscription)->ends_at)->format('Y-m-d') }}">
+                        <small class="form-text text-muted">Laissez vide pour un abonnement sans date de fin.</small>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>

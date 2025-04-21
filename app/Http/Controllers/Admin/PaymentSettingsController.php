@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\PaymentSetting;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
@@ -26,7 +27,19 @@ class PaymentSettingsController extends Controller
     public function index()
     {
         $this->checkSuperAdmin();
-        return view('admin.settings.payment_integration');
+        
+        // Récupérer les paramètres depuis la base de données ou utiliser les valeurs par défaut
+        $stripeEnabled = PaymentSetting::getValue('stripe_enabled', config('payment.stripe.enabled') ? 'true' : 'false');
+        $paypalEnabled = PaymentSetting::getValue('paypal_enabled', config('payment.paypal.enabled') ? 'true' : 'false');
+        
+        // Convertir les valeurs en booléens pour la vue
+        $stripeEnabled = ($stripeEnabled === 'true');
+        $paypalEnabled = ($paypalEnabled === 'true');
+        
+        return view('admin.settings.payment_integration', [
+            'stripeEnabled' => $stripeEnabled,
+            'paypalEnabled' => $paypalEnabled
+        ]);
     }
     
     /**
@@ -49,6 +62,15 @@ class PaymentSettingsController extends Controller
             'stripe_key' => $request->stripe_key,
         ]);
 
+        // Sauvegarder les paramètres dans la base de données
+        PaymentSetting::setValue('stripe_enabled', $request->has('stripe_enabled') ? 'true' : 'false', 'Activation de Stripe');
+        PaymentSetting::setValue('stripe_key', $request->stripe_key, 'Clé publique Stripe');
+        PaymentSetting::setValue('stripe_secret', $request->stripe_secret, 'Clé secrète Stripe');
+        
+        if ($request->filled('stripe_webhook_secret')) {
+            PaymentSetting::setValue('stripe_webhook_secret', $request->stripe_webhook_secret, 'Secret du webhook Stripe');
+        }
+
         $values = [
             'STRIPE_KEY' => $request->stripe_key,
             'STRIPE_SECRET' => $request->stripe_secret,
@@ -67,11 +89,11 @@ class PaymentSettingsController extends Controller
             config(['payment.stripe.webhook_secret' => $request->stripe_webhook_secret]);
         }
 
-        $success = $this->updateEnvironmentFile($values);
-
-        if (!$success) {
-            Log::error('Échec de la mise à jour de la configuration Stripe');
-            return redirect()->back()->with('error', 'Impossible de sauvegarder les paramètres Stripe.');
+        // Essayer de mettre à jour le fichier .env (mais ne pas échouer si cela ne fonctionne pas)
+        try {
+            $this->updateEnvironmentFile($values);
+        } catch (\Exception $e) {
+            Log::warning('Impossible de mettre à jour le fichier .env pour Stripe, mais les paramètres ont été sauvegardés en base de données: ' . $e->getMessage());
         }
 
         // Vider le cache de configuration
@@ -102,6 +124,16 @@ class PaymentSettingsController extends Controller
             'paypal_client_id' => $request->paypal_client_id,
         ]);
 
+        // Sauvegarder les paramètres dans la base de données
+        PaymentSetting::setValue('paypal_enabled', $request->has('paypal_enabled') ? 'true' : 'false', 'Activation de PayPal');
+        PaymentSetting::setValue('paypal_client_id', $request->paypal_client_id, 'Client ID PayPal');
+        PaymentSetting::setValue('paypal_secret', $request->paypal_secret, 'Secret PayPal');
+        PaymentSetting::setValue('paypal_mode', $request->has('paypal_sandbox') ? 'sandbox' : 'live', 'Mode PayPal');
+        
+        if ($request->filled('paypal_webhook_id')) {
+            PaymentSetting::setValue('paypal_webhook_id', $request->paypal_webhook_id, 'ID du webhook PayPal');
+        }
+
         $values = [
             'PAYPAL_CLIENT_ID' => $request->paypal_client_id,
             'PAYPAL_SECRET' => $request->paypal_secret,
@@ -122,11 +154,11 @@ class PaymentSettingsController extends Controller
             config(['payment.paypal.webhook_id' => $request->paypal_webhook_id]);
         }
 
-        $success = $this->updateEnvironmentFile($values);
-
-        if (!$success) {
-            Log::error('Échec de la mise à jour de la configuration PayPal');
-            return redirect()->back()->with('error', 'Impossible de sauvegarder les paramètres PayPal.');
+        // Essayer de mettre à jour le fichier .env (mais ne pas échouer si cela ne fonctionne pas)
+        try {
+            $this->updateEnvironmentFile($values);
+        } catch (\Exception $e) {
+            Log::warning('Impossible de mettre à jour le fichier .env pour PayPal, mais les paramètres ont été sauvegardés en base de données: ' . $e->getMessage());
         }
 
         // Vider le cache de configuration
@@ -150,20 +182,22 @@ class PaymentSettingsController extends Controller
         ]);
         
         try {
-            // Modifier directement le fichier de configuration
+            // Sauvegarder les paramètres dans la base de données
+            PaymentSetting::setValue('stripe_enabled', $request->has('stripe_enabled') ? 'true' : 'false', 'Activation de Stripe');
+            PaymentSetting::setValue('paypal_enabled', $request->has('paypal_enabled') ? 'true' : 'false', 'Activation de PayPal');
+            
+            // Mettre à jour la configuration en mémoire
             config(['payment.stripe.enabled' => $request->has('stripe_enabled')]);
             config(['payment.paypal.enabled' => $request->has('paypal_enabled')]);
             
-            // Mettre à jour le fichier .env
-            $success = $this->updateEnvironmentFile([
-                'STRIPE_ENABLED' => $request->has('stripe_enabled') ? 'true' : 'false',
-                'PAYPAL_ENABLED' => $request->has('paypal_enabled') ? 'true' : 'false',
-            ]);
-            
-            if (!$success) {
-                Log::error('Échec de la mise à jour du fichier .env pour les méthodes de paiement');
-                return redirect()->route('admin.settings.payment-integration')
-                    ->with('error', 'Une erreur est survenue lors de la mise à jour des préférences. Veuillez vérifier les permissions du fichier .env.');
+            // Essayer également de mettre à jour le fichier .env (mais ne pas échouer si cela ne fonctionne pas)
+            try {
+                $this->updateEnvironmentFile([
+                    'STRIPE_ENABLED' => $request->has('stripe_enabled') ? 'true' : 'false',
+                    'PAYPAL_ENABLED' => $request->has('paypal_enabled') ? 'true' : 'false',
+                ]);
+            } catch (\Exception $e) {
+                Log::warning('Impossible de mettre à jour le fichier .env, mais les paramètres ont été sauvegardés en base de données: ' . $e->getMessage());
             }
             
             // Vider le cache de configuration
@@ -201,18 +235,18 @@ class PaymentSettingsController extends Controller
             $envContents = file_get_contents($envFile);
             
             foreach ($values as $key => $value) {
-                // Échapper les caractères spéciaux dans la valeur
+                // Correction de l'échappement des caractères spéciaux
                 $value = str_replace('"', '\"', $value);
                 
                 Log::info("Mise à jour de la clé .env: {$key} = {$value}");
                 
                 // Vérifier si la clé existe déjà
                 if (preg_match("/^{$key}=.*/m", $envContents)) {
-                    // Mettre à jour la valeur existante
-                    $envContents = preg_replace("/^{$key}=.*/m", "{$key}=\"{$value}\"", $envContents);
+                    // Mettre à jour la valeur existante sans ajouter de guillemets supplémentaires
+                    $envContents = preg_replace("/^{$key}=.*/m", "{$key}={$value}", $envContents);
                 } else {
-                    // Ajouter une nouvelle clé
-                    $envContents .= PHP_EOL . "{$key}=\"{$value}\"";
+                    // Ajouter une nouvelle clé sans guillemets supplémentaires
+                    $envContents .= PHP_EOL . "{$key}={$value}";
                 }
             }
             

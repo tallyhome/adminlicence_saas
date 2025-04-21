@@ -60,8 +60,11 @@
                                 </div>
                             @endif
                             
-                            <form method="POST" action="{{ route('register') }}" class="needs-validation" novalidate>
+                            <form method="POST" action="{{ route('custom.register.submit') }}" class="needs-validation" id="registerForm" novalidate>
                                 @csrf
+                                
+                                <!-- Champ CSRF caché pour assurer la sécurité -->
+                                <input type="hidden" name="_token" value="{{ csrf_token() }}">
                                 
                                 <div class="form-floating mb-4">
                                     <input id="name" type="text" class="form-control @error('name') is-invalid @enderror" name="name" value="{{ old('name') }}" required autocomplete="name" autofocus placeholder="Votre nom">

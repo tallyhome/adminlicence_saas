@@ -204,6 +204,11 @@ Route::middleware('auth:admin')->group(function () {
     Route::post('settings/update-paypal', [\App\Http\Controllers\Admin\PaymentSettingsController::class, 'updatePayPal'])->name('admin.settings.update-paypal');
     Route::post('settings/update-payment-methods', [\App\Http\Controllers\Admin\PaymentSettingsController::class, 'updatePaymentMethods'])->name('admin.settings.update-payment-methods');
     
+    // Routes pour les pages légales
+    Route::get('settings/legal-pages', [\App\Http\Controllers\Admin\LegalPagesController::class, 'index'])->name('admin.settings.legal-pages');
+    Route::post('settings/legal-pages/terms', [\App\Http\Controllers\Admin\LegalPagesController::class, 'updateTerms'])->name('admin.settings.legal-pages.update-terms');
+    Route::post('settings/legal-pages/privacy', [\App\Http\Controllers\Admin\LegalPagesController::class, 'updatePrivacy'])->name('admin.settings.legal-pages.update-privacy');
+    
     // Routes pour l'authentification à deux facteurs
     Route::get('settings/two-factor', [TwoFactorAuthController::class, 'index'])->name('admin.settings.two-factor');
     Route::post('settings/two-factor/enable', [TwoFactorAuthController::class, 'enable'])->name('admin.settings.two-factor.enable');

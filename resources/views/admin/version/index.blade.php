@@ -59,10 +59,10 @@
                                     <div class="col-md-9">
                                         <p><strong>{{ $item['description'] }}</strong></p>
                                         @if(isset($item['categories']))
-                                            @if(isset($item['categories']['Ajouts']) && count($item['categories']['Ajouts']) > 0)
-                                                <h6 class="mt-3 text-success">Ajouts</h6>
+                                            @if(isset($item['categories']['Nouvelles fonctionnalités']) && count($item['categories']['Nouvelles fonctionnalités']) > 0)
+                                                <h6 class="mt-3 text-success">Nouvelles fonctionnalités</h6>
                                                 <ul>
-                                                    @foreach($item['categories']['Ajouts'] as $change)
+                                                    @foreach($item['categories']['Nouvelles fonctionnalités'] as $change)
                                                         <li>{{ $change }}</li>
                                                     @endforeach
                                                 </ul>
@@ -96,4 +96,37 @@
         </div>
     </div>
 </div>
+
+<style>
+    .timeline {
+        position: relative;
+        padding-left: 1rem;
+    }
+    
+    .timeline::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: 2px;
+        background: #e0e0e0;
+    }
+    
+    .timeline-item {
+        position: relative;
+        padding-left: 2rem;
+    }
+    
+    .timeline-item::before {
+        content: '';
+        position: absolute;
+        left: -0.5rem;
+        top: 0.5rem;
+        width: 1rem;
+        height: 1rem;
+        border-radius: 50%;
+        background: #3f51b5;
+    }
+</style>
 @endsection

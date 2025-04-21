@@ -108,6 +108,8 @@ class UserController extends Controller
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email,'.$user->id],
             'password' => ['nullable', 'confirmed', Rules\Password::defaults()],
             'roles' => ['nullable', 'array'],
+            'plan_id' => ['nullable', 'exists:plans,id'],
+            'subscription_ends_at' => ['nullable', 'date'],
         ]);
         
         // Mettre à jour les informations de l'utilisateur
@@ -127,7 +129,52 @@ class UserController extends Controller
             $user->roles()->detach();
         }
         
-        return redirect()->route('admin.users.index')
+        // Gérer l'abonnement
+        if ($request->filled('plan_id')) {
+            // Récupérer le plan
+            $plan = \App\Models\Plan::findOrFail($request->plan_id);
+            
+            // Vérifier si l'utilisateur a déjà un abonnement
+            $subscription = $user->subscription;
+            
+            if ($subscription) {
+                // Mettre à jour l'abonnement existant
+                $subscription->plan_id = $plan->id;
+                
+                // Mettre à jour la date de fin si elle est fournie
+                if ($request->filled('subscription_ends_at')) {
+                    $subscription->ends_at = $request->subscription_ends_at;
+                } else {
+                    $subscription->ends_at = null; // Abonnement sans date de fin
+                }
+                
+                // S'assurer que l'abonnement est actif
+                $subscription->status = 'active';
+                if (!$subscription->starts_at) {
+                    $subscription->starts_at = now();
+                }
+                
+                $subscription->save();
+            } else {
+                // Créer un nouvel abonnement
+                $subscription = new \App\Models\Subscription([
+                    'user_id' => $user->id,
+                    'plan_id' => $plan->id,
+                    'status' => 'active',
+                    'starts_at' => now(),
+                    'ends_at' => $request->filled('subscription_ends_at') ? $request->subscription_ends_at : null,
+                ]);
+                
+                $subscription->save();
+            }
+        } else if ($user->subscription) {
+            // Si aucun plan n'est sélectionné mais que l'utilisateur a un abonnement, le désactiver
+            $user->subscription->status = 'cancelled';
+            $user->subscription->cancelled_at = now();
+            $user->subscription->save();
+        }
+        
+        return redirect()->route('admin.users.show', $user->id)
             ->with('success', 'Utilisateur mis à jour avec succès.');
     }
     

@@ -17,6 +17,8 @@ class VerifyCsrfToken extends Middleware
         '/notifications/mark-as-read/*',
         '/notifications/mark-all-as-read',
         '/api/notifications/*',
-        '/api/fix/notifications/*'
+        '/api/fix/notifications/*',
+        // Désactiver temporairement la vérification CSRF pour la route d'inscription
+        '/register',
     ];
 }

@@ -38,7 +38,7 @@
                         
                         <div class="col-md-6">
                             <div class="form-check form-switch">
-                                <input class="form-check-input" type="checkbox" id="stripe_enabled" name="stripe_enabled" {{ config('payment.stripe.enabled') ? 'checked' : '' }}>
+                                <input class="form-check-input" type="checkbox" id="stripe_enabled" name="stripe_enabled" {{ $stripeEnabled ? 'checked' : '' }}>
                                 <label class="form-check-label" for="stripe_enabled">
                                     <i class="fab fa-stripe me-1"></i> Activer Stripe
                                 </label>
@@ -47,7 +47,7 @@
                         
                         <div class="col-md-6">
                             <div class="form-check form-switch">
-                                <input class="form-check-input" type="checkbox" id="paypal_enabled" name="paypal_enabled" {{ config('payment.paypal.enabled') ? 'checked' : '' }}>
+                                <input class="form-check-input" type="checkbox" id="paypal_enabled" name="paypal_enabled" {{ $paypalEnabled ? 'checked' : '' }}>
                                 <label class="form-check-label" for="paypal_enabled">
                                     <i class="fab fa-paypal me-1"></i> Activer PayPal
                                 </label>
@@ -77,7 +77,7 @@
                         
                         <div class="mb-3">
                             <div class="form-check form-switch">
-                                <input class="form-check-input" type="checkbox" id="stripe_enabled_config" name="stripe_enabled" {{ config('payment.stripe.enabled') ? 'checked' : '' }}>
+                                <input class="form-check-input" type="checkbox" id="stripe_enabled_config" name="stripe_enabled" {{ $stripeEnabled ? 'checked' : '' }}>
                                 <label class="form-check-label" for="stripe_enabled_config">
                                     <i class="fas fa-toggle-on me-1"></i> Activer Stripe
                                 </label>
@@ -154,7 +154,7 @@
                         
                         <div class="mb-3">
                             <div class="form-check form-switch">
-                                <input class="form-check-input" type="checkbox" id="paypal_enabled_config" name="paypal_enabled" {{ config('payment.paypal.enabled') ? 'checked' : '' }}>
+                                <input class="form-check-input" type="checkbox" id="paypal_enabled_config" name="paypal_enabled" {{ $paypalEnabled ? 'checked' : '' }}>
                                 <label class="form-check-label" for="paypal_enabled_config">
                                     <i class="fas fa-toggle-on me-1"></i> Activer PayPal
                                 </label>

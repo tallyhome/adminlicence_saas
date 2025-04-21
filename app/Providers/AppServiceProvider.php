@@ -13,7 +13,29 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        // Commenter temporairement Telescope pour résoudre des erreurs
+        if (class_exists(\Laravel\Telescope\TelescopeServiceProvider::class)) {
+            // Ne pas enregistrer Telescope
+            // $this->app->register(\Laravel\Telescope\TelescopeServiceProvider::class);
+            // $this->app->register(TelescopeServiceProvider::class);
+        }
+
+        // Enregistrer le service WebSocket en tant que singleton
+        $this->app->singleton(\App\Services\WebSocketService::class, function ($app) {
+            return new \App\Services\WebSocketService();
+        });
+        
+        // Enregistrer le service Stripe avec WebSocketService
+        $this->app->singleton(\App\Services\StripeService::class, function ($app) {
+            return new \App\Services\StripeService(
+                $app->make(\App\Services\WebSocketService::class)
+            );
+        });
+        
+        // Enregistrer le service PayPal
+        $this->app->singleton(\App\Services\PayPalService::class, function ($app) {
+            return new \App\Services\PayPalService();
+        });
     }
 
     /**

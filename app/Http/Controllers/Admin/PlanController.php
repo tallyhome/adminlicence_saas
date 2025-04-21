@@ -194,8 +194,9 @@ class PlanController extends Controller
     /**
      * Update the specified plan in storage.
      */
-    public function update(Request $request, Plan $plan)
+    public function update(Request $request, $id)
     {
+        // Validation des données
         $request->validate([
             'name' => 'required|string|max:255',
             'price' => 'required|numeric|min:0',
@@ -210,23 +211,75 @@ class PlanController extends Controller
             'paypal_plan_id' => 'nullable|string',
         ]);
 
-        $plan->name = $request->name;
-        $plan->slug = Str::slug($request->name);
-        $plan->price = $request->price;
-        $plan->billing_cycle = $request->billing_cycle;
-        $plan->description = $request->description;
-        $plan->features = $request->features;
-        $plan->trial_days = $request->trial_days ?? 0;
-        $plan->max_licenses = $request->max_licenses ?? 1;
-        $plan->max_projects = $request->max_projects ?? 1;
-        $plan->max_clients = $request->max_clients ?? 1;
-        $plan->stripe_price_id = $request->stripe_price_id;
-        $plan->paypal_plan_id = $request->paypal_plan_id;
-        $plan->is_active = $request->has('is_active');
-        $plan->save();
+        try {
+            // Récupérer le plan à partir de l'ID
+            $plan = Plan::findOrFail($id);
+            
+            // Récupérer les caractéristiques du formulaire et les encoder en JSON
+            $featuresJson = json_encode($request->features ?: []);
+            
+            // Log pour débogage
+            \Illuminate\Support\Facades\Log::info('Mise à jour du plan ' . $id, [
+                'features_from_request' => $request->features,
+                'features_json' => $featuresJson
+            ]);
+            
+            // Utiliser une requête SQL directe pour la mise à jour
+            $result = \Illuminate\Support\Facades\DB::update("
+                UPDATE plans 
+                SET name = ?, 
+                    price = ?, 
+                    billing_cycle = ?, 
+                    description = ?, 
+                    features = ?, 
+                    trial_days = ?, 
+                    max_licenses = ?, 
+                    max_projects = ?, 
+                    max_clients = ?, 
+                    stripe_price_id = ?, 
+                    paypal_plan_id = ?, 
+                    is_active = ?, 
+                    updated_at = ? 
+                WHERE id = ?
+            ", [
+                $request->name,
+                $request->price,
+                $request->billing_cycle,
+                $request->description,
+                $featuresJson,
+                $request->trial_days ?? 0,
+                $request->max_licenses ?? 1,
+                $request->max_projects ?? 1,
+                $request->max_clients ?? 1,
+                $request->stripe_price_id,
+                $request->paypal_plan_id,
+                $request->has('is_active') ? 1 : 0,
+                now(),
+                $id
+            ]);
 
-        return redirect()->route('admin.subscriptions.index')
-            ->with('success', 'Plan mis à jour avec succès.');
+            // Vérifier si la mise à jour a réussi
+            if ($result === 0) {
+                throw new \Exception('Aucune ligne n\'a été mise à jour dans la base de données.');
+            }
+
+            // Vider complètement le cache
+            \Illuminate\Support\Facades\Cache::flush();
+            \Illuminate\Support\Facades\Artisan::call('config:clear');
+            \Illuminate\Support\Facades\Artisan::call('cache:clear');
+
+            return redirect()->route('admin.subscriptions.index')
+                ->with('success', 'Plan mis à jour avec succès.');
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error('Erreur lors de la mise à jour du plan: ' . $e->getMessage(), [
+                'exception' => $e,
+                'request_data' => $request->all()
+            ]);
+            
+            return redirect()->back()
+                ->with('error', 'Erreur lors de la mise à jour du plan : ' . $e->getMessage())
+                ->withInput();
+        }
     }
 
     /**

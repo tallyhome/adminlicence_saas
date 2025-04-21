@@ -1,4 +1,7 @@
-@php use Illuminate\Support\Facades\Auth; @endphp
+@php 
+use Illuminate\Support\Facades\Auth; 
+$admin = Auth::guard('admin')->user();
+@endphp
 
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
@@ -204,7 +207,7 @@
                                 </a>
                             </li>
                             @endif
-                            @if(auth()->guard('admin')->check() && auth()->guard('admin')->user()->is_super_admin)
+                            @if(auth()->guard('admin')->check() && $admin && $admin->is_super_admin)
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ route('admin.subscriptions.create-default-plans') }}">
                                     <i class="fas fa-magic me-2"></i> Créer plans par défaut
@@ -397,28 +400,33 @@
                         <ul class="nav flex-column ms-3">
                             <li class="nav-item">
                                 <a class="nav-link {{ request()->routeIs('admin.settings.index') ? 'active' : '' }}" href="{{ route('admin.settings.index') }}">
-                                    <i class="fas fa-sliders-h me-2"></i> Général
+                                    <i class="fas fa-cog me-2"></i> Paramètres généraux
                                 </a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link {{ request()->routeIs('admin.settings.payment-integration') ? 'active' : '' }}" href="{{ route('admin.settings.payment-integration') }}">
-                                    <i class="fas fa-credit-card me-2"></i> Configuration des paiements
+                                    <i class="fas fa-credit-card me-2"></i> Intégration de paiement
                                 </a>
                             </li>
-                            @if(Auth::guard('admin')->user()->is_super_admin)
                             <li class="nav-item">
-                                <a class="nav-link {{ request()->routeIs('admin.payment-test') ? 'active' : '' }}" href="{{ route('admin.payment-test') }}">
-                                    <i class="fas fa-credit-card me-2"></i> Test des paiements
+                                <a class="nav-link {{ request()->routeIs('admin.settings.legal-pages') ? 'active' : '' }}" href="{{ route('admin.settings.legal-pages') }}">
+                                    <i class="fas fa-file-contract me-2"></i> Pages légales
                                 </a>
                             </li>
-                            @endif
                             <li class="nav-item">
                                 <a class="nav-link {{ request()->routeIs('admin.settings.two-factor') ? 'active' : '' }}" href="{{ route('admin.settings.two-factor') }}">
-                                    <i class="fas fa-shield-alt me-2"></i> 2FA
+                                    <i class="fas fa-shield-alt me-2"></i> Authentification à deux facteurs
                                 </a>
                             </li>
                         </ul>
                     </div>
+                </li>
+
+                <!-- Informations de version -->
+                <li class="nav-item">
+                    <a class="nav-link {{ request()->routeIs('admin.version') ? 'active' : '' }}" href="{{ route('admin.version') }}">
+                        <i class="fas fa-info-circle me-2"></i> Informations de version
+                    </a>
                 </li>
             </ul>
         </div>

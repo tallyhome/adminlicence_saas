@@ -19,12 +19,32 @@
     
     <!-- Custom CSS for auth forms -->
     <link href="{{ asset('css/auth-custom.css') }}" rel="stylesheet">
+    
+    @yield('styles')
 </head>
 <body class="bg-light">
     @yield('content')
     
-    <!-- Bootstrap JS Bundle with Popper -->
+    <!-- jQuery first, then Bootstrap JS Bundle with Popper -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // Configuration globale pour envoyer le token CSRF à chaque requête AJAX
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+        
+        // En cas d'erreur 419, rechargement de la page automatique
+        $(document).ajaxError(function(event, jqXHR) {
+            if (jqXHR.status === 419) {
+                console.log('CSRF token mis expire. Rechargement de la page...');
+                location.reload();
+            }
+        });
+    </script>
     
     @yield('scripts')
 </body>

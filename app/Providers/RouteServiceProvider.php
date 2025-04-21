@@ -30,7 +30,15 @@ class RouteServiceProvider extends ServiceProvider
         //     return redirect()->route('admin.login');
         // })->name('login');
 
+        RateLimiter::for('api', function (Request $request) {
+            return Limit::perMinute(60)->by($request->user()?->id ?: $request->ip());
+        });
+
         $this->routes(function () {
+            // Routes de paiement (priorité élevée)
+            Route::middleware('web')
+                ->group(base_path('routes/payment.php'));
+                
             Route::middleware('api')
                 ->prefix('api')
                 ->group(base_path('routes/api.php'));
