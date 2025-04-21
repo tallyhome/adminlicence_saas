@@ -154,7 +154,6 @@ class PlanController extends Controller
             'max_clients' => 'nullable|integer|min:1',
             'stripe_price_id' => 'nullable|string',
             'paypal_plan_id' => 'nullable|string',
-            'is_active' => 'boolean',
         ]);
 
         $plan = new Plan();
@@ -195,18 +194,9 @@ class PlanController extends Controller
     /**
      * Update the specified plan in storage.
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Plan $plan)
     {
-        // Récupérer le plan directement depuis la base de données
-        $planData = \Illuminate\Support\Facades\DB::table('plans')->where('id', $id)->first();
-        
-        if (!$planData) {
-            return redirect()->route('admin.subscriptions.index')
-                ->with('error', 'Le plan demandé n\'existe pas.');
-        }
-        
-        // Valider les données du formulaire
-        $validated = $request->validate([
+        $request->validate([
             'name' => 'required|string|max:255',
             'price' => 'required|numeric|min:0',
             'billing_cycle' => 'required|in:monthly,yearly',
@@ -219,52 +209,24 @@ class PlanController extends Controller
             'stripe_price_id' => 'nullable|string',
             'paypal_plan_id' => 'nullable|string',
         ]);
-        
-        // Préparer les données à mettre à jour
-        $updateData = [
-            'name' => $validated['name'],
-            'price' => $validated['price'],
-            'billing_cycle' => $validated['billing_cycle'],
-            'description' => $validated['description'] ?? '',
-            'trial_days' => $validated['trial_days'] ?? 0,
-            'max_licenses' => $validated['max_licenses'] ?? 1,
-            'max_projects' => $validated['max_projects'] ?? 1,
-            'max_clients' => $validated['max_clients'] ?? 1,
-            'stripe_price_id' => $validated['stripe_price_id'] ?? '',
-            'paypal_plan_id' => $validated['paypal_plan_id'] ?? '',
-            'is_active' => $request->has('is_active') ? 1 : 0,
-            'updated_at' => now(),
-        ];
-        
-        // Traiter les caractéristiques
-        if (isset($validated['features']) && is_array($validated['features'])) {
-            // Filtrer les caractéristiques vides
-            $features = array_values(array_filter($validated['features'], function($feature) {
-                return !empty(trim($feature));
-            }));
-            
-            // Ajouter les caractéristiques aux données à mettre à jour
-            $updateData['features'] = json_encode($features);
-        }
-        
-        // Mettre à jour le plan dans la base de données
-        $updated = \Illuminate\Support\Facades\DB::table('plans')
-            ->where('id', $id)
-            ->update($updateData);
-        
-        // Vider le cache pour s'assurer que les modifications sont visibles
-        \Illuminate\Support\Facades\Cache::flush();
-        
-        if ($updated) {
-            // Récupérer le plan mis à jour pour vérification
-            $updatedPlan = \Illuminate\Support\Facades\DB::table('plans')->where('id', $id)->first();
-            
-            return redirect()->route('admin.subscriptions.index')
-                ->with('success', 'Plan mis à jour avec succès. Caractéristiques: ' . $updatedPlan->features);
-        } else {
-            return redirect()->route('admin.subscriptions.index')
-                ->with('error', 'Erreur lors de la mise à jour du plan.');
-        }
+
+        $plan->name = $request->name;
+        $plan->slug = Str::slug($request->name);
+        $plan->price = $request->price;
+        $plan->billing_cycle = $request->billing_cycle;
+        $plan->description = $request->description;
+        $plan->features = $request->features;
+        $plan->trial_days = $request->trial_days ?? 0;
+        $plan->max_licenses = $request->max_licenses ?? 1;
+        $plan->max_projects = $request->max_projects ?? 1;
+        $plan->max_clients = $request->max_clients ?? 1;
+        $plan->stripe_price_id = $request->stripe_price_id;
+        $plan->paypal_plan_id = $request->paypal_plan_id;
+        $plan->is_active = $request->has('is_active');
+        $plan->save();
+
+        return redirect()->route('admin.subscriptions.index')
+            ->with('success', 'Plan mis à jour avec succès.');
     }
 
     /**

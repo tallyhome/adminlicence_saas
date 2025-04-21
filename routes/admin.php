@@ -213,10 +213,13 @@ Route::middleware('auth:admin')->group(function () {
     Route::get('settings/test-google2fa', [TwoFactorController::class, 'testGoogle2FA'])->name('admin.settings.test-google2fa');
     
     // Routes de test pour les paiements (réservées aux super-admins)
-    Route::middleware(['super_admin'])->group(function () {
-        Route::get('/payment-test', [\App\Http\Controllers\Admin\PaymentTestController::class, 'dashboard'])->name('admin.payment-test');
-        Route::post('/payment-test/stripe', [\App\Http\Controllers\Admin\PaymentTestController::class, 'testStripePayment'])->name('admin.test-stripe-payment');
-        Route::post('/payment-test/paypal', [\App\Http\Controllers\Admin\PaymentTestController::class, 'testPayPalPayment'])->name('admin.test-paypal-payment');
+    Route::middleware(\App\Http\Middleware\SuperAdminMiddleware::class)->group(function() {
+        Route::get('/payment-test', [\App\Http\Controllers\Admin\PaymentTestController::class, 'dashboard'])
+            ->name('admin.payment-test');
+        Route::post('/payment-test/stripe', [\App\Http\Controllers\Admin\PaymentTestController::class, 'testStripePayment'])
+            ->name('admin.test-stripe-payment');
+        Route::post('/payment-test/paypal', [\App\Http\Controllers\Admin\PaymentTestController::class, 'testPayPalPayment'])
+            ->name('admin.test-paypal-payment');
     });
     
     // Gestion des administrateurs
@@ -275,7 +278,7 @@ Route::middleware('auth:admin')->group(function () {
     });
     
     // Routes pour les pages légales (superadmin uniquement)
-    Route::prefix('legal')->middleware(['super_admin'])->group(function () {
+    Route::prefix('legal')->middleware([\App\Http\Middleware\SuperAdminMiddleware::class])->group(function () {
         Route::get('/', [\App\Http\Controllers\Admin\LegalPageController::class, 'index'])->name('admin.legal.index');
         Route::get('/terms/edit', [\App\Http\Controllers\Admin\LegalPageController::class, 'editTerms'])->name('admin.legal.edit.terms');
         Route::get('/privacy/edit', [\App\Http\Controllers\Admin\LegalPageController::class, 'editPrivacy'])->name('admin.legal.edit.privacy');

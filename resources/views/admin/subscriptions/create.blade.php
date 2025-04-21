@@ -125,7 +125,7 @@
 
 @endsection
 
-@section('scripts')
+@push('scripts')
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         // Ajouter une caractéristique
@@ -159,4 +159,4 @@
         });
     });
 </script>
-@endsection
+@endpush

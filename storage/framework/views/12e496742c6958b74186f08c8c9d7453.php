@@ -38,7 +38,7 @@
                         
                         <div class="col-md-6">
                             <div class="form-check form-switch">
-                                <input class="form-check-input" type="checkbox" id="stripe_enabled" name="stripe_enabled" <?php echo e(config('services.stripe.enabled', false) ? 'checked' : ''); ?>>
+                                <input class="form-check-input" type="checkbox" id="stripe_enabled" name="stripe_enabled" <?php echo e(config('payment.stripe.enabled') ? 'checked' : ''); ?>>
                                 <label class="form-check-label" for="stripe_enabled">
                                     <i class="fab fa-stripe me-1"></i> Activer Stripe
                                 </label>
@@ -47,7 +47,7 @@
                         
                         <div class="col-md-6">
                             <div class="form-check form-switch">
-                                <input class="form-check-input" type="checkbox" id="paypal_enabled" name="paypal_enabled" <?php echo e(config('services.paypal.enabled', false) ? 'checked' : ''); ?>>
+                                <input class="form-check-input" type="checkbox" id="paypal_enabled" name="paypal_enabled" <?php echo e(config('payment.paypal.enabled') ? 'checked' : ''); ?>>
                                 <label class="form-check-label" for="paypal_enabled">
                                     <i class="fab fa-paypal me-1"></i> Activer PayPal
                                 </label>
@@ -76,14 +76,23 @@
                         <?php echo csrf_field(); ?>
                         
                         <div class="mb-3">
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="stripe_enabled_config" name="stripe_enabled" <?php echo e(config('payment.stripe.enabled') ? 'checked' : ''); ?>>
+                                <label class="form-check-label" for="stripe_enabled_config">
+                                    <i class="fas fa-toggle-on me-1"></i> Activer Stripe
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
                             <label for="stripe_key" class="form-label">Clé publique</label>
-                            <input type="text" class="form-control" id="stripe_key" name="stripe_key" value="<?php echo e(config('services.stripe.key')); ?>" required>
+                            <input type="text" class="form-control" id="stripe_key" name="stripe_key" value="<?php echo e(config('payment.stripe.key')); ?>" required>
                         </div>
                         
                         <div class="mb-3">
                             <label for="stripe_secret" class="form-label">Clé secrète</label>
                             <div class="input-group">
-                                <input type="password" class="form-control" id="stripe_secret" name="stripe_secret" value="<?php echo e(config('services.stripe.secret')); ?>" required>
+                                <input type="password" class="form-control" id="stripe_secret" name="stripe_secret" value="<?php echo e(config('payment.stripe.secret')); ?>" required>
                                 <button class="btn btn-outline-secondary toggle-password" type="button" data-target="stripe_secret">
                                     <i class="fas fa-eye"></i>
                                 </button>
@@ -93,7 +102,7 @@
                         <div class="mb-3">
                             <label for="stripe_webhook_secret" class="form-label">Secret de webhook</label>
                             <div class="input-group">
-                                <input type="password" class="form-control" id="stripe_webhook_secret" name="stripe_webhook_secret" value="<?php echo e(config('services.stripe.webhook_secret')); ?>">
+                                <input type="password" class="form-control" id="stripe_webhook_secret" name="stripe_webhook_secret" value="<?php echo e(config('payment.stripe.webhook_secret')); ?>">
                                 <button class="btn btn-outline-secondary toggle-password" type="button" data-target="stripe_webhook_secret">
                                     <i class="fas fa-eye"></i>
                                 </button>
@@ -144,14 +153,23 @@
                         <?php echo csrf_field(); ?>
                         
                         <div class="mb-3">
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="paypal_enabled_config" name="paypal_enabled" <?php echo e(config('payment.paypal.enabled') ? 'checked' : ''); ?>>
+                                <label class="form-check-label" for="paypal_enabled_config">
+                                    <i class="fas fa-toggle-on me-1"></i> Activer PayPal
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
                             <label for="paypal_client_id" class="form-label">Client ID</label>
-                            <input type="text" class="form-control" id="paypal_client_id" name="paypal_client_id" value="<?php echo e(config('services.paypal.client_id')); ?>" required>
+                            <input type="text" class="form-control" id="paypal_client_id" name="paypal_client_id" value="<?php echo e(config('payment.paypal.client_id')); ?>" required>
                         </div>
                         
                         <div class="mb-3">
                             <label for="paypal_secret" class="form-label">Secret</label>
                             <div class="input-group">
-                                <input type="password" class="form-control" id="paypal_secret" name="paypal_secret" value="<?php echo e(config('services.paypal.secret')); ?>" required>
+                                <input type="password" class="form-control" id="paypal_secret" name="paypal_secret" value="<?php echo e(config('payment.paypal.secret')); ?>" required>
                                 <button class="btn btn-outline-secondary toggle-password" type="button" data-target="paypal_secret">
                                     <i class="fas fa-eye"></i>
                                 </button>
@@ -160,12 +178,12 @@
                         
                         <div class="mb-3">
                             <label for="paypal_webhook_id" class="form-label">ID du webhook</label>
-                            <input type="text" class="form-control" id="paypal_webhook_id" name="paypal_webhook_id" value="<?php echo e(config('services.paypal.webhook_id')); ?>">
+                            <input type="text" class="form-control" id="paypal_webhook_id" name="paypal_webhook_id" value="<?php echo e(config('payment.paypal.webhook_id')); ?>">
                         </div>
                         
                         <div class="mb-3">
                             <div class="form-check form-switch">
-                                <input class="form-check-input" type="checkbox" id="paypal_sandbox" name="paypal_sandbox" <?php echo e(config('services.paypal.sandbox') ? 'checked' : ''); ?>>
+                                <input class="form-check-input" type="checkbox" id="paypal_sandbox" name="paypal_sandbox" <?php echo e(config('payment.paypal.mode') == 'sandbox' ? 'checked' : ''); ?>>
                                 <label class="form-check-label" for="paypal_sandbox">Mode Sandbox</label>
                             </div>
                         </div>

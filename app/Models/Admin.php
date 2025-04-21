@@ -85,4 +85,12 @@ class Admin extends Authenticatable implements CanResetPassword
     {
         return $this->hasMany(User::class, 'admin_id');
     }
+    
+    /**
+     * Vérifie si l'administrateur est un super admin
+     */
+    public function isSuperAdmin(): bool
+    {
+        return $this->is_super_admin === true;
+    }
 }

@@ -290,13 +290,6 @@
                                     <i class="fas fa-cog me-2"></i>Paramètres
                                 </a>
                             </li>
-                            @if(Auth::guard('admin')->user()->is_super_admin)
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ route('admin.payment-test') }}">
-                                    <i class="fas fa-credit-card me-2"></i> Test des paiements
-                                </a>
-                            </li>
-                            @endif
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ route('admin.mail.providers.phpmail.index') }}">
                                     <i class="fas fa-mail-bulk me-2"></i>PHPMail
@@ -412,6 +405,13 @@
                                     <i class="fas fa-credit-card me-2"></i> Configuration des paiements
                                 </a>
                             </li>
+                            @if(Auth::guard('admin')->user()->is_super_admin)
+                            <li class="nav-item">
+                                <a class="nav-link {{ request()->routeIs('admin.payment-test') ? 'active' : '' }}" href="{{ route('admin.payment-test') }}">
+                                    <i class="fas fa-credit-card me-2"></i> Test des paiements
+                                </a>
+                            </li>
+                            @endif
                             <li class="nav-item">
                                 <a class="nav-link {{ request()->routeIs('admin.settings.two-factor') ? 'active' : '' }}" href="{{ route('admin.settings.two-factor') }}">
                                     <i class="fas fa-shield-alt me-2"></i> 2FA
