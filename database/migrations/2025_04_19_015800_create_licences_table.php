@@ -25,9 +25,8 @@ return new class extends Migration
             $table->timestamps();
             
             // Relations
-            // Utilisation de unsignedBigInteger au lieu de foreignId pour éviter les problèmes de contraintes
-            // $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-            // $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');
         });
     }
 

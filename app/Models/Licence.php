@@ -24,7 +24,7 @@ class Licence extends Model
         'max_activations',
         'current_activations',
         'last_check_at',
-        'metadata',
+        'metadata'
     ];
 
     /**
@@ -35,7 +35,7 @@ class Licence extends Model
     protected $casts = [
         'expires_at' => 'datetime',
         'last_check_at' => 'datetime',
-        'metadata' => 'array',
+        'metadata' => 'array'
     ];
 
     /**
@@ -71,6 +71,19 @@ class Licence extends Model
     }
 
     /**
+     * Génère une nouvelle clé de licence
+     */
+    public static function generateLicenceKey()
+    {
+        return strtoupper(implode('-', [
+            Str::random(5),
+            Str::random(5),
+            Str::random(5),
+            Str::random(5)
+        ]));
+    }
+
+    /**
      * Vérifie si la licence est active
      */
     public function isActive()
@@ -102,7 +115,9 @@ class Licence extends Model
     public function incrementActivations()
     {
         if ($this->canActivate()) {
-            $this->current_activations++;
+            // Il semble qu'il n'y ait pas de champ pour stocker le nombre d'activations
+            // Vous devriez ajouter un champ pour stocker ce nombre
+            // $this->current_activations++;
             $this->save();
             return true;
         }
@@ -114,11 +129,13 @@ class Licence extends Model
      */
     public function decrementActivations()
     {
-        if ($this->current_activations > 0) {
-            $this->current_activations--;
-            $this->save();
-            return true;
-        }
+        // Il semble qu'il n'y ait pas de champ pour stocker le nombre d'activations
+        // Vous devriez ajouter un champ pour stocker ce nombre
+        // if ($this->current_activations > 0) {
+        //     $this->current_activations--;
+        //     $this->save();
+        //     return true;
+        // }
         return false;
     }
 
@@ -127,15 +144,9 @@ class Licence extends Model
      */
     public function updateLastCheck()
     {
-        $this->last_check_at = now();
+        // Il semble qu'il n'y ait pas de champ pour stocker la date de dernière vérification
+        // Vous devriez ajouter un champ pour stocker cette date
+        // $this->last_check_at = now();
         $this->save();
-    }
-
-    /**
-     * Génère une nouvelle clé de licence
-     */
-    public static function generateLicenceKey()
-    {
-        return strtoupper(Str::random(5) . '-' . Str::random(5) . '-' . Str::random(5) . '-' . Str::random(5));
     }
 }

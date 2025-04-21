@@ -182,13 +182,12 @@ class UserController extends Controller
     }
     
     /**
-     * Affiche les détails d'un utilisateur ou d'un admin
+     * Affiche les détails d'un utilisateur
      *
-     * @param Request $request
      * @param int $id
      * @return \Illuminate\View\View
      */
-    public function show(Request $request, $id)
+    public function show($id)
     {
         // Vérifier si l'utilisateur est connecté en tant qu'admin
         if (!Auth::guard('admin')->check()) {
@@ -196,31 +195,32 @@ class UserController extends Controller
         }
         
         $admin = Auth::guard('admin')->user();
-        $type = $request->query('type', 'user');
+        $user = User::findOrFail($id);
         
-        if ($type === 'admin') {
-            // Afficher les détails d'un admin
-            $targetAdmin = Admin::findOrFail($id);
-            
-            // Si ce n'est pas un super admin, il ne peut pas voir les détails des autres admins
-            if (!$admin->is_super_admin && $targetAdmin->id !== $admin->id) {
-                abort(403, 'Vous n\'avez pas le droit de voir les détails de cet administrateur.');
-            }
-            
-            // Récupérer les utilisateurs créés par cet admin
-            $users = User::where('admin_id', $targetAdmin->id)->paginate(10);
-            
-            return view('admin.users.admin_details', compact('targetAdmin', 'users'));
-        } else {
-            // Afficher les détails d'un utilisateur
-            $user = User::findOrFail($id);
-            
-            // Vérifier si l'admin a le droit de voir cet utilisateur
-            if (!$admin->is_super_admin && $user->admin_id !== $admin->id) {
-                abort(403, 'Vous n\'avez pas le droit de voir les détails de cet utilisateur.');
-            }
-            
-            return view('admin.users.user_details', compact('user'));
+        // Vérifier si l'admin a le droit de voir cet utilisateur
+        if (!$admin->is_super_admin && $user->admin_id !== $admin->id) {
+            abort(403, 'Vous n\'avez pas le droit de voir les détails de cet utilisateur.');
         }
+        
+        // Récupérer les données avec gestion des erreurs
+        try {
+            $subscription = $user->subscription;
+        } catch (\Exception $e) {
+            $subscription = null;
+        }
+        
+        try {
+            $invoices = $user->invoices()->latest()->take(5)->get();
+        } catch (\Exception $e) {
+            $invoices = collect();
+        }
+        
+        try {
+            $tickets = $user->tickets()->latest()->take(5)->get();
+        } catch (\Exception $e) {
+            $tickets = collect();
+        }
+        
+        return view('admin.users.user_details', compact('user', 'subscription', 'invoices', 'tickets'));
     }
 }

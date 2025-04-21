@@ -8,6 +8,7 @@ use App\Models\Product;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Log;
 
 class LicenceController extends Controller
 {
@@ -81,18 +82,29 @@ class LicenceController extends Controller
         }
 
         // Créer la licence
-        $licence = Licence::create([
-            'licence_key' => Licence::generateLicenceKey(),
-            'user_id' => $request->user_id,
-            'product_id' => $request->product_id,
-            'status' => Licence::STATUS_ACTIVE,
-            'expires_at' => $request->expires_at,
-            'max_activations' => $request->max_activations ?? $product->max_activations_per_licence,
-            'current_activations' => 0,
-        ]);
+        try {
+            $licenceKey = Licence::generateLicenceKey();
+            $licence = Licence::create([
+                'licence_key' => $licenceKey,
+                'user_id' => $request->user_id,
+                'product_id' => $request->product_id,
+                'status' => Licence::STATUS_ACTIVE,
+                'expires_at' => $request->expires_at,
+                'max_activations' => $request->max_activations,
+            ]);
 
-        return redirect()->route('admin.licences.show', $licence)
-            ->with('success', 'Licence créée avec succès.');
+            return redirect()->route('admin.licences.show', $licence)
+                ->with('success', 'Licence créée avec succès.');
+        } catch (\Exception $e) {
+            // Journaliser l'erreur
+            Log::error('Erreur lors de la création de la licence: ' . $e->getMessage());
+            Log::error('Trace: ' . $e->getTraceAsString());
+            
+            // Afficher des informations de débogage
+            return redirect()->back()
+                ->with('error', 'Erreur lors de la création de la licence: ' . $e->getMessage())
+                ->withInput();
+        }
     }
 
     /**

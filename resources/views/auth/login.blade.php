@@ -1,6 +1,6 @@
 @extends('layouts.auth')
 
-@section('title', 'Connexion')
+@section('title', 'Connexion Utilisateur')
 
 @section('content')
 <div class="container py-5">
@@ -13,7 +13,7 @@
                         <div class="d-flex flex-column h-100 p-4 p-xl-5 text-white">
                             <div class="text-center mb-4">
                                 <h2 class="display-6 fw-bold">Bienvenue sur AdminLicence</h2>
-                                <p class="lead">Connectez-vous pour gérer vos licences</p>
+                                <p class="lead">Connectez-vous à votre compte utilisateur</p>
                             </div>
                             <div class="my-4">
                                 <div class="d-flex align-items-center mb-3">
@@ -47,7 +47,10 @@
                     <!-- Colonne droite avec le formulaire de connexion -->
                     <div class="col-lg-7">
                         <div class="card-header bg-white py-3 border-0">
-                            <h3 class="text-center fw-bold text-primary mb-0">Connexion</h3>
+                            <h3 class="text-center fw-bold text-primary mb-0">Connexion Utilisateur</h3>
+                            <div class="text-center mt-2">
+                                <small class="text-muted">Vous êtes administrateur ? <a href="{{ route('admin.login') }}" class="text-primary">Connexion admin</a></small>
+                            </div>
                         </div>
                         <div class="card-body p-4 p-xl-5">
                             @if ($errors->any())
@@ -85,7 +88,7 @@
                                             Se souvenir de moi
                                         </label>
                                     </div>
-                                    @if (Route::has('password.request'))
+                                    @if (\Illuminate\Support\Facades\Route::has('password.request'))
                                         <a class="text-primary text-decoration-none" href="{{ route('password.request') }}">
                                             Mot de passe oublié ?
                                         </a>

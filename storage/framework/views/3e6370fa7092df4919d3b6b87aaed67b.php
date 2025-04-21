@@ -59,9 +59,39 @@ use Illuminate\Support\Facades\Auth;
                                         </div>
                                         <p class="card-text"><?php echo e($plan->description); ?></p>
                                         <ul class="list-group list-group-flush mb-3">
-                                            <?php $__currentLoopData = $plan->features; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $feature): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                                <li class="list-group-item"><i class="fas fa-check text-success me-2"></i> <?php echo e($feature); ?></li>
-                                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                            <?php
+                                                // Conversion du JSON en tableau si nécessaire
+                                                $features = is_string($plan->features) ? json_decode($plan->features, true) : $plan->features;
+                                                // Vérifier si $features est un tableau associatif ou un tableau simple
+                                                if (is_array($features) && !empty($features) && array_keys($features) !== range(0, count($features) - 1)) {
+                                                    // Si c'est un tableau associatif (comme dans le seeder), on le transforme en tableau simple
+                                                    $displayFeatures = [];
+                                                    foreach ($features as $key => $value) {
+                                                        if ($key === 'max_licenses' && $value > 0) {
+                                                            $displayFeatures[] = "$value licences maximum";
+                                                        } elseif ($key === 'max_licenses' && $value < 0) {
+                                                            $displayFeatures[] = "Licences illimitées";
+                                                        } elseif ($key === 'support') {
+                                                            $displayFeatures[] = "Support $value";
+                                                        } elseif ($key === 'updates' && $value) {
+                                                            $displayFeatures[] = "Mises à jour incluses";
+                                                        } elseif ($key === 'api_access' && $value) {
+                                                            $displayFeatures[] = "Accès API";
+                                                        } elseif ($key === 'custom_features' && $value) {
+                                                            $displayFeatures[] = "Fonctionnalités personnalisées";
+                                                        }
+                                                    }
+                                                } else {
+                                                    // Sinon, on utilise le tableau tel quel
+                                                    $displayFeatures = $features;
+                                                }
+                                            ?>
+                                            
+                                            <?php if(is_array($displayFeatures)): ?>
+                                                <?php $__currentLoopData = $displayFeatures; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $feature): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                    <li class="list-group-item"><i class="fas fa-check text-success me-2"></i> <?php echo e($feature); ?></li>
+                                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                            <?php endif; ?>
                                         </ul>
                                         <div class="d-flex justify-content-between align-items-center">
                                             <?php if($plan->trial_days > 0): ?>
@@ -75,24 +105,19 @@ use Illuminate\Support\Facades\Auth;
                                             </span>
                                         </div>
                                     </div>
-                                    <div class="card-footer bg-light d-flex justify-content-between">
-                                        <?php if(Auth::guard('admin')->check() && Auth::guard('admin')->user()->is_super_admin): ?>
-                                            <a href="<?php echo e(route('admin.subscriptions.edit', ['id' => $plan->id])); ?>" class="btn btn-sm btn-outline-primary">
-                                                <i class="fas fa-edit"></i> Modifier
-                                            </a>
-                                            <form action="<?php echo e(route('admin.subscriptions.destroy', ['id' => $plan->id])); ?>" method="POST" class="d-inline">
+                                    <div class="card-footer bg-light text-center">
+                                        <form action="<?php echo e(route('subscription.checkout.post', $plan->id)); ?>" method="POST" style="display:inline;">
+                                            <?php echo csrf_field(); ?>
+                                            <button type="submit" class="btn btn-primary" style="margin:5px;">Souscrire</button>
+                                        </form>
+                                        
+                                        <?php if(auth()->guard('admin')->check() && auth()->guard('admin')->user()->is_super_admin): ?>
+                                            <a href="<?php echo e(route('admin.subscriptions.edit', ['id' => $plan->id])); ?>" class="btn btn-primary" style="margin:5px;">Modifier</a>
+                                            
+                                            <form action="<?php echo e(route('admin.subscriptions.destroy', ['id' => $plan->id])); ?>" method="POST" style="display:inline;">
                                                 <?php echo csrf_field(); ?>
                                                 <?php echo method_field('DELETE'); ?>
-                                                <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce plan ?')">
-                                                    <i class="fas fa-trash"></i> Supprimer
-                                                </button>
-                                            </form>
-                                        <?php else: ?>
-                                            <form action="<?php echo e(route('subscription.checkout.post', $plan->id)); ?>" method="POST">
-                                                <?php echo csrf_field(); ?>
-                                                <button type="submit" class="btn btn-primary w-100">
-                                                    Souscrire
-                                                </button>
+                                                <button type="submit" class="btn btn-danger" style="margin:5px;" onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce plan ?');">Supprimer</button>
                                             </form>
                                         <?php endif; ?>
                                     </div>

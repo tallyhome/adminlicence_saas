@@ -3,26 +3,25 @@
 return [
     /*
     |--------------------------------------------------------------------------
-    | Configuration des Passerelles de Paiement
+    | Configuration des passerelles de paiement
     |--------------------------------------------------------------------------
     |
-    | Ce fichier contient les configurations pour les différentes passerelles
-    | de paiement utilisées dans l'application.
+    | Ce fichier contient la configuration pour les différentes
+    | passerelles de paiement supportées par l'application.
     |
     */
 
     'stripe' => [
-        'enabled' => env('STRIPE_ENABLED', true),
         'key' => env('STRIPE_KEY'),
         'secret' => env('STRIPE_SECRET'),
         'webhook_secret' => env('STRIPE_WEBHOOK_SECRET'),
+        'enabled' => env('STRIPE_ENABLED', false) === 'true',
     ],
 
     'paypal' => [
-        'enabled' => env('PAYPAL_ENABLED', true),
         'client_id' => env('PAYPAL_CLIENT_ID'),
         'secret' => env('PAYPAL_SECRET'),
-        'webhook_id' => env('PAYPAL_WEBHOOK_ID'),
-        'sandbox' => env('PAYPAL_SANDBOX', true),
+        'mode' => env('PAYPAL_MODE', 'sandbox'),
+        'enabled' => env('PAYPAL_ENABLED', false) === 'true',
     ],
 ];

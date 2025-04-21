@@ -59,9 +59,39 @@ use Illuminate\Support\Facades\Auth;
                                         </div>
                                         <p class="card-text">{{ $plan->description }}</p>
                                         <ul class="list-group list-group-flush mb-3">
-                                            @foreach($plan->features as $feature)
-                                                <li class="list-group-item"><i class="fas fa-check text-success me-2"></i> {{ $feature }}</li>
-                                            @endforeach
+                                            @php
+                                                // Conversion du JSON en tableau si nécessaire
+                                                $features = is_string($plan->features) ? json_decode($plan->features, true) : $plan->features;
+                                                // Vérifier si $features est un tableau associatif ou un tableau simple
+                                                if (is_array($features) && !empty($features) && array_keys($features) !== range(0, count($features) - 1)) {
+                                                    // Si c'est un tableau associatif (comme dans le seeder), on le transforme en tableau simple
+                                                    $displayFeatures = [];
+                                                    foreach ($features as $key => $value) {
+                                                        if ($key === 'max_licenses' && $value > 0) {
+                                                            $displayFeatures[] = "$value licences maximum";
+                                                        } elseif ($key === 'max_licenses' && $value < 0) {
+                                                            $displayFeatures[] = "Licences illimitées";
+                                                        } elseif ($key === 'support') {
+                                                            $displayFeatures[] = "Support $value";
+                                                        } elseif ($key === 'updates' && $value) {
+                                                            $displayFeatures[] = "Mises à jour incluses";
+                                                        } elseif ($key === 'api_access' && $value) {
+                                                            $displayFeatures[] = "Accès API";
+                                                        } elseif ($key === 'custom_features' && $value) {
+                                                            $displayFeatures[] = "Fonctionnalités personnalisées";
+                                                        }
+                                                    }
+                                                } else {
+                                                    // Sinon, on utilise le tableau tel quel
+                                                    $displayFeatures = $features;
+                                                }
+                                            @endphp
+                                            
+                                            @if(is_array($displayFeatures))
+                                                @foreach($displayFeatures as $feature)
+                                                    <li class="list-group-item"><i class="fas fa-check text-success me-2"></i> {{ $feature }}</li>
+                                                @endforeach
+                                            @endif
                                         </ul>
                                         <div class="d-flex justify-content-between align-items-center">
                                             @if($plan->trial_days > 0)
@@ -74,24 +104,19 @@ use Illuminate\Support\Facades\Auth;
                                             </span>
                                         </div>
                                     </div>
-                                    <div class="card-footer bg-light d-flex justify-content-between">
-                                        @if(Auth::guard('admin')->check() && Auth::guard('admin')->user()->is_super_admin)
-                                            <a href="{{ route('admin.subscriptions.edit', ['id' => $plan->id]) }}" class="btn btn-sm btn-outline-primary">
-                                                <i class="fas fa-edit"></i> Modifier
-                                            </a>
-                                            <form action="{{ route('admin.subscriptions.destroy', ['id' => $plan->id]) }}" method="POST" class="d-inline">
+                                    <div class="card-footer bg-light text-center">
+                                        <form action="{{ route('subscription.checkout.post', $plan->id) }}" method="POST" style="display:inline;">
+                                            @csrf
+                                            <button type="submit" class="btn btn-primary" style="margin:5px;">Souscrire</button>
+                                        </form>
+                                        
+                                        @if(auth()->guard('admin')->check() && auth()->guard('admin')->user()->is_super_admin)
+                                            <a href="{{ route('admin.subscriptions.edit', ['id' => $plan->id]) }}" class="btn btn-primary" style="margin:5px;">Modifier</a>
+                                            
+                                            <form action="{{ route('admin.subscriptions.destroy', ['id' => $plan->id]) }}" method="POST" style="display:inline;">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce plan ?')">
-                                                    <i class="fas fa-trash"></i> Supprimer
-                                                </button>
-                                            </form>
-                                        @else
-                                            <form action="{{ route('subscription.checkout.post', $plan->id) }}" method="POST">
-                                                @csrf
-                                                <button type="submit" class="btn btn-primary w-100">
-                                                    Souscrire
-                                                </button>
+                                                <button type="submit" class="btn btn-danger" style="margin:5px;" onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce plan ?');">Supprimer</button>
                                             </form>
                                         @endif
                                     </div>

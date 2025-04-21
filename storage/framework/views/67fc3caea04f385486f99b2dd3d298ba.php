@@ -178,6 +178,13 @@
                     </a>
                 </li>
                 
+                <!-- Produits -->
+                <li class="nav-item">
+                    <a class="nav-link <?php echo e(request()->routeIs('admin.products.*') ? 'active' : ''); ?>" href="<?php echo e(route('admin.products.index')); ?>">
+                        <i class="fas fa-box-open me-2"></i> Produits
+                    </a>
+                </li>
+                
                 <!-- Abonnements -->
                 <li class="nav-item">
                     <a class="nav-link" data-bs-toggle="collapse" href="#abonnementsSubmenu" role="button">
@@ -355,37 +362,37 @@
                 <!-- Documentation -->
                 <li class="nav-item">
                     <a class="nav-link" data-bs-toggle="collapse" href="#documentationSubmenu" role="button">
-                        <i class="fas fa-book me-2"></i> Documentation
+                        <i class="fas fa-book me-2"></i> Documentation <i class="fas fa-angle-down ms-1"></i>
                     </a>
-                    <div class="collapse <?php echo e(request()->routeIs('admin.api.documentation') || request()->routeIs('admin.licence.documentation') ? 'show' : ''); ?>" id="documentationSubmenu">
+                    <div class="collapse <?php echo e(request()->routeIs('admin.documentation.*') ? 'show' : ''); ?>" id="documentationSubmenu">
                         <ul class="nav flex-column ms-3">
                             <li class="nav-item">
-                                <a class="nav-link <?php echo e(request()->routeIs('admin.api.documentation') ? 'active' : ''); ?>" href="<?php echo e(route('admin.api.documentation')); ?>">
+                                <a class="nav-link <?php echo e(request()->routeIs('admin.documentation.products-licenses') ? 'active' : ''); ?>" href="<?php echo e(route('admin.documentation.products-licenses')); ?>">
+                                    <i class="fas fa-box-open me-2"></i> Produits & Licences
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link <?php echo e(request()->routeIs('admin.documentation.api-documentation') ? 'active' : ''); ?>" href="<?php echo e(route('admin.documentation.api-documentation')); ?>">
                                     <i class="fas fa-code me-2"></i> Documentation API
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link <?php echo e(request()->routeIs('admin.licence.documentation') ? 'active' : ''); ?>" href="<?php echo e(route('admin.licence.documentation')); ?>">
+                                <a class="nav-link <?php echo e(request()->routeIs('admin.documentation.licence-documentation') ? 'active' : ''); ?>" href="<?php echo e(route('admin.documentation.licence-documentation')); ?>">
                                     <i class="fas fa-key me-2"></i> Documentation des clés
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link <?php echo e(request()->routeIs('admin.email.documentation') ? 'active' : ''); ?>" href="<?php echo e(route('admin.email.documentation')); ?>">
+                                <a class="nav-link <?php echo e(request()->routeIs('admin.documentation.email-documentation') ? 'active' : ''); ?>" href="<?php echo e(route('admin.documentation.email-documentation')); ?>">
                                     <i class="fas fa-envelope me-2"></i> Documentation des fournisseurs d'email
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link <?php echo e(request()->routeIs('admin.saas.documentation') ? 'active' : ''); ?>" href="<?php echo e(route('admin.saas.documentation')); ?>">
+                                <a class="nav-link <?php echo e(request()->routeIs('admin.documentation.saas-documentation') ? 'active' : ''); ?>" href="<?php echo e(route('admin.documentation.saas-documentation')); ?>">
                                     <i class="fas fa-users me-2"></i> Documentation SaaS multiutilisateur
                                 </a>
                             </li>
                         </ul>
                     </div>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link <?php echo e(request()->routeIs('admin.version') ? 'active' : ''); ?>" href="<?php echo e(route('admin.version')); ?>">
-                        <i class="fas fa-code-branch me-2"></i> Informations de version
-                    </a>
                 </li>
 
                 <!-- Paramètres -->

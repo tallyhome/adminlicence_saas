@@ -12,8 +12,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->boolean('terms_accepted')->default(false)->after('remember_token');
-            $table->timestamp('terms_accepted_at')->nullable()->after('terms_accepted');
+            if (!Schema::hasColumn('users', 'terms_accepted')) {
+                $table->boolean('terms_accepted')->default(false)->after('remember_token');
+                $table->timestamp('terms_accepted_at')->nullable()->after('terms_accepted');
+            }
         });
     }
 
@@ -26,4 +28,4 @@ return new class extends Migration
             $table->dropColumn(['terms_accepted', 'terms_accepted_at']);
         });
     }
-};
+}; 

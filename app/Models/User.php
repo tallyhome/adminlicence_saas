@@ -7,11 +7,13 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Support\Facades\Schema;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -94,7 +96,7 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     public function tickets()
     {
-        return $this->hasMany(SupportTicket::class);
+        return $this->hasMany(Ticket::class);
     }
     
     /**
@@ -107,17 +109,9 @@ class User extends Authenticatable implements MustVerifyEmail
     
     /**
      * Relation avec l'abonnement actif de l'utilisateur
-     * Note: Dans ce système, les utilisateurs sont liés aux abonnements via le tenant_id
      */
     public function subscription()
     {
-        // Vérifier si la table subscriptions existe et a la colonne tenant_id
-        if (\Schema::hasTable('subscriptions') && \Schema::hasColumn('subscriptions', 'tenant_id')) {
-            // Utiliser la relation via tenant_id si l'utilisateur a un tenant_id
-            return $this->hasOne(Subscription::class, 'tenant_id', 'id')->where('status', 'active')->latest();
-        }
-        
-        // Fallback pour éviter les erreurs
-        return $this->hasOne(Subscription::class, 'id', 'id')->where('id', -1); // Relation vide
+        return $this->hasOne(Subscription::class)->latest();
     }
 }

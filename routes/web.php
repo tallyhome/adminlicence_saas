@@ -21,9 +21,9 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-// Route principale qui redirige vers la page de connexion admin
+// Route principale qui redirige vers la page de connexion utilisateur
 Route::get('/', function () {
-    return redirect()->route('admin.login');
+    return redirect()->route('login');
 });
 
 // Route pour l'installation
@@ -35,12 +35,9 @@ Route::get('/install', function () {
 Route::get('/version', [VersionController::class, 'index'])->name('version');
 
 // Routes d'authentification utilisateur
-Route::get('/login', function () {
-    return redirect()->route('admin.login');
-})->name('login');
-
-// Routes d'inscription utilisateur avec vérification d'email
 Route::middleware('guest')->group(function () {
+    Route::get('/login', [\App\Http\Controllers\Auth\LoginController::class, 'showLoginForm'])->name('login');
+    Route::post('/login', [\App\Http\Controllers\Auth\LoginController::class, 'login']);
     Route::get('/register', [\App\Http\Controllers\Auth\RegisterController::class, 'showRegistrationForm'])->name('register');
     Route::post('/register', [\App\Http\Controllers\Auth\RegisterController::class, 'register']);
 });
@@ -258,6 +255,13 @@ Route::post('/fix-notification', [DirectFixController::class, 'fixNotification']
 // Routes pour la solution finale (liens directs)
 Route::get('/solution-finale/marquer-comme-lu/{id}', [SolutionFinaleController::class, 'marquerCommeLu'])->name('solution-finale.marquer-comme-lu');
 Route::get('/solution-finale/marquer-tout-comme-lu', [SolutionFinaleController::class, 'marquerToutCommeLu'])->name('solution-finale.marquer-tout-comme-lu');
+
+// Routes d'authentification admin
+Route::prefix('admin')->name('admin.')->group(function () {
+    Route::get('/login', [AdminAuthController::class, 'showLoginForm'])->name('login');
+    Route::post('/login', [AdminAuthController::class, 'login']);
+    Route::post('/logout', [AdminAuthController::class, 'logout'])->name('logout');
+});
 
 // Inclure les routes admin
 require __DIR__.'/admin.php';

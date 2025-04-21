@@ -15,19 +15,13 @@ class Subscription extends Model
      * @var array<int, string>
      */
     protected $fillable = [
-        'tenant_id',
+        'user_id',
         'plan_id',
         'status',
-        'trial_ends_at',
         'starts_at',
         'ends_at',
-        'canceled_at',
-        'stripe_subscription_id',
-        'paypal_subscription_id',
-        'payment_method',
-        'renewal_price',
-        'billing_cycle',
-        'auto_renew'
+        'trial_ends_at',
+        'cancelled_at'
     ];
 
     /**
@@ -36,12 +30,10 @@ class Subscription extends Model
      * @var array<string, string>
      */
     protected $casts = [
-        'trial_ends_at' => 'datetime',
         'starts_at' => 'datetime',
         'ends_at' => 'datetime',
-        'canceled_at' => 'datetime',
-        'renewal_price' => 'decimal:2',
-        'auto_renew' => 'boolean'
+        'trial_ends_at' => 'datetime',
+        'cancelled_at' => 'datetime'
     ];
 
     /**
@@ -51,11 +43,11 @@ class Subscription extends Model
     const PAYMENT_METHOD_PAYPAL = 'paypal';
 
     /**
-     * Get the tenant that owns the subscription
+     * Get the user that owns the subscription
      */
-    public function tenant()
+    public function user()
     {
-        return $this->belongsTo(Tenant::class);
+        return $this->belongsTo(User::class);
     }
 
     /**
@@ -111,7 +103,7 @@ class Subscription extends Model
      */
     public function isCanceled(): bool
     {
-        return $this->canceled_at !== null;
+        return $this->cancelled_at !== null;
     }
 
     /**
@@ -119,7 +111,7 @@ class Subscription extends Model
      */
     public function cancel(): void
     {
-        $this->canceled_at = now();
+        $this->cancelled_at = now();
         $this->auto_renew = false;
         $this->save();
     }
@@ -129,7 +121,7 @@ class Subscription extends Model
      */
     public function resume(): void
     {
-        $this->canceled_at = null;
+        $this->cancelled_at = null;
         $this->auto_renew = true;
         $this->save();
     }

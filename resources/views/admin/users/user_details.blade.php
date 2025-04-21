@@ -3,13 +3,13 @@
 @section('title', 'Détails de l\'utilisateur')
 
 @section('content')
-<div class="container-fluid">
-    <div class="d-sm-flex align-items-center justify-content-between mb-4">
-        <h1 class="h3 mb-0 text-gray-800">Détails de l'utilisateur</h1>
-        <a href="{{ route('admin.users.index') }}" class="d-none d-sm-inline-block btn btn-sm btn-secondary shadow-sm">
-            <i class="fas fa-arrow-left fa-sm text-white-50"></i> Retour à la liste
-        </a>
-    </div>
+<div class="container-fluid px-4">
+    <h1 class="mt-4">Détails de l'utilisateur</h1>
+    <ol class="breadcrumb mb-4">
+        <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Tableau de bord</a></li>
+        <li class="breadcrumb-item"><a href="{{ route('admin.users.index') }}">Utilisateurs</a></li>
+        <li class="breadcrumb-item active">{{ $user->name }}</li>
+    </ol>
 
     @if(session('success'))
         <div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -26,177 +26,136 @@
     @endif
 
     <div class="row">
-        <!-- Informations de l'utilisateur -->
-        <div class="col-xl-4 col-lg-5">
-            <div class="card shadow mb-4">
-                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                    <h6 class="m-0 font-weight-bold text-primary">Informations personnelles</h6>
-                    <a href="#" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#editUserModal">
-                        <i class="fas fa-edit fa-sm"></i> Modifier
-                    </a>
+        <!-- Informations de base -->
+        <div class="col-xl-4">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <i class="fas fa-user me-1"></i>
+                    Informations de base
                 </div>
                 <div class="card-body">
-                    <div class="mb-3">
-                        <label class="text-xs font-weight-bold text-primary text-uppercase mb-1">Nom</label>
-                        <p class="h5 mb-0 font-weight-bold text-gray-800">{{ $user->name }}</p>
-                    </div>
-                    <div class="mb-3">
-                        <label class="text-xs font-weight-bold text-primary text-uppercase mb-1">Email</label>
-                        <p class="h5 mb-0 font-weight-bold text-gray-800">{{ $user->email }}</p>
-                    </div>
-                    <div class="mb-3">
-                        <label class="text-xs font-weight-bold text-primary text-uppercase mb-1">Date d'inscription</label>
-                        <p class="h5 mb-0 font-weight-bold text-gray-800">{{ $user->created_at->format('d/m/Y H:i') }}</p>
-                    </div>
-                    <div class="mb-3">
-                        <label class="text-xs font-weight-bold text-primary text-uppercase mb-1">Statut</label>
-                        <p class="h5 mb-0 font-weight-bold text-gray-800">
-                            <span class="badge {{ $user->email_verified_at ? 'bg-success' : 'bg-warning' }}">
-                                {{ $user->email_verified_at ? 'Vérifié' : 'Non vérifié' }}
-                            </span>
-                        </p>
-                    </div>
+                    <p><strong>Nom :</strong> {{ $user->name }}</p>
+                    <p><strong>Email :</strong> {{ $user->email }}</p>
+                    <p><strong>Date d'inscription :</strong> {{ $user->created_at->format('d/m/Y H:i') }}</p>
+                    <p><strong>Dernière connexion :</strong> 
+                        {{ $user->last_login_at ? $user->last_login_at->format('d/m/Y H:i') : 'Jamais' }}
+                    </p>
                     
-                    <div class="mb-3">
-                        <label class="text-xs font-weight-bold text-primary text-uppercase mb-1">Type d'utilisateur</label>
-                        <p class="h5 mb-0 font-weight-bold text-gray-800">
-                            <span class="badge bg-info">
-                                {{ isset($is_super_admin) && $is_super_admin ? 'Super Admin' : 'Utilisateur standard' }}
-                            </span>
-                        </p>
+                    <div class="mt-3">
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editUserModal">
+                            <i class="fas fa-edit"></i> Modifier l'utilisateur
+                        </button>
                     </div>
                 </div>
             </div>
         </div>
 
         <!-- Abonnement -->
-        <div class="col-xl-8 col-lg-7">
-            <div class="card shadow mb-4">
-                <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Abonnement</h6>
+        <div class="col-xl-4">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <i class="fas fa-credit-card me-1"></i>
+                    Abonnement
                 </div>
                 <div class="card-body">
                     @if($subscription)
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label class="text-xs font-weight-bold text-primary text-uppercase mb-1">Plan</label>
-                                    <p class="h5 mb-0 font-weight-bold text-gray-800">{{ $subscription->plan->name }}</p>
-                                </div>
-                                <div class="mb-3">
-                                    <label class="text-xs font-weight-bold text-primary text-uppercase mb-1">Statut</label>
-                                    <p class="h5 mb-0 font-weight-bold text-gray-800">
-                                        <span class="badge bg-success">{{ $subscription->status }}</span>
-                                    </p>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label class="text-xs font-weight-bold text-primary text-uppercase mb-1">Date de début</label>
-                                    <p class="h5 mb-0 font-weight-bold text-gray-800">{{ $subscription->starts_at->format('d/m/Y') }}</p>
-                                </div>
-                                <div class="mb-3">
-                                    <label class="text-xs font-weight-bold text-primary text-uppercase mb-1">Date de fin</label>
-                                    <p class="h5 mb-0 font-weight-bold text-gray-800">{{ $subscription->ends_at->format('d/m/Y') }}</p>
-                                </div>
-                            </div>
-                        </div>
+                        <p><strong>Plan :</strong> {{ optional($subscription->plan)->name ?? 'N/A' }}</p>
+                        <p><strong>Statut :</strong> {{ $subscription->status }}</p>
+                        <p><strong>Date de début :</strong> {{ $subscription->starts_at->format('d/m/Y') }}</p>
+                        <p><strong>Date de fin :</strong> 
+                            {{ $subscription->ends_at ? $subscription->ends_at->format('d/m/Y') : 'Illimité' }}
+                        </p>
                     @else
-                        <div class="text-center py-4">
-                            <p class="text-gray-500">Aucun abonnement actif</p>
-                            <a href="#" class="btn btn-primary btn-sm">
-                                <i class="fas fa-plus fa-sm"></i> Ajouter un abonnement
-                            </a>
-                        </div>
+                        <p>Aucun abonnement actif</p>
                     @endif
+                </div>
+            </div>
+        </div>
+
+        <!-- Statistiques -->
+        <div class="col-xl-4">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <i class="fas fa-chart-bar me-1"></i>
+                    Statistiques
+                </div>
+                <div class="card-body">
+                    <p><strong>Nombre de factures :</strong> {{ $invoices->count() }}</p>
+                    <p><strong>Nombre de tickets :</strong> {{ $tickets->count() }}</p>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="row">
-        <!-- Factures récentes -->
-        <div class="col-xl-6 col-lg-6">
-            <div class="card shadow mb-4">
-                <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Factures récentes</h6>
-                </div>
-                <div class="card-body">
-                    @if($invoices->count() > 0)
-                        <div class="table-responsive">
-                            <table class="table table-bordered" width="100%" cellspacing="0">
-                                <thead>
-                                    <tr>
-                                        <th>N°</th>
-                                        <th>Date</th>
-                                        <th>Montant</th>
-                                        <th>Statut</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach($invoices as $invoice)
-                                    <tr>
-                                        <td>{{ $invoice->number }}</td>
-                                        <td>{{ $invoice->created_at->format('d/m/Y') }}</td>
-                                        <td>{{ number_format($invoice->amount, 2) }} €</td>
-                                        <td>
-                                            <span class="badge bg-success">{{ $invoice->status }}</span>
-                                        </td>
-                                    </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
-                        </div>
-                    @else
-                        <div class="text-center py-4">
-                            <p class="text-gray-500">Aucune facture disponible</p>
-                        </div>
-                    @endif
-                </div>
-            </div>
+    <!-- Dernières factures -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <i class="fas fa-file-invoice-dollar me-1"></i>
+            Dernières factures
         </div>
+        <div class="card-body">
+            @if($invoices->count() > 0)
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Numéro</th>
+                                <th>Date</th>
+                                <th>Montant</th>
+                                <th>Statut</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($invoices as $invoice)
+                                <tr>
+                                    <td>{{ $invoice->invoice_number }}</td>
+                                    <td>{{ $invoice->created_at->format('d/m/Y') }}</td>
+                                    <td>{{ number_format($invoice->amount, 2) }} €</td>
+                                    <td>{{ $invoice->status }}</td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            @else
+                <p>Aucune facture trouvée</p>
+            @endif
+        </div>
+    </div>
 
-        <!-- Tickets récents -->
-        <div class="col-xl-6 col-lg-6">
-            <div class="card shadow mb-4">
-                <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Tickets de support récents</h6>
+    <!-- Derniers tickets -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <i class="fas fa-ticket-alt me-1"></i>
+            Derniers tickets de support
+        </div>
+        <div class="card-body">
+            @if($tickets->count() > 0)
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Sujet</th>
+                                <th>Date</th>
+                                <th>Statut</th>
+                                <th>Priorité</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($tickets as $ticket)
+                                <tr>
+                                    <td>{{ $ticket->subject }}</td>
+                                    <td>{{ $ticket->created_at->format('d/m/Y') }}</td>
+                                    <td>{{ $ticket->status }}</td>
+                                    <td>{{ $ticket->priority }}</td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
                 </div>
-                <div class="card-body">
-                    @if($tickets->count() > 0)
-                        <div class="table-responsive">
-                            <table class="table table-bordered" width="100%" cellspacing="0">
-                                <thead>
-                                    <tr>
-                                        <th>ID</th>
-                                        <th>Sujet</th>
-                                        <th>Date</th>
-                                        <th>Statut</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach($tickets as $ticket)
-                                    <tr>
-                                        <td>{{ $ticket->id }}</td>
-                                        <td>{{ $ticket->subject }}</td>
-                                        <td>{{ $ticket->created_at->format('d/m/Y') }}</td>
-                                        <td>
-                                            <span class="badge {{ $ticket->status == 'open' ? 'bg-warning' : ($ticket->status == 'closed' ? 'bg-success' : 'bg-info') }}">
-                                                {{ $ticket->status }}
-                                            </span>
-                                        </td>
-                                    </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
-                        </div>
-                    @else
-                        <div class="text-center py-4">
-                            <p class="text-gray-500">Aucun ticket disponible</p>
-                        </div>
-                    @endif
-                </div>
-            </div>
+            @else
+                <p>Aucun ticket trouvé</p>
+            @endif
         </div>
     </div>
 </div>

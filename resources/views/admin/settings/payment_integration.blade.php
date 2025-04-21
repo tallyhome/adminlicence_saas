@@ -38,7 +38,7 @@
                         
                         <div class="col-md-6">
                             <div class="form-check form-switch">
-                                <input class="form-check-input" type="checkbox" id="stripe_enabled" name="stripe_enabled" {{ config('services.stripe.enabled', false) ? 'checked' : '' }}>
+                                <input class="form-check-input" type="checkbox" id="stripe_enabled" name="stripe_enabled" {{ config('payment.stripe.enabled') ? 'checked' : '' }}>
                                 <label class="form-check-label" for="stripe_enabled">
                                     <i class="fab fa-stripe me-1"></i> Activer Stripe
                                 </label>
@@ -47,7 +47,7 @@
                         
                         <div class="col-md-6">
                             <div class="form-check form-switch">
-                                <input class="form-check-input" type="checkbox" id="paypal_enabled" name="paypal_enabled" {{ config('services.paypal.enabled', false) ? 'checked' : '' }}>
+                                <input class="form-check-input" type="checkbox" id="paypal_enabled" name="paypal_enabled" {{ config('payment.paypal.enabled') ? 'checked' : '' }}>
                                 <label class="form-check-label" for="paypal_enabled">
                                     <i class="fab fa-paypal me-1"></i> Activer PayPal
                                 </label>

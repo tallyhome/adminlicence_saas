@@ -51,13 +51,19 @@ Route::middleware('auth:admin')->group(function () {
     Route::get('/version', [VersionController::class, 'index'])->name('admin.version');
 
     // Documentation
-    Route::get('/api-documentation', [ApiDocumentationController::class, 'index'])->name('admin.api.documentation');
-    
-    Route::get('/licence-documentation', [ApiDocumentationController::class, 'licenceDocumentation'])->name('admin.licence.documentation');
-    
-    Route::get('/email-documentation', [ApiDocumentationController::class, 'emailDocumentation'])->name('admin.email.documentation');
-    
-    Route::get('/saas-documentation', [ApiDocumentationController::class, 'saasDocumentation'])->name('admin.saas.documentation');
+    Route::prefix('documentation')->group(function () {
+        Route::get('/products-licenses', function () {
+            return view('admin.documentation.products-licenses');
+        })->name('admin.documentation.products-licenses');
+        
+        Route::get('/api-documentation', [ApiDocumentationController::class, 'index'])->name('admin.documentation.api-documentation');
+        
+        Route::get('/licence-documentation', [ApiDocumentationController::class, 'licenceDocumentation'])->name('admin.documentation.licence-documentation');
+        
+        Route::get('/email-documentation', [ApiDocumentationController::class, 'emailDocumentation'])->name('admin.documentation.email-documentation');
+        
+        Route::get('/saas-documentation', [ApiDocumentationController::class, 'saasDocumentation'])->name('admin.documentation.saas-documentation');
+    });
 
     // Exemples d'intégration client
     Route::get('/client-example', [ClientExampleController::class, 'index'])->name('admin.client-example');
@@ -247,10 +253,13 @@ Route::middleware('auth:admin')->group(function () {
         Route::get('/', [App\Http\Controllers\Admin\UserController::class, 'index'])->name('admin.users.index');
         Route::get('/create', [App\Http\Controllers\Admin\UserController::class, 'create'])->name('admin.users.create');
         Route::post('/', [App\Http\Controllers\Admin\UserController::class, 'store'])->name('admin.users.store');
-        Route::get('/{id}', [App\Http\Controllers\Admin\UserController::class, 'show'])->name('admin.users.show');
+        Route::get('/user/{id}', [App\Http\Controllers\Admin\UserController::class, 'show'])->name('admin.users.show');
         Route::get('/{user}/edit', [App\Http\Controllers\Admin\UserController::class, 'edit'])->name('admin.users.edit');
         Route::put('/{user}', [App\Http\Controllers\Admin\UserController::class, 'update'])->name('admin.users.update');
         Route::delete('/{user}', [App\Http\Controllers\Admin\UserController::class, 'destroy'])->name('admin.users.destroy');
+        
+        // Route pour afficher les détails d'un admin
+        Route::get('/admin/{id}', [App\Http\Controllers\Admin\AdminController::class, 'show'])->name('admin.admins.show');
     });
     
     // Gestion des plans d'abonnement
@@ -284,6 +293,17 @@ Route::middleware('auth:admin')->group(function () {
         Route::delete('/{licence}', [\App\Http\Controllers\Admin\LicenceController::class, 'destroy'])->name('admin.licences.destroy');
         Route::post('/{licence}/revoke', [\App\Http\Controllers\Admin\LicenceController::class, 'revoke'])->name('admin.licences.revoke');
         Route::post('/{licence}/regenerate-key', [\App\Http\Controllers\Admin\LicenceController::class, 'regenerateKey'])->name('admin.licences.regenerate-key');
+    });
+
+    // Gestion des produits
+    Route::prefix('products')->group(function () {
+        Route::get('/', [\App\Http\Controllers\Admin\ProductController::class, 'index'])->name('admin.products.index');
+        Route::get('/create', [\App\Http\Controllers\Admin\ProductController::class, 'create'])->name('admin.products.create');
+        Route::post('/', [\App\Http\Controllers\Admin\ProductController::class, 'store'])->name('admin.products.store');
+        Route::get('/{product}', [\App\Http\Controllers\Admin\ProductController::class, 'show'])->name('admin.products.show');
+        Route::get('/{product}/edit', [\App\Http\Controllers\Admin\ProductController::class, 'edit'])->name('admin.products.edit');
+        Route::put('/{product}', [\App\Http\Controllers\Admin\ProductController::class, 'update'])->name('admin.products.update');
+        Route::delete('/{product}', [\App\Http\Controllers\Admin\ProductController::class, 'destroy'])->name('admin.products.destroy');
     });
 
     // Routes pour les notifications

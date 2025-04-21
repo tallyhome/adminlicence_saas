@@ -33,26 +33,28 @@ class PaymentSettingsController extends Controller
      */
     public function updateStripe(Request $request)
     {
-        $this->checkSuperAdmin();
-        
+        if (!auth()->user()->isSuperAdmin()) {
+            return redirect()->back()->with('error', 'Vous n\'avez pas les autorisations nécessaires pour cette action.');
+        }
+
         $request->validate([
-            'stripe_key' => 'required|string',
-            'stripe_secret' => 'required|string',
-            'stripe_webhook_secret' => 'nullable|string',
+            'stripe_key' => 'required',
+            'stripe_secret' => 'required',
         ]);
-        
-        // Mettre à jour le fichier .env
-        $this->updateEnvironmentFile([
+
+        $values = [
             'STRIPE_KEY' => $request->stripe_key,
             'STRIPE_SECRET' => $request->stripe_secret,
-            'STRIPE_WEBHOOK_SECRET' => $request->stripe_webhook_secret,
-        ]);
-        
-        // Vider le cache de configuration
-        Artisan::call('config:clear');
-        
-        return redirect()->route('admin.settings.payment-integration')
-            ->with('success', 'Configuration Stripe mise à jour avec succès.');
+            'STRIPE_ENABLED' => $request->has('stripe_enabled') ? 'true' : 'false',
+        ];
+
+        $success = $this->updateEnvironmentFile($values);
+
+        if (!$success) {
+            return redirect()->back()->with('error', 'Impossible de sauvegarder les paramètres Stripe.');
+        }
+
+        return redirect()->back()->with('success', 'Les paramètres Stripe ont été mis à jour avec succès.');
     }
     
     /**
@@ -60,27 +62,29 @@ class PaymentSettingsController extends Controller
      */
     public function updatePayPal(Request $request)
     {
-        $this->checkSuperAdmin();
-        
+        if (!auth()->user()->isSuperAdmin()) {
+            return redirect()->back()->with('error', 'Vous n\'avez pas les autorisations nécessaires pour cette action.');
+        }
+
         $request->validate([
-            'paypal_client_id' => 'required|string',
-            'paypal_secret' => 'required|string',
-            'paypal_webhook_id' => 'nullable|string',
+            'paypal_client_id' => 'required',
+            'paypal_secret' => 'required',
         ]);
-        
-        // Mettre à jour le fichier .env
-        $this->updateEnvironmentFile([
+
+        $values = [
             'PAYPAL_CLIENT_ID' => $request->paypal_client_id,
             'PAYPAL_SECRET' => $request->paypal_secret,
-            'PAYPAL_WEBHOOK_ID' => $request->paypal_webhook_id,
-            'PAYPAL_SANDBOX' => $request->has('paypal_sandbox') ? 'true' : 'false',
-        ]);
-        
-        // Vider le cache de configuration
-        Artisan::call('config:clear');
-        
-        return redirect()->route('admin.settings.payment-integration')
-            ->with('success', 'Configuration PayPal mise à jour avec succès.');
+            'PAYPAL_MODE' => $request->sandbox_mode ? 'sandbox' : 'live',
+            'PAYPAL_ENABLED' => $request->has('paypal_enabled') ? 'true' : 'false',
+        ];
+
+        $success = $this->updateEnvironmentFile($values);
+
+        if (!$success) {
+            return redirect()->back()->with('error', 'Impossible de sauvegarder les paramètres PayPal.');
+        }
+
+        return redirect()->back()->with('success', 'Les paramètres PayPal ont été mis à jour avec succès.');
     }
     
     /**
@@ -91,10 +95,15 @@ class PaymentSettingsController extends Controller
         $this->checkSuperAdmin();
         
         // Mettre à jour le fichier .env
-        $this->updateEnvironmentFile([
+        $success = $this->updateEnvironmentFile([
             'STRIPE_ENABLED' => $request->has('stripe_enabled') ? 'true' : 'false',
             'PAYPAL_ENABLED' => $request->has('paypal_enabled') ? 'true' : 'false',
         ]);
+        
+        if (!$success) {
+            return redirect()->route('admin.settings.payment-integration')
+                ->with('error', 'Une erreur est survenue lors de la mise à jour des préférences. Veuillez vérifier les permissions du fichier .env.');
+        }
         
         // Vider le cache de configuration
         Artisan::call('config:clear');
@@ -108,24 +117,45 @@ class PaymentSettingsController extends Controller
      */
     private function updateEnvironmentFile(array $values)
     {
-        $envFile = app()->environmentFilePath();
-        $envContents = file_get_contents($envFile);
-        
-        foreach ($values as $key => $value) {
-            // Échapper les caractères spéciaux dans la valeur
-            $value = str_replace('"', '\"', $value);
+        try {
+            $envFile = app()->environmentFilePath();
             
-            // Vérifier si la clé existe déjà
-            if (preg_match("/^{$key}=.*/m", $envContents)) {
-                // Mettre à jour la valeur existante
-                $envContents = preg_replace("/^{$key}=.*/m", "{$key}=\"{$value}\"", $envContents);
-            } else {
-                // Ajouter une nouvelle clé
-                $envContents .= PHP_EOL . "{$key}=\"{$value}\"";
+            if (!file_exists($envFile) || !is_writable($envFile)) {
+                throw new \Exception("Le fichier .env n'existe pas ou n'est pas accessible en écriture: {$envFile}");
             }
+            
+            $envContents = file_get_contents($envFile);
+            
+            foreach ($values as $key => $value) {
+                // Échapper les caractères spéciaux dans la valeur
+                $value = str_replace('"', '\"', $value);
+                
+                // Vérifier si la clé existe déjà
+                if (preg_match("/^{$key}=.*/m", $envContents)) {
+                    // Mettre à jour la valeur existante
+                    $envContents = preg_replace("/^{$key}=.*/m", "{$key}=\"{$value}\"", $envContents);
+                } else {
+                    // Ajouter une nouvelle clé
+                    $envContents .= PHP_EOL . "{$key}=\"{$value}\"";
+                }
+            }
+            
+            // Écrire les modifications dans le fichier .env
+            $result = file_put_contents($envFile, $envContents);
+            
+            if ($result === false) {
+                throw new \Exception("Impossible d'écrire dans le fichier .env");
+            }
+            
+            // Vider les caches de configuration pour appliquer les modifications
+            Artisan::call('config:clear');
+            Artisan::call('cache:clear');
+            
+            return true;
+        } catch (\Exception $e) {
+            // Log l'erreur
+            \Log::error('Erreur lors de la mise à jour du fichier .env: ' . $e->getMessage());
+            return false;
         }
-        
-        // Écrire les modifications dans le fichier .env
-        file_put_contents($envFile, $envContents);
     }
 }

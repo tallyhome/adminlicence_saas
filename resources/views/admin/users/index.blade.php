@@ -46,7 +46,9 @@
                                 <td><span class="badge bg-primary">Superadmin</span></td>
                                 <td>{{ $admin->created_at->format('d/m/Y H:i') }}</td>
                                 <td>
-                                    <a href="{{ route('admin.users.show', ['id' => $admin->id, 'type' => 'admin']) }}" class="btn btn-sm btn-info"><i class="fas fa-eye"></i></a>
+                                    <a href="{{ route('admin.admins.show', $admin->id) }}" class="btn btn-info btn-sm">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
                                 </td>
                             </tr>
                         @empty
@@ -87,7 +89,9 @@
                                 <td><span class="badge bg-secondary">Admin</span></td>
                                 <td>{{ $admin->created_at->format('d/m/Y H:i') }}</td>
                                 <td>
-                                    <a href="{{ route('admin.users.show', ['id' => $admin->id, 'type' => 'admin']) }}" class="btn btn-sm btn-info"><i class="fas fa-eye"></i></a>
+                                    <a href="{{ route('admin.admins.show', $admin->id) }}" class="btn btn-info btn-sm">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
                                 </td>
                             </tr>
                         @empty
@@ -136,7 +140,9 @@
                                 </td>
                                 <td>{{ $user->created_at->format('d/m/Y H:i') }}</td>
                                 <td>
-                                    <a href="{{ route('admin.users.show', ['id' => $user->id, 'type' => 'user']) }}" class="btn btn-sm btn-info"><i class="fas fa-eye"></i></a>
+                                    <a href="{{ route('admin.users.show', $user->id) }}" class="btn btn-info btn-sm">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
                                 </td>
                             </tr>
                         @empty

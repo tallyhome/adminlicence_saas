@@ -15,22 +15,13 @@ class Invoice extends Model
      * @var array<int, string>
      */
     protected $fillable = [
-        'tenant_id',
+        'user_id',
         'subscription_id',
-        'provider',
-        'provider_id',
-        'number',
-        'total',
-        'currency',
+        'amount',
         'status',
-        'billing_reason',
-        'billing_details',
-        'payment_method_id',
-        'payment_method_type',
-        'paid_at',
-        'due_at',
-        'refunded_at',
-        'metadata'
+        'payment_method',
+        'invoice_number',
+        'paid_at'
     ];
 
     /**
@@ -39,12 +30,8 @@ class Invoice extends Model
      * @var array<string, string>
      */
     protected $casts = [
-        'total' => 'float',
-        'billing_details' => 'array',
-        'metadata' => 'array',
-        'paid_at' => 'datetime',
-        'due_at' => 'datetime',
-        'refunded_at' => 'datetime',
+        'amount' => 'decimal:2',
+        'paid_at' => 'datetime'
     ];
 
     /**
@@ -142,5 +129,10 @@ class Invoice extends Model
     public function formattedTotal()
     {
         return number_format($this->total / 100, 2) . ' ' . strtoupper($this->currency);
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 }

@@ -55,8 +55,8 @@
                         <p>{{ $user->last_login_at ? $user->last_login_at->format('d/m/Y H:i') : 'Jamais' }}</p>
                     </div>
                     <div class="mt-4">
-                        <a href="{{ route('admin.users.edit', $user->id) }}" class="btn btn-primary">
-                            <i class="fas fa-edit"></i> Modifier
+                        <a href="{{ route('admin.users.edit', $user->id) }}" class="btn btn-primary btn-block w-100">
+                            <i class="fas fa-edit"></i> Modifier l'utilisateur
                         </a>
                     </div>
                 </div>
