@@ -17,12 +17,36 @@ class RedirectIfAuthenticated
      */
     public function handle(Request $request, Closure $next, string ...$guards): Response
     {
-        $guards = empty($guards) ? [null] : $guards;
+        $guards = empty($guards) ? ['web'] : $guards;
+
+        // Journaliser pour le débogage
+        \Illuminate\Support\Facades\Log::info('RedirectIfAuthenticated middleware', [
+            'path' => $request->path(),
+            'guards' => $guards,
+            'admin_check' => Auth::guard('admin')->check(),
+            'web_check' => Auth::guard('web')->check()
+        ]);
 
         // Ne pas rediriger si l'URL contient 'subscription' ou 'checkout'
         $path = $request->path();
         if (str_contains($path, 'subscription') || str_contains($path, 'checkout')) {
             return $next($request);
+        }
+
+        // Vérifier si l'utilisateur tente d'accéder à la page de connexion admin
+        if ($request->path() === 'admin/login') {
+            // Si l'utilisateur est déjà connecté en tant qu'utilisateur normal, le rediriger vers son tableau de bord
+            if (Auth::guard('web')->check() && !Auth::guard('admin')->check()) {
+                return redirect('/dashboard');
+            }
+        }
+
+        // Vérifier si l'utilisateur tente d'accéder à la page de connexion utilisateur
+        if ($request->routeIs('user.login') || $request->path() === 'user/login') {
+            // Si l'utilisateur est déjà connecté, le rediriger vers son tableau de bord
+            if (Auth::guard('web')->check()) {
+                return redirect('/dashboard');
+            }
         }
 
         foreach ($guards as $guard) {
@@ -31,8 +55,15 @@ class RedirectIfAuthenticated
                 if ($guard === 'admin') {
                     return redirect()->route('admin.dashboard');
                 }
-                // Pour tout autre type d'authentification, redirigez vers la page d'accueil
-                return redirect(RouteServiceProvider::HOME);
+                
+                // Vérifier si l'URL demandée est une URL admin
+                if (str_starts_with($request->path(), 'admin/')) {
+                    // Si un utilisateur normal tente d'accéder à une page admin, le rediriger vers son tableau de bord
+                    return redirect('/dashboard');
+                }
+                
+                // Pour tout autre type d'authentification, redirigez vers le tableau de bord utilisateur
+                return redirect('/dashboard');
             }
         }
 

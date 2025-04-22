@@ -52,9 +52,46 @@ class LoginController extends Controller
     {
         $this->validateLogin($request);
 
-        // If the class is using the ThrottlesLogins trait, we can automatically throttle
-        // the login attempts for this application. We'll key this by the username and
-        // the IP address of the client making these requests into this application.
+        // Journaliser les informations pour le débogage
+        \Illuminate\Support\Facades\Log::info('Tentative de connexion', [
+            'email' => $request->email,
+            'remember' => $request->has('remember'),
+        ]);
+
+        // Vérifier manuellement les identifiants
+        $user = \App\Models\User::where('email', $request->email)->first();
+        
+        if ($user) {
+            \Illuminate\Support\Facades\Log::info('Utilisateur trouvé', [
+                'user_id' => $user->id,
+                'email' => $user->email,
+            ]);
+            
+            // Vérifier le mot de passe
+            if (\Illuminate\Support\Facades\Hash::check($request->password, $user->password)) {
+                \Illuminate\Support\Facades\Log::info('Mot de passe valide, connexion manuelle');
+                
+                // Connecter l'utilisateur manuellement
+                \Illuminate\Support\Facades\Auth::login($user, $request->has('remember'));
+                
+                if ($request->hasSession()) {
+                    $request->session()->put('auth.password_confirmed_at', time());
+                }
+                
+                return $this->sendLoginResponse($request);
+            } else {
+                \Illuminate\Support\Facades\Log::warning('Mot de passe invalide', [
+                    'email' => $request->email,
+                ]);
+            }
+        } else {
+            \Illuminate\Support\Facades\Log::warning('Utilisateur non trouvé', [
+                'email' => $request->email,
+            ]);
+        }
+
+        // Si on arrive ici, c'est que la connexion a échoué
+        // Continuer avec le processus standard de Laravel
         if (method_exists($this, 'hasTooManyLoginAttempts') &&
             $this->hasTooManyLoginAttempts($request)) {
             $this->fireLockoutEvent($request);

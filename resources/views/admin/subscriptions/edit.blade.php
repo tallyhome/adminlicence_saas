@@ -87,6 +87,62 @@
                     <button type="button" class="btn btn-sm btn-secondary" id="add-feature">Ajouter une caractéristique</button>
                 </div>
                 
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5>Limites de ressources</h5>
+                    </div>
+                    <div class="card-body">
+                        <p class="text-muted">Définissez les limites pour chaque type de ressource. Ces limites seront utilisées par le système pour contrôler l'accès aux fonctionnalités.</p>
+                        
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="max_projects" class="form-label">Projets (max)</label>
+                                <input type="number" class="form-control" id="max_projects" name="max_projects" value="{{ old('max_projects', $plan->max_projects) }}" min="0">
+                                <small class="text-muted">Nombre maximum de projets (0 pour illimité)</small>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="max_licenses" class="form-label">Clés de licence projet (max)</label>
+                                <input type="number" class="form-control" id="max_licenses" name="max_licenses" value="{{ old('max_licenses', $plan->max_licenses) }}" min="0">
+                                <small class="text-muted">Nombre maximum de clés de licence projet (0 pour illimité)</small>
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="max_products" class="form-label">Produits (max)</label>
+                                <input type="number" class="form-control" id="max_products" name="max_products" value="{{ old('max_products', $plan->max_products ?? 5) }}" min="0">
+                                <small class="text-muted">Nombre maximum de produits (0 pour illimité)</small>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="max_product_licenses" class="form-label">Licences produit (max)</label>
+                                <input type="number" class="form-control" id="max_product_licenses" name="max_product_licenses" value="{{ old('max_product_licenses', $plan->max_product_licenses ?? 10) }}" min="0">
+                                <small class="text-muted">Nombre maximum de licences produit (0 pour illimité)</small>
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="max_apis" class="form-label">APIs (max)</label>
+                                <input type="number" class="form-control" id="max_apis" name="max_apis" value="{{ old('max_apis', $plan->max_apis ?? 2) }}" min="0">
+                                <small class="text-muted">Nombre maximum d'APIs (0 pour illimité)</small>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="max_api_keys" class="form-label">Clés d'API (max)</label>
+                                <input type="number" class="form-control" id="max_api_keys" name="max_api_keys" value="{{ old('max_api_keys', $plan->max_api_keys ?? 5) }}" min="0">
+                                <small class="text-muted">Nombre maximum de clés d'API (0 pour illimité)</small>
+                            </div>
+                        </div>
+                        
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="checkbox" id="has_api_access" name="has_api_access" {{ old('has_api_access', $plan->has_api_access ?? false) ? 'checked' : '' }}>
+                            <label class="form-check-label" for="has_api_access">
+                                Accès API
+                            </label>
+                            <small class="d-block text-muted">Permet l'accès aux fonctionnalités API</small>
+                        </div>
+                    </div>
+                </div>
+                
                 <div class="row mb-3">
                     <div class="col-md-6">
                         <label for="stripe_price_id" class="form-label">ID du prix Stripe</label>

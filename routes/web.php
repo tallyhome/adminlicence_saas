@@ -24,7 +24,7 @@ use Illuminate\Support\Facades\Route;
 
 // Route principale qui redirige vers la page de connexion utilisateur
 Route::get('/', function () {
-    return redirect()->route('login');
+    return redirect()->route('user.login');
 });
 
 // Route pour l'installation
@@ -37,8 +37,12 @@ Route::get('/version', [App\Http\Controllers\Admin\VersionController::class, 'in
 
 // Routes d'authentification utilisateur
 Route::middleware('guest')->group(function () {
-    Route::get('/login', [\App\Http\Controllers\Auth\LoginController::class, 'showLoginForm'])->name('login');
-    Route::post('/login', [\App\Http\Controllers\Auth\LoginController::class, 'login']);
+    Route::get('/login', function() {
+        return redirect()->route('user.login');
+    })->name('login');
+    Route::post('/login', function() {
+        return redirect()->route('user.login');
+    });
 });
 
 // Solution ULTRA-RADICALE : route d'inscription sans AUCUN middleware
@@ -240,24 +244,116 @@ Route::middleware('web')->group(function () {
     Route::get('/payment/paypal/{planId}', [\App\Http\Controllers\DirectPaymentController::class, 'showPaypalForm'])->name('payment.paypal.form');
     Route::post('/payment/paypal/process', [\App\Http\Controllers\DirectPaymentController::class, 'processPaypal'])->name('payment.paypal.process');
     Route::get('/payment/success', [\App\Http\Controllers\DirectPaymentController::class, 'success'])->name('payment.success');
+
+    // Routes pour la solution finale (liens directs)
+    Route::get('/solution-finale/marquer-comme-lu/{id}', [SolutionFinaleController::class, 'marquerCommeLu'])->name('solution-finale.marquer-comme-lu');
+    Route::get('/solution-finale/marquer-tout-comme-lu', [SolutionFinaleController::class, 'marquerToutCommeLu'])->name('solution-finale.marquer-tout-comme-lu');
+
+    // Routes de connexion utilisateur personnalisées
+    Route::get('/user/login', [App\Http\Controllers\Auth\UserLoginController::class, 'showLoginForm'])->name('user.login');
+    Route::post('/user/login', [App\Http\Controllers\Auth\UserLoginController::class, 'login'])->name('user.login.submit');
+    Route::post('/user/logout', [App\Http\Controllers\Auth\UserLoginController::class, 'logout'])->name('user.logout');
+    Route::get('/user/login-info', function() {
+        return view('auth.user-login-info');
+    })->name('user.login.info');
+
+    // Route du tableau de bord utilisateur
+    Route::get('/dashboard', function() {
+        // Vérifier si l'utilisateur est connecté
+        if (!auth()->check()) {
+            // Si l'utilisateur n'est pas connecté, le rediriger vers la page de connexion
+            return redirect()->route('user.login')->with('error', 'Veuillez vous connecter pour accéder à votre tableau de bord.');
+        }
+        
+        // Journaliser l'accès au tableau de bord
+        \Illuminate\Support\Facades\Log::info('Accès au tableau de bord utilisateur', [
+            'user_id' => auth()->id(),
+            'email' => auth()->user()->email
+        ]);
+        
+        return view('user.dashboard');
+    })->name('dashboard');
+
+    // Route directe pour la mise à jour des notifications (solution radicale)
+    Route::post('/admin/direct-update-notification', [DirectNotificationController::class, 'update']);
+
+    // Route de correction directe pour les notifications (solution ultra-radicale)
+    Route::post('/fix-notification', [DirectFixController::class, 'fixNotification']);
+
+    // Routes de débogage d'authentification
+    Route::prefix('auth/debug')->name('auth.debug.')->group(function () {
+        Route::get('/', [App\Http\Controllers\Auth\DebugAuthController::class, 'showDebugPage'])->name('index');
+        Route::post('/check', [App\Http\Controllers\Auth\DebugAuthController::class, 'checkCredentials'])->name('check');
+        Route::post('/reset', [App\Http\Controllers\Auth\DebugAuthController::class, 'resetPassword'])->name('reset');
+        Route::post('/create', [App\Http\Controllers\Auth\DebugAuthController::class, 'createTestUser'])->name('create');
+    });
+
+    // Routes d'authentification admin
+    Route::prefix('admin')->name('admin.')->group(function () {
+        Route::get('/login', [AdminAuthController::class, 'showLoginForm'])->name('login');
+        Route::post('/login', [AdminAuthController::class, 'login']);
+        Route::post('/logout', [AdminAuthController::class, 'logout'])->name('logout');
+        
+        // Routes pour la gestion des utilisateurs
+        Route::prefix('users')->name('users.')->group(function () {
+            Route::get('/', [App\Http\Controllers\Admin\UserManagementController::class, 'index'])->name('index');
+            Route::get('/{id}', [App\Http\Controllers\Admin\UserManagementController::class, 'show'])->name('show');
+            Route::get('/{id}/projects', [App\Http\Controllers\Admin\UserManagementController::class, 'userProjects'])->name('projects');
+            Route::get('/{id}/products', [App\Http\Controllers\Admin\UserManagementController::class, 'userProducts'])->name('products');
+            Route::get('/{id}/licences', [App\Http\Controllers\Admin\UserManagementController::class, 'userLicences'])->name('licences');
+            Route::post('/{id}/subscription', [App\Http\Controllers\Admin\UserManagementController::class, 'updateUserSubscription'])->name('update-subscription');
+        });
+    });
+
+    // Inclure les routes admin
+    require __DIR__.'/admin.php';
+
+    // User routes
+    Route::middleware(['auth'])->prefix('dashboard')->name('user.')->group(function () {
+        Route::get('/', [App\Http\Controllers\User\DashboardController::class, 'index'])->name('dashboard');
+        Route::get('/profile', [App\Http\Controllers\User\ProfileController::class, 'index'])->name('profile');
+        Route::put('/profile', [App\Http\Controllers\User\ProfileController::class, 'update'])->name('profile.update');
+        Route::get('/password', [App\Http\Controllers\User\ProfileController::class, 'password'])->name('password');
+        Route::put('/password', [App\Http\Controllers\User\ProfileController::class, 'passwordUpdate'])->name('password.update');
+        
+        // Routes pour les projets utilisateur
+        Route::prefix('projects')->name('projects.')->group(function () {
+            Route::get('/', [App\Http\Controllers\User\ProjectController::class, 'index'])->name('index');
+            Route::get('/create', [App\Http\Controllers\User\ProjectController::class, 'create'])->name('create');
+            Route::post('/', [App\Http\Controllers\User\ProjectController::class, 'store'])->name('store');
+            Route::get('/{id}', [App\Http\Controllers\User\ProjectController::class, 'show'])->name('show');
+            Route::get('/{id}/edit', [App\Http\Controllers\User\ProjectController::class, 'edit'])->name('edit');
+            Route::put('/{id}', [App\Http\Controllers\User\ProjectController::class, 'update'])->name('update');
+            Route::delete('/{id}', [App\Http\Controllers\User\ProjectController::class, 'destroy'])->name('destroy');
+            Route::post('/{id}/generate-keys', [App\Http\Controllers\User\ProjectController::class, 'generateKeys'])->name('generate-keys');
+            Route::get('/export/csv', [App\Http\Controllers\User\ExportController::class, 'exportProjects'])->name('export.csv');
+        });
+        
+        // Routes pour les produits utilisateur
+        Route::prefix('products')->name('products.')->group(function () {
+            Route::get('/', [App\Http\Controllers\User\ProductController::class, 'index'])->name('index');
+            Route::get('/create', [App\Http\Controllers\User\ProductController::class, 'create'])->name('create');
+            Route::post('/', [App\Http\Controllers\User\ProductController::class, 'store'])->name('store');
+            Route::get('/{id}', [App\Http\Controllers\User\ProductController::class, 'show'])->name('show');
+            Route::get('/{id}/edit', [App\Http\Controllers\User\ProductController::class, 'edit'])->name('edit');
+            Route::put('/{id}', [App\Http\Controllers\User\ProductController::class, 'update'])->name('update');
+            Route::delete('/{id}', [App\Http\Controllers\User\ProductController::class, 'destroy'])->name('destroy');
+            Route::get('/{id}/download', [App\Http\Controllers\User\ProductController::class, 'download'])->name('download');
+            Route::get('/export/csv', [App\Http\Controllers\User\ExportController::class, 'exportProducts'])->name('export.csv');
+        });
+        
+        // Routes pour les licences utilisateur
+        Route::prefix('licences')->name('licences.')->group(function () {
+            Route::get('/', [App\Http\Controllers\User\LicenceController::class, 'index'])->name('index');
+            Route::get('/create', [App\Http\Controllers\User\LicenceController::class, 'create'])->name('create');
+            Route::post('/', [App\Http\Controllers\User\LicenceController::class, 'store'])->name('store');
+            Route::get('/{id}', [App\Http\Controllers\User\LicenceController::class, 'show'])->name('show');
+            Route::get('/{id}/edit', [App\Http\Controllers\User\LicenceController::class, 'edit'])->name('edit');
+            Route::put('/{id}', [App\Http\Controllers\User\LicenceController::class, 'update'])->name('update');
+            Route::delete('/{id}', [App\Http\Controllers\User\LicenceController::class, 'destroy'])->name('destroy');
+            Route::post('/{id}/regenerate-key', [App\Http\Controllers\User\LicenceController::class, 'regenerateKey'])->name('regenerate-key');
+            Route::post('/{id}/send-by-email', [App\Http\Controllers\User\LicenceController::class, 'sendByEmail'])->name('send-by-email');
+            Route::get('/export/csv', [App\Http\Controllers\User\ExportController::class, 'exportLicences'])->name('export.csv');
+        });
+    });
 });
-
-// Route directe pour la mise à jour des notifications (solution radicale)
-Route::post('/admin/direct-update-notification', [DirectNotificationController::class, 'update']);
-
-// Route de correction directe pour les notifications (solution ultra-radicale)
-Route::post('/fix-notification', [DirectFixController::class, 'fixNotification']);
-
-// Routes pour la solution finale (liens directs)
-Route::get('/solution-finale/marquer-comme-lu/{id}', [SolutionFinaleController::class, 'marquerCommeLu'])->name('solution-finale.marquer-comme-lu');
-Route::get('/solution-finale/marquer-tout-comme-lu', [SolutionFinaleController::class, 'marquerToutCommeLu'])->name('solution-finale.marquer-tout-comme-lu');
-
-// Routes d'authentification admin
-Route::prefix('admin')->name('admin.')->group(function () {
-    Route::get('/login', [AdminAuthController::class, 'showLoginForm'])->name('login');
-    Route::post('/login', [AdminAuthController::class, 'login']);
-    Route::post('/logout', [AdminAuthController::class, 'logout'])->name('logout');
-});
-
-// Inclure les routes admin
-require __DIR__.'/admin.php';

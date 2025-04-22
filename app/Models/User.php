@@ -114,4 +114,28 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->hasOne(Subscription::class)->latest();
     }
+    
+    /**
+     * Relation avec les projets de l'utilisateur
+     */
+    public function projects()
+    {
+        return $this->hasMany(Project::class);
+    }
+    
+    /**
+     * Relation avec les produits de l'utilisateur
+     */
+    public function products()
+    {
+        return $this->hasMany(Product::class);
+    }
+    
+    /**
+     * Relation avec les licences de l'utilisateur
+     */
+    public function licences()
+    {
+        return $this->hasMany(Licence::class);
+    }
 }

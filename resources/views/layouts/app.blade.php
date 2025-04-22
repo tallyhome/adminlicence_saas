@@ -39,11 +39,37 @@
                         <li class="nav-item">
                             <a class="nav-link active" href="{{ url('/subscription/plans') }}">Plans d'abonnement</a>
                         </li>
+                        @auth
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url('/dashboard') }}">Tableau de bord</a>
+                        </li>
+                        @endauth
                     </ul>
                     <ul class="navbar-nav">
+                        @guest
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ url('/admin/login') }}">Connexion</a>
+                            <a class="nav-link" href="{{ route('user.login') }}">Connexion</a>
                         </li>
+                        @else
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-user-circle me-1"></i> {{ auth()->user()->name }}
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                                <li><a class="dropdown-item" href="{{ url('/dashboard') }}"><i class="fas fa-tachometer-alt me-1"></i> Tableau de bord</a></li>
+                                <li><a class="dropdown-item" href="#"><i class="fas fa-user-cog me-1"></i> Mon profil</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li>
+                                    <form action="{{ route('user.logout') }}" method="POST" class="d-inline">
+                                        @csrf
+                                        <button type="submit" class="dropdown-item">
+                                            <i class="fas fa-sign-out-alt me-1"></i> Déconnexion
+                                        </button>
+                                    </form>
+                                </li>
+                            </ul>
+                        </li>
+                        @endguest
                     </ul>
                 </div>
             </div>

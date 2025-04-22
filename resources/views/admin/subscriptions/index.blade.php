@@ -229,7 +229,7 @@
                                     <span class="badge bg-danger">Expiré</span>
                                 @endif
                             </td>
-                            <td>{{ $subscription->start_date->format('d/m/Y') }}</td>
+                            <td>{{ $subscription->start_date ? $subscription->start_date->format('d/m/Y') : 'N/A' }}</td>
                             <td>{{ $subscription->end_date ? $subscription->end_date->format('d/m/Y') : 'N/A' }}</td>
                         </tr>
                     @empty

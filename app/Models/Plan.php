@@ -23,7 +23,11 @@ class Plan extends Model
         'trial_days',
         'max_licenses',
         'max_projects',
-        'max_clients'
+        'max_products',
+        'max_product_licenses',
+        'max_apis',
+        'max_api_keys',
+        'has_api_access'
     ];
 
     protected $casts = [
@@ -33,7 +37,11 @@ class Plan extends Model
         'trial_days' => 'integer',
         'max_licenses' => 'integer',
         'max_projects' => 'integer',
-        'max_clients' => 'integer'
+        'max_products' => 'integer',
+        'max_product_licenses' => 'integer',
+        'max_apis' => 'integer',
+        'max_api_keys' => 'integer',
+        'has_api_access' => 'boolean'
     ];
 
     /**

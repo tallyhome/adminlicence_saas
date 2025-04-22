@@ -70,16 +70,16 @@
                     Abonnement
                 </div>
                 <div class="card-body">
-                    @if($subscription)
+                    @if($subscription && $plan)
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label class="fw-bold">Plan</label>
-                                    <p>{{ $subscription->plan->name }}</p>
+                                    <p>{{ $plan->name }}</p>
                                 </div>
                                 <div class="mb-3">
                                     <label class="fw-bold">Prix</label>
-                                    <p>{{ number_format($subscription->renewal_price, 2) }} € / {{ $subscription->billing_cycle }}</p>
+                                    <p>{{ number_format($plan->price, 2) }} € / {{ $plan->billing_cycle ?? 'mensuel' }}</p>
                                 </div>
                                 <div class="mb-3">
                                     <label class="fw-bold">Statut</label>
@@ -120,8 +120,8 @@
             <div class="card mb-4">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <div>
-                        <i class="fas fa-life-ring me-1"></i>
-                        Tickets récents
+                        <i class="fas fa-ticket-alt me-1"></i>
+                        Tickets de support récents
                     </div>
                     <a href="{{ route('admin.tickets.index', ['user_id' => $user->id]) }}" class="btn btn-sm btn-primary">
                         Voir tous les tickets
@@ -178,49 +178,42 @@
             <div class="card mb-4">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <div>
-                        <i class="fas fa-file-invoice me-1"></i>
-                        Factures récentes
+                        <i class="fas fa-project-diagram me-1"></i>
+                        Projets récents
                     </div>
-                    <a href="{{ route('admin.invoices.index', ['user_id' => $user->id]) }}" class="btn btn-sm btn-primary">
-                        Voir toutes les factures
+                    <a href="{{ route('admin.users.projects', $user->id) }}" class="btn btn-sm btn-primary">
+                        Voir tous les projets ({{ $projectsCount }})
                     </a>
                 </div>
                 <div class="card-body">
-                    @if($invoices->count() > 0)
+                    @if($projects->count() > 0)
                         <div class="table-responsive">
                             <table class="table table-bordered table-striped">
                                 <thead>
                                     <tr>
-                                        <th>Numéro</th>
-                                        <th>Date</th>
-                                        <th>Montant</th>
+                                        <th>Nom</th>
                                         <th>Statut</th>
+                                        <th>Clés</th>
+                                        <th>Date de création</th>
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach($invoices as $invoice)
+                                    @foreach($projects as $project)
                                         <tr>
-                                            <td>{{ $invoice->number }}</td>
-                                            <td>{{ $invoice->created_at->format('d/m/Y') }}</td>
-                                            <td>{{ number_format($invoice->amount, 2) }} €</td>
+                                            <td>{{ $project->name }}</td>
                                             <td>
-                                                @if($invoice->status === 'paid')
-                                                    <span class="badge bg-success">Payée</span>
-                                                @elseif($invoice->status === 'pending')
-                                                    <span class="badge bg-warning">En attente</span>
-                                                @elseif($invoice->status === 'failed')
-                                                    <span class="badge bg-danger">Échouée</span>
+                                                @if($project->status === 'active')
+                                                    <span class="badge bg-success">Actif</span>
                                                 @else
-                                                    <span class="badge bg-secondary">{{ $invoice->status }}</span>
+                                                    <span class="badge bg-secondary">Inactif</span>
                                                 @endif
                                             </td>
+                                            <td>{{ $project->totalKeysCount() ?? 0 }}</td>
+                                            <td>{{ $project->created_at->format('d/m/Y') }}</td>
                                             <td>
-                                                <a href="{{ route('admin.invoices.show', $invoice->id) }}" class="btn btn-sm btn-info">
+                                                <a href="#" class="btn btn-sm btn-info">
                                                     <i class="fas fa-eye"></i>
-                                                </a>
-                                                <a href="{{ route('admin.invoices.download', $invoice->id) }}" class="btn btn-sm btn-secondary">
-                                                    <i class="fas fa-download"></i>
                                                 </a>
                                             </td>
                                         </tr>
@@ -229,7 +222,113 @@
                             </table>
                         </div>
                     @else
-                        <p class="text-center text-muted">Aucune facture récente</p>
+                        <p class="text-center text-muted">Aucun projet récent</p>
+                    @endif
+                </div>
+            </div>
+
+            <div class="card mb-4">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <div>
+                        <i class="fas fa-box me-1"></i>
+                        Produits récents
+                    </div>
+                    <a href="{{ route('admin.users.products', $user->id) }}" class="btn btn-sm btn-primary">
+                        Voir tous les produits ({{ $productsCount }})
+                    </a>
+                </div>
+                <div class="card-body">
+                    @if($products->count() > 0)
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Nom</th>
+                                        <th>Version</th>
+                                        <th>Prix</th>
+                                        <th>Statut</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach($products as $product)
+                                        <tr>
+                                            <td>{{ $product->name }}</td>
+                                            <td>{{ $product->version }}</td>
+                                            <td>{{ $product->price ? number_format($product->price, 2) . ' €' : '-' }}</td>
+                                            <td>
+                                                @if($product->status === 'active')
+                                                    <span class="badge bg-success">Actif</span>
+                                                @else
+                                                    <span class="badge bg-secondary">Inactif</span>
+                                                @endif
+                                            </td>
+                                            <td>
+                                                <a href="#" class="btn btn-sm btn-info">
+                                                    <i class="fas fa-eye"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    @else
+                        <p class="text-center text-muted">Aucun produit récent</p>
+                    @endif
+                </div>
+            </div>
+
+            <div class="card mb-4">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <div>
+                        <i class="fas fa-key me-1"></i>
+                        Licences récentes
+                    </div>
+                    <a href="{{ route('admin.users.licences', $user->id) }}" class="btn btn-sm btn-primary">
+                        Voir toutes les licences ({{ $licencesCount }})
+                    </a>
+                </div>
+                <div class="card-body">
+                    @if($licences->count() > 0)
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Clé</th>
+                                        <th>Produit</th>
+                                        <th>Client</th>
+                                        <th>Statut</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach($licences as $licence)
+                                        <tr>
+                                            <td><code>{{ $licence->licence_key }}</code></td>
+                                            <td>{{ $licence->product->name ?? 'N/A' }}</td>
+                                            <td>{{ $licence->client_name }}</td>
+                                            <td>
+                                                @if($licence->status === 'active')
+                                                    <span class="badge bg-success">Active</span>
+                                                @elseif($licence->status === 'expired')
+                                                    <span class="badge bg-warning">Expirée</span>
+                                                @else
+                                                    <span class="badge bg-secondary">Inactive</span>
+                                                @endif
+                                            </td>
+                                            <td>
+                                                <a href="#" class="btn btn-sm btn-info">
+                                                    <i class="fas fa-eye"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    @else
+                        <p class="text-center text-muted">Aucune licence récente</p>
                     @endif
                 </div>
             </div>

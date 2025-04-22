@@ -255,14 +255,10 @@
                             <td>{{ $user->created_at->format('d/m/Y H:i') }}</td>
                             <td>{{ $user->last_login_at ? $user->last_login_at->format('d/m/Y H:i') : '-' }}</td>
                             <td>
-                                @if($user->status == 'active')
-                                    <span class="badge badge-success">{{ __('Actif') }}</span>
-                                @elseif($user->status == 'inactive')
-                                    <span class="badge badge-warning">{{ __('Inactif') }}</span>
-                                @elseif($user->status == 'suspended')
-                                    <span class="badge badge-danger">{{ __('Suspendu') }}</span>
+                                @if($user->is_active)
+                                    <span class="badge bg-success">Actif</span>
                                 @else
-                                    <span class="badge badge-secondary">{{ $user->status }}</span>
+                                    <span class="badge bg-secondary">Inactif</span>
                                 @endif
                             </td>
                         </tr>

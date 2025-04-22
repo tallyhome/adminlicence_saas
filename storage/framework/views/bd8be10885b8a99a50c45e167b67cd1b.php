@@ -40,11 +40,38 @@
                         <li class="nav-item">
                             <a class="nav-link active" href="<?php echo e(url('/subscription/plans')); ?>">Plans d'abonnement</a>
                         </li>
+                        <?php if(auth()->guard()->check()): ?>
+                        <li class="nav-item">
+                            <a class="nav-link" href="<?php echo e(url('/dashboard')); ?>">Tableau de bord</a>
+                        </li>
+                        <?php endif; ?>
                     </ul>
                     <ul class="navbar-nav">
+                        <?php if(auth()->guard()->guest()): ?>
                         <li class="nav-item">
-                            <a class="nav-link" href="<?php echo e(url('/admin/login')); ?>">Connexion</a>
+                            <a class="nav-link" href="<?php echo e(route('user.login')); ?>">Connexion</a>
                         </li>
+                        <?php else: ?>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-user-circle me-1"></i> <?php echo e(auth()->user()->name); ?>
+
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                                <li><a class="dropdown-item" href="<?php echo e(url('/dashboard')); ?>"><i class="fas fa-tachometer-alt me-1"></i> Tableau de bord</a></li>
+                                <li><a class="dropdown-item" href="#"><i class="fas fa-user-cog me-1"></i> Mon profil</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li>
+                                    <form action="<?php echo e(route('user.logout')); ?>" method="POST" class="d-inline">
+                                        <?php echo csrf_field(); ?>
+                                        <button type="submit" class="dropdown-item">
+                                            <i class="fas fa-sign-out-alt me-1"></i> Déconnexion
+                                        </button>
+                                    </form>
+                                </li>
+                            </ul>
+                        </li>
+                        <?php endif; ?>
                     </ul>
                 </div>
             </div>

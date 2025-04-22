@@ -7,7 +7,13 @@ use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Admin;
 use App\Models\User;
+use App\Models\Project;
+use App\Models\Product;
+use App\Models\Licence;
+use App\Models\Plan;
+use App\Models\Subscription;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class UserManagementController extends Controller
 {
@@ -76,53 +82,166 @@ class UserManagementController extends Controller
                 abort(404, 'Utilisateur non trouvé.');
             }
             
-            // Créer des données de démonstration pour l'affichage
-            // Au lieu d'utiliser les relations qui pourraient échouer
-            
             // Vérifier explicitement si c'est un utilisateur normal ou un superadmin
             $is_super_admin = false; // Par défaut, c'est un utilisateur normal
             
-            // Données d'abonnement fictives
-            $subscription = (object)[
-                'plan' => (object)[
-                    'name' => 'Plan Standard',
-                    'price' => 29.99
-                ],
-                'status' => 'active',
-                'starts_at' => now()->subMonths(2),
-                'ends_at' => now()->addMonths(10),
-                'created_at' => now()->subMonths(2)
-            ];
+            // Récupérer l'abonnement réel de l'utilisateur
+            $subscription = Subscription::where('user_id', $user->id)->first();
+            $plan = null;
             
-            // Tickets de support fictifs
-            $tickets = collect();
-            for ($i = 1; $i <= 3; $i++) {
-                $tickets->push((object)[
-                    'id' => $i,
-                    'subject' => 'Ticket de support #' . $i,
-                    'status' => ['open', 'closed', 'pending'][rand(0, 2)],
-                    'created_at' => now()->subDays(rand(1, 30))
-                ]);
+            if ($subscription) {
+                $plan = Plan::find($subscription->plan_id);
             }
             
-            // Factures fictives
-            $invoices = collect();
-            for ($i = 1; $i <= 3; $i++) {
-                $invoices->push((object)[
-                    'id' => $i,
-                    'number' => 'INV-' . str_pad($i, 5, '0', STR_PAD_LEFT),
-                    'amount' => rand(1000, 5000) / 100,
-                    'status' => ['paid', 'pending', 'overdue'][rand(0, 2)],
-                    'created_at' => now()->subDays(rand(1, 60))
-                ]);
-            }
+            // Récupérer les projets récents
+            $projects = $user->projects()
+                        ->orderBy('created_at', 'desc')
+                        ->take(5)
+                        ->get();
+            $projectsCount = $user->projects()->count();
             
-            return view('admin.users.user_details', compact('user', 'subscription', 'tickets', 'invoices', 'is_super_admin'));
+            // Récupérer les produits récents
+            $products = $user->products()
+                        ->orderBy('created_at', 'desc')
+                        ->take(5)
+                        ->get();
+            $productsCount = $user->products()->count();
             
+            // Récupérer les licences récentes
+            $licences = $user->licences()
+                        ->orderBy('created_at', 'desc')
+                        ->take(5)
+                        ->get();
+            $licencesCount = $user->licences()->count();
+            
+            // Récupérer les factures récentes
+            $invoices = Invoice::where('user_id', $user->id)
+                        ->orderBy('created_at', 'desc')
+                        ->take(5)
+                        ->get();
+            
+            return view('admin.users.show', compact(
+                'user', 
+                'subscription', 
+                'plan', 
+                'invoices', 
+                'projects', 
+                'projectsCount', 
+                'products', 
+                'productsCount', 
+                'licences', 
+                'licencesCount'
+            ));
         } catch (\Exception $e) {
-            // En cas d'erreur, rediriger vers la liste des utilisateurs avec un message d'erreur
+            // Journaliser l'erreur
+            Log::error('Erreur lors de l\'affichage des détails de l\'utilisateur', [
+                'admin_id' => Auth::guard('admin')->id(),
+                'user_id' => $id,
+                'error' => $e->getMessage()
+            ]);
+            
+            // Rediriger avec un message d'erreur
             return redirect()->route('admin.users.index')
                 ->with('error', 'Une erreur est survenue lors de l\'affichage des détails de l\'utilisateur: ' . $e->getMessage());
+        }
+    }
+    
+    /**
+     * Affiche les projets d'un utilisateur
+     *
+     * @param int $id ID de l'utilisateur
+     * @return \Illuminate\View\View
+     */
+    public function userProjects($id)
+    {
+        try {
+            $user = User::findOrFail($id);
+            
+            // Vérifier si l'admin connecté a accès à cet utilisateur (multi-tenant)
+            if (Auth::guard('admin')->user()->is_super_admin == false && $user->admin_id != Auth::guard('admin')->id()) {
+                abort(403, 'Vous n\'avez pas accès à cet utilisateur.');
+            }
+            
+            $projects = $user->projects()->paginate(15);
+            
+            return view('admin.users.projects', compact('user', 'projects'));
+        } catch (\Exception $e) {
+            // Journaliser l'erreur
+            Log::error('Erreur lors de l\'affichage des projets de l\'utilisateur', [
+                'admin_id' => Auth::guard('admin')->id(),
+                'user_id' => $id,
+                'error' => $e->getMessage()
+            ]);
+            
+            // Rediriger avec un message d'erreur
+            return redirect()->route('admin.users.show', $id)
+                ->with('error', 'Une erreur est survenue lors de l\'affichage des projets: ' . $e->getMessage());
+        }
+    }
+    
+    /**
+     * Affiche les produits d'un utilisateur
+     *
+     * @param int $id ID de l'utilisateur
+     * @return \Illuminate\View\View
+     */
+    public function userProducts($id)
+    {
+        try {
+            $user = User::findOrFail($id);
+            
+            // Vérifier si l'admin connecté a accès à cet utilisateur (multi-tenant)
+            if (Auth::guard('admin')->user()->is_super_admin == false && $user->admin_id != Auth::guard('admin')->id()) {
+                abort(403, 'Vous n\'avez pas accès à cet utilisateur.');
+            }
+            
+            $products = $user->products()->paginate(15);
+            
+            return view('admin.users.products', compact('user', 'products'));
+        } catch (\Exception $e) {
+            // Journaliser l'erreur
+            Log::error('Erreur lors de l\'affichage des produits de l\'utilisateur', [
+                'admin_id' => Auth::guard('admin')->id(),
+                'user_id' => $id,
+                'error' => $e->getMessage()
+            ]);
+            
+            // Rediriger avec un message d'erreur
+            return redirect()->route('admin.users.show', $id)
+                ->with('error', 'Une erreur est survenue lors de l\'affichage des produits: ' . $e->getMessage());
+        }
+    }
+    
+    /**
+     * Affiche les licences d'un utilisateur
+     *
+     * @param int $id ID de l'utilisateur
+     * @return \Illuminate\View\View
+     */
+    public function userLicences($id)
+    {
+        try {
+            $user = User::findOrFail($id);
+            
+            // Vérifier si l'admin connecté a accès à cet utilisateur (multi-tenant)
+            if (Auth::guard('admin')->user()->is_super_admin == false && $user->admin_id != Auth::guard('admin')->id()) {
+                abort(403, 'Vous n\'avez pas accès à cet utilisateur.');
+            }
+            
+            $licences = $user->licences()->paginate(15);
+            
+            return view('admin.users.licences', compact('user', 'licences'));
+        } catch (\Exception $e) {
+            // Journaliser l'erreur
+            Log::error('Erreur lors de l\'affichage des licences de l\'utilisateur', [
+                'admin_id' => Auth::guard('admin')->id(),
+                'user_id' => $id,
+                'error' => $e->getMessage()
+            ]);
+            
+            // Rediriger avec un message d'erreur
+            return redirect()->route('admin.users.show', $id)
+                ->with('error', 'Une erreur est survenue lors de l\'affichage des licences: ' . $e->getMessage());
         }
     }
     
@@ -159,9 +278,84 @@ class UserManagementController extends Controller
             return view('admin.users.admin_details', compact('admin', 'userCount', 'managedUsers', 'roles'));
             
         } catch (\Exception $e) {
-            // En cas d'erreur, rediriger vers la liste des utilisateurs avec un message d'erreur
+            // Journaliser l'erreur
+            Log::error('Erreur lors de l\'affichage des détails de l\'administrateur', [
+                'admin_id' => Auth::guard('admin')->id(),
+                'error' => $e->getMessage()
+            ]);
+            
+            // Rediriger avec un message d'erreur
             return redirect()->route('admin.users.index')
                 ->with('error', 'Une erreur est survenue lors de l\'affichage des détails de l\'administrateur: ' . $e->getMessage());
+        }
+    }
+    
+    /**
+     * Met à jour l'abonnement d'un utilisateur
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param int $id ID de l'utilisateur
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function updateUserSubscription(Request $request, $id)
+    {
+        try {
+            // Récupérer l'utilisateur
+            $user = User::findOrFail($id);
+            
+            // Vérifier si l'admin connecté a accès à cet utilisateur (multi-tenant)
+            if (Auth::guard('admin')->user()->is_super_admin == false && $user->admin_id != Auth::guard('admin')->id()) {
+                abort(403, 'Vous n\'avez pas accès à cet utilisateur.');
+            }
+            
+            // Valider les données
+            $validated = $request->validate([
+                'plan_id' => 'required|exists:plans,id',
+                'status' => 'required|in:active,inactive,cancelled',
+                'ends_at' => 'nullable|date',
+            ]);
+            
+            // Récupérer l'abonnement existant ou en créer un nouveau
+            $subscription = Subscription::where('user_id', $user->id)->first();
+            
+            if (!$subscription) {
+                $subscription = new Subscription();
+                $subscription->user_id = $user->id;
+            }
+            
+            // Mettre à jour les informations d'abonnement
+            $subscription->plan_id = $validated['plan_id'];
+            $subscription->status = $validated['status'];
+            
+            if (isset($validated['ends_at'])) {
+                $subscription->ends_at = $validated['ends_at'];
+            }
+            
+            // Sauvegarder les modifications
+            $subscription->save();
+            
+            Log::info('Abonnement utilisateur mis à jour par admin', [
+                'admin_id' => Auth::guard('admin')->id(),
+                'user_id' => $user->id,
+                'subscription_id' => $subscription->id,
+                'plan_id' => $subscription->plan_id,
+                'status' => $subscription->status
+            ]);
+            
+            // Rediriger avec un message de succès
+            return redirect()->route('admin.users.show', $id)
+                ->with('success', 'L\'abonnement de l\'utilisateur a été mis à jour avec succès.');
+                
+        } catch (\Exception $e) {
+            Log::error('Erreur lors de la mise à jour de l\'abonnement utilisateur', [
+                'admin_id' => Auth::guard('admin')->id(),
+                'user_id' => $id,
+                'error' => $e->getMessage()
+            ]);
+            
+            // En cas d'erreur, rediriger avec un message d'erreur
+            return back()->withInput()
+                ->with('error', 'Une erreur est survenue lors de la mise à jour de l\'abonnement: ' . $e->getMessage());
         }
     }
     

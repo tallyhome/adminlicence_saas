@@ -19,6 +19,7 @@ class Product extends Model
         'slug',
         'description',
         'admin_id',
+        'user_id',
         'version',
         'is_active',
         'max_activations_per_licence',
@@ -44,6 +45,14 @@ class Product extends Model
     public function admin()
     {
         return $this->belongsTo(Admin::class);
+    }
+    
+    /**
+     * Relation avec l'utilisateur propriétaire du produit
+     */
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 
     /**

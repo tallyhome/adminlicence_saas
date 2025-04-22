@@ -144,32 +144,41 @@ class PlanController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
+            'description' => 'required|string',
             'price' => 'required|numeric|min:0',
             'billing_cycle' => 'required|in:monthly,yearly',
-            'description' => 'nullable|string',
-            'features' => 'nullable|array',
-            'trial_days' => 'nullable|integer|min:0',
-            'max_licenses' => 'nullable|integer|min:1',
-            'max_projects' => 'nullable|integer|min:1',
-            'max_clients' => 'nullable|integer|min:1',
-            'stripe_price_id' => 'nullable|string',
-            'paypal_plan_id' => 'nullable|string',
+            'features' => 'required|array',
+            'features.*' => 'required|string',
+            'stripe_price_id' => 'nullable|string|max:255',
+            'paypal_plan_id' => 'nullable|string|max:255',
+            'trial_days' => 'required|integer|min:0',
+            'max_projects' => 'required|integer|min:0',
+            'max_licenses' => 'required|integer|min:0',
+            'max_products' => 'required|integer|min:0',
+            'max_product_licenses' => 'required|integer|min:0',
+            'max_apis' => 'required|integer|min:0',
+            'max_api_keys' => 'required|integer|min:0',
+            'has_api_access' => 'nullable|boolean'
         ]);
-
+        
         $plan = new Plan();
         $plan->name = $request->name;
         $plan->slug = Str::slug($request->name);
+        $plan->description = $request->description;
         $plan->price = $request->price;
         $plan->billing_cycle = $request->billing_cycle;
-        $plan->description = $request->description;
         $plan->features = $request->features;
-        $plan->trial_days = $request->trial_days ?? 0;
-        $plan->max_licenses = $request->max_licenses ?? 1;
-        $plan->max_projects = $request->max_projects ?? 1;
-        $plan->max_clients = $request->max_clients ?? 1;
+        $plan->is_active = $request->has('is_active');
         $plan->stripe_price_id = $request->stripe_price_id;
         $plan->paypal_plan_id = $request->paypal_plan_id;
-        $plan->is_active = $request->has('is_active');
+        $plan->trial_days = $request->trial_days;
+        $plan->max_projects = $request->max_projects;
+        $plan->max_licenses = $request->max_licenses;
+        $plan->max_products = $request->max_products;
+        $plan->max_product_licenses = $request->max_product_licenses;
+        $plan->max_apis = $request->max_apis;
+        $plan->max_api_keys = $request->max_api_keys;
+        $plan->has_api_access = $request->has('has_api_access');
         $plan->save();
 
         return redirect()->route('admin.subscriptions.index')
@@ -196,78 +205,54 @@ class PlanController extends Controller
      */
     public function update(Request $request, $id)
     {
-        // Validation des données
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'price' => 'required|numeric|min:0',
-            'billing_cycle' => 'required|in:monthly,yearly',
-            'description' => 'nullable|string',
-            'features' => 'nullable|array',
-            'trial_days' => 'nullable|integer|min:0',
-            'max_licenses' => 'nullable|integer|min:1',
-            'max_projects' => 'nullable|integer|min:1',
-            'max_clients' => 'nullable|integer|min:1',
-            'stripe_price_id' => 'nullable|string',
-            'paypal_plan_id' => 'nullable|string',
-        ]);
-
         try {
-            // Récupérer le plan à partir de l'ID
+            // Valider les données
+            $request->validate([
+                'name' => 'required|string|max:255',
+                'description' => 'required|string',
+                'price' => 'required|numeric|min:0',
+                'billing_cycle' => 'required|in:monthly,yearly',
+                'features' => 'required|array',
+                'features.*' => 'required|string',
+                'stripe_price_id' => 'nullable|string|max:255',
+                'paypal_plan_id' => 'nullable|string|max:255',
+                'trial_days' => 'required|integer|min:0',
+                'max_projects' => 'required|integer|min:0',
+                'max_licenses' => 'required|integer|min:0',
+                'max_products' => 'required|integer|min:0',
+                'max_product_licenses' => 'required|integer|min:0',
+                'max_apis' => 'required|integer|min:0',
+                'max_api_keys' => 'required|integer|min:0',
+                'has_api_access' => 'nullable|boolean'
+            ]);
+            
+            // Récupérer le plan à mettre à jour
             $plan = Plan::findOrFail($id);
             
-            // Récupérer les caractéristiques du formulaire et les encoder en JSON
-            $featuresJson = json_encode($request->features ?: []);
+            // Mettre à jour les champs du plan
+            $plan->name = $request->name;
+            $plan->description = $request->description;
+            $plan->price = $request->price;
+            $plan->billing_cycle = $request->billing_cycle;
+            $plan->features = $request->features;
+            $plan->is_active = $request->has('is_active');
+            $plan->stripe_price_id = $request->stripe_price_id;
+            $plan->paypal_plan_id = $request->paypal_plan_id;
+            $plan->trial_days = $request->trial_days;
+            $plan->max_projects = $request->max_projects;
+            $plan->max_licenses = $request->max_licenses;
+            $plan->max_products = $request->max_products;
+            $plan->max_product_licenses = $request->max_product_licenses;
+            $plan->max_apis = $request->max_apis;
+            $plan->max_api_keys = $request->max_api_keys;
+            $plan->has_api_access = $request->has('has_api_access');
             
-            // Log pour débogage
-            \Illuminate\Support\Facades\Log::info('Mise à jour du plan ' . $id, [
-                'features_from_request' => $request->features,
-                'features_json' => $featuresJson
-            ]);
+            // Enregistrer les modifications
+            $plan->save();
             
-            // Utiliser une requête SQL directe pour la mise à jour
-            $result = \Illuminate\Support\Facades\DB::update("
-                UPDATE plans 
-                SET name = ?, 
-                    price = ?, 
-                    billing_cycle = ?, 
-                    description = ?, 
-                    features = ?, 
-                    trial_days = ?, 
-                    max_licenses = ?, 
-                    max_projects = ?, 
-                    max_clients = ?, 
-                    stripe_price_id = ?, 
-                    paypal_plan_id = ?, 
-                    is_active = ?, 
-                    updated_at = ? 
-                WHERE id = ?
-            ", [
-                $request->name,
-                $request->price,
-                $request->billing_cycle,
-                $request->description,
-                $featuresJson,
-                $request->trial_days ?? 0,
-                $request->max_licenses ?? 1,
-                $request->max_projects ?? 1,
-                $request->max_clients ?? 1,
-                $request->stripe_price_id,
-                $request->paypal_plan_id,
-                $request->has('is_active') ? 1 : 0,
-                now(),
-                $id
-            ]);
-
-            // Vérifier si la mise à jour a réussi
-            if ($result === 0) {
-                throw new \Exception('Aucune ligne n\'a été mise à jour dans la base de données.');
-            }
-
-            // Vider complètement le cache
+            // Vider le cache pour s'assurer que les modifications sont visibles immédiatement
             \Illuminate\Support\Facades\Cache::flush();
-            \Illuminate\Support\Facades\Artisan::call('config:clear');
-            \Illuminate\Support\Facades\Artisan::call('cache:clear');
-
+            
             return redirect()->route('admin.subscriptions.index')
                 ->with('success', 'Plan mis à jour avec succès.');
         } catch (\Exception $e) {
@@ -324,14 +309,18 @@ class PlanController extends Controller
                 'description' => 'Plan de base pour les petites équipes',
                 'price' => 9.99,
                 'billing_cycle' => 'monthly',
-                'features' => ['5 projets', '10 licences', 'Support standard'],
+                'features' => ['5 projets', '10 licences projet', '5 produits', 'Support standard'],
                 'is_active' => true,
                 'stripe_price_id' => 'price_basic',
                 'paypal_plan_id' => 'P-BASIC',
                 'trial_days' => 14,
                 'max_licenses' => 10,
                 'max_projects' => 5,
-                'max_clients' => 10
+                'max_products' => 5,
+                'max_product_licenses' => 10,
+                'max_apis' => 0,
+                'max_api_keys' => 0,
+                'has_api_access' => false
             ]
         );
         
@@ -343,14 +332,18 @@ class PlanController extends Controller
                 'description' => 'Plan professionnel pour PME',
                 'price' => 19.99,
                 'billing_cycle' => 'monthly',
-                'features' => ['20 projets', '50 licences', 'Support premium', 'API accès'],
+                'features' => ['20 projets', '50 licences projet', '20 produits', '30 licences produit', 'Support premium', 'Accès API basique'],
                 'is_active' => true,
                 'stripe_price_id' => 'price_pro',
                 'paypal_plan_id' => 'P-PRO',
                 'trial_days' => 7,
                 'max_licenses' => 50,
                 'max_projects' => 20,
-                'max_clients' => 50
+                'max_products' => 20,
+                'max_product_licenses' => 30,
+                'max_apis' => 2,
+                'max_api_keys' => 5,
+                'has_api_access' => true
             ]
         );
         
@@ -362,14 +355,18 @@ class PlanController extends Controller
                 'description' => 'Plan entreprise pour grandes sociétés',
                 'price' => 49.99,
                 'billing_cycle' => 'monthly',
-                'features' => ['Projets illimités', 'Licences illimitées', 'Support prioritaire 24/7', 'API accès', 'Personnalisation'],
+                'features' => ['Projets illimités', 'Licences projet illimitées', 'Produits illimités', 'Licences produit illimitées', 'APIs illimitées', 'Support prioritaire 24/7', 'Accès API complet', 'Personnalisation'],
                 'is_active' => true,
                 'stripe_price_id' => 'price_enterprise',
                 'paypal_plan_id' => 'P-ENTERPRISE',
                 'trial_days' => 0,
-                'max_licenses' => 999,
-                'max_projects' => 999,
-                'max_clients' => 999
+                'max_licenses' => 0,
+                'max_projects' => 0,
+                'max_products' => 0,
+                'max_product_licenses' => 0,
+                'max_apis' => 0,
+                'max_api_keys' => 0,
+                'has_api_access' => true
             ]
         );
         

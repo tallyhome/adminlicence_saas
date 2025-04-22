@@ -38,6 +38,7 @@ class Kernel extends HttpKernel
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
             \App\Http\Middleware\LocaleMiddleware::class,
             \App\Http\Middleware\RedirectIfNotInstalled::class,
+            \App\Http\Middleware\PreventAdminLoginRedirect::class,
         ],
 
         'api' => [
@@ -67,5 +68,6 @@ class Kernel extends HttpKernel
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'admin' => \App\Http\Middleware\AdminMiddleware::class,
         'locale' => \App\Http\Middleware\LocaleMiddleware::class,
+        'subscription.limits' => \App\Http\Middleware\CheckSubscriptionLimits::class,
     ];
 }

@@ -48,18 +48,18 @@ class LicenceVerificationController extends Controller
         }
 
         // Vérification du statut de la licence
-        if ($licence->status !== 'active') {
+        if (!$licence->is_active) {
             return response()->json([
                 'success' => false,
-                'message' => 'Licence ' . $this->getStatusMessage($licence->status),
-                'status' => $licence->status,
+                'message' => 'Licence ' . $this->getStatusMessage($licence->is_active),
+                'status' => $licence->is_active,
             ], 403);
         }
 
         // Vérification de l'expiration
         if ($licence->expires_at && $licence->expires_at->isPast()) {
             // Mise à jour du statut de la licence
-            $licence->status = 'expired';
+            $licence->is_active = false;
             $licence->save();
 
             return response()->json([
@@ -78,7 +78,7 @@ class LicenceVerificationController extends Controller
             'success' => true,
             'message' => 'Licence valide',
             'licence' => [
-                'status' => $licence->status,
+                'status' => $licence->is_active,
                 'expires_at' => $licence->expires_at ? $licence->expires_at->format('Y-m-d') : null,
                 'max_activations' => $licence->max_activations,
                 'current_activations' => $licence->current_activations,
@@ -129,18 +129,18 @@ class LicenceVerificationController extends Controller
         }
 
         // Vérification du statut de la licence
-        if ($licence->status !== 'active') {
+        if (!$licence->is_active) {
             return response()->json([
                 'success' => false,
-                'message' => 'Licence ' . $this->getStatusMessage($licence->status),
-                'status' => $licence->status,
+                'message' => 'Licence ' . $this->getStatusMessage($licence->is_active),
+                'status' => $licence->is_active,
             ], 403);
         }
 
         // Vérification de l'expiration
         if ($licence->expires_at && $licence->expires_at->isPast()) {
             // Mise à jour du statut de la licence
-            $licence->status = 'expired';
+            $licence->is_active = false;
             $licence->save();
 
             return response()->json([
@@ -287,12 +287,10 @@ class LicenceVerificationController extends Controller
     private function getStatusMessage($status)
     {
         switch ($status) {
-            case 'expired':
+            case false:
                 return 'expirée';
-            case 'suspended':
-                return 'suspendue';
-            case 'revoked':
-                return 'révoquée';
+            case true:
+                return 'active';
             default:
                 return 'invalide';
         }

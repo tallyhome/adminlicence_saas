@@ -257,17 +257,19 @@ Route::middleware('auth:admin')->group(function () {
     });
     
     // Gestion des utilisateurs
-    Route::prefix('users')->group(function () {
-        Route::get('/', [App\Http\Controllers\Admin\UserController::class, 'index'])->name('admin.users.index');
-        Route::get('/create', [App\Http\Controllers\Admin\UserController::class, 'create'])->name('admin.users.create');
-        Route::post('/', [App\Http\Controllers\Admin\UserController::class, 'store'])->name('admin.users.store');
-        Route::get('/user/{id}', [App\Http\Controllers\Admin\UserController::class, 'show'])->name('admin.users.show');
-        Route::get('/{user}/edit', [App\Http\Controllers\Admin\UserController::class, 'edit'])->name('admin.users.edit');
-        Route::put('/{user}', [App\Http\Controllers\Admin\UserController::class, 'update'])->name('admin.users.update');
-        Route::delete('/{user}', [App\Http\Controllers\Admin\UserController::class, 'destroy'])->name('admin.users.destroy');
+    Route::prefix('users')->name('users.')->group(function () {
+        Route::get('/', [App\Http\Controllers\Admin\UserManagementController::class, 'index'])->name('index');
+        Route::get('/{id}', [App\Http\Controllers\Admin\UserManagementController::class, 'show'])->name('show');
+        Route::get('/{id}/admin', [App\Http\Controllers\Admin\UserManagementController::class, 'showAdmin'])->name('show.admin');
+        Route::put('/{id}/admin', [App\Http\Controllers\Admin\UserManagementController::class, 'updateAdmin'])->name('update.admin');
         
-        // Route pour afficher les détails d'un admin
-        Route::get('/admin/{id}', [App\Http\Controllers\Admin\AdminController::class, 'show'])->name('admin.admins.show');
+        // Nouvelles routes pour la gestion des projets, produits et licences des utilisateurs
+        Route::get('/{id}/projects', [App\Http\Controllers\Admin\UserManagementController::class, 'userProjects'])->name('projects');
+        Route::get('/{id}/products', [App\Http\Controllers\Admin\UserManagementController::class, 'userProducts'])->name('products');
+        Route::get('/{id}/licences', [App\Http\Controllers\Admin\UserManagementController::class, 'userLicences'])->name('licences');
+        
+        // Route pour mettre à jour l'abonnement d'un utilisateur
+        Route::put('/{id}/subscription', [App\Http\Controllers\Admin\UserManagementController::class, 'updateUserSubscription'])->name('update.subscription');
     });
     
     // Gestion des plans d'abonnement

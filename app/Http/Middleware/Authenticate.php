@@ -23,7 +23,7 @@ class Authenticate extends Middleware
             return null;
         }
         
-        // Rediriger directement vers l'URL de connexion admin au lieu d'utiliser route()
-        return '/admin/login';
+        // SOLUTION RADICALE : toujours rediriger vers la page de connexion utilisateur
+        return '/user/login';
     }
 }

@@ -59,6 +59,10 @@ class SubscriptionController extends Controller
                              (config('payment.paypal.enabled', false) || 
                               !empty(config('services.paypal.client_id')));
             
+            // Forcer l'activation des passerelles de paiement pour les tests
+            $stripeEnabled = true;
+            $paypalEnabled = true;
+            
             // Toujours afficher la vue des plans, sans redirection
             return view('subscription.plans', [
                 'plans' => $plans,
@@ -214,7 +218,7 @@ class SubscriptionController extends Controller
         // if (!$this->isSimpleUser()) abort(403);
         
         // Journaliser les données reçues pour le débogage
-        \Log::info('Stripe subscription request received', $request->all());
+        Log::info('Stripe subscription request received', $request->all());
         
         $request->validate([
             'plan_id' => 'required|string',
@@ -249,12 +253,12 @@ class SubscriptionController extends Controller
             }
             
             // Simuler un succès pour le débogage
-            \Log::info('Stripe subscription simulated success for plan: ' . $plan->name);
+            Log::info('Stripe subscription simulated success for plan: ' . $plan->name);
             
             return redirect()->route('subscription.success')
                 ->with('success', 'Abonnement créé avec succès (simulation).');
         } catch (\Exception $e) {
-            \Log::error('Erreur d\'abonnement Stripe : ' . $e->getMessage());
+            Log::error('Erreur d\'abonnement Stripe : ' . $e->getMessage());
             
             return redirect()->back()
                 ->with('error', 'Une erreur est survenue : ' . $e->getMessage());
@@ -273,7 +277,7 @@ class SubscriptionController extends Controller
         // if (!$this->isSimpleUser()) abort(403);
         
         // Journaliser les données reçues pour le débogage
-        \Log::info('PayPal subscription request received', $request->all());
+        Log::info('PayPal subscription request received', $request->all());
         
         $request->validate([
             'plan_id' => 'required|string',
@@ -297,12 +301,12 @@ class SubscriptionController extends Controller
             }
             
             // Simuler un succès pour le débogage
-            \Log::info('PayPal subscription simulated success for plan: ' . $plan->name);
+            Log::info('PayPal subscription simulated success for plan: ' . $plan->name);
             
             return redirect()->route('subscription.success')
                 ->with('success', 'Abonnement PayPal créé avec succès (simulation).');
         } catch (\Exception $e) {
-            \Log::error('Erreur d\'abonnement PayPal : ' . $e->getMessage());
+            Log::error('Erreur d\'abonnement PayPal : ' . $e->getMessage());
             
             return redirect()->back()
                 ->with('error', 'Une erreur est survenue : ' . $e->getMessage());
@@ -886,5 +890,15 @@ class SubscriptionController extends Controller
         
         // Si on arrive ici, c'est un admin mais pas un super-admin
         return false;
+    }
+
+    /**
+     * Affiche la page de succès après un abonnement réussi
+     * 
+     * @return \Illuminate\View\View
+     */
+    public function success()
+    {
+        return view('subscription.success');
     }
 }

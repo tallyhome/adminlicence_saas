@@ -138,13 +138,13 @@ return [
     */
 
     'routes' => [
-        'login' => 'admin.login',
-        'logout' => 'admin.logout',
+        'login' => 'user.login',
+        'logout' => 'user.logout',
         'register' => null,
-        'password.request' => 'admin.password.request',
-        'password.reset' => 'admin.password.reset',
-        'password.email' => 'admin.password.email',
-        'password.update' => 'admin.password.update',
+        'password.request' => 'password.request',
+        'password.reset' => 'password.reset',
+        'password.email' => 'password.email',
+        'password.update' => 'password.update',
         'verification.notice' => null,
         'verification.verify' => null,
         'verification.send' => null,
@@ -165,7 +165,7 @@ return [
     */
 
     'login_routes' => [
-        'web' => 'admin.login',
+        'web' => 'login',
         'admin' => 'admin.login',
     ],
 

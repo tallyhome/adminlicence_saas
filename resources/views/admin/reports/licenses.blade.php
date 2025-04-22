@@ -208,14 +208,12 @@
                             <td>{{ $license->last_activity_at ? $license->last_activity_at->format('d/m/Y H:i') : '-' }}</td>
                             <td>{{ $license->usage_count }}</td>
                             <td>
-                                @if($license->status == 'active')
-                                    <span class="badge badge-success">{{ __('Active') }}</span>
-                                @elseif($license->status == 'pending')
-                                    <span class="badge badge-warning">{{ __('En attente') }}</span>
-                                @elseif($license->status == 'expired')
-                                    <span class="badge badge-danger">{{ __('Expirée') }}</span>
-                                @elseif($license->status == 'revoked')
-                                    <span class="badge badge-secondary">{{ __('Révoquée') }}</span>
+                                @if($license->is_active)
+                                    <span class="badge bg-success">Active</span>
+                                @elseif($license->expiration_date && $license->expiration_date->isPast())
+                                    <span class="badge bg-warning">Expirée</span>
+                                @else
+                                    <span class="badge bg-secondary">Inactive</span>
                                 @endif
                             </td>
                         </tr>

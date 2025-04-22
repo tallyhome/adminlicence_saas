@@ -229,7 +229,7 @@
                                     <span class="badge bg-danger">Expiré</span>
                                 <?php endif; ?>
                             </td>
-                            <td><?php echo e($subscription->start_date->format('d/m/Y')); ?></td>
+                            <td><?php echo e($subscription->start_date ? $subscription->start_date->format('d/m/Y') : 'N/A'); ?></td>
                             <td><?php echo e($subscription->end_date ? $subscription->end_date->format('d/m/Y') : 'N/A'); ?></td>
                         </tr>
                     <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>

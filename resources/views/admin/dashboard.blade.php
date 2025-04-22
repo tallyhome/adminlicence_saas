@@ -331,8 +331,8 @@ use Illuminate\Support\Facades\Auth;
                             <td>{{ $key->serial_key }}</td>
                             <td>{{ $key->project->name }}</td>
                             <td>
-                                <span class="badge badge-{{ $key->status == 'active' ? 'success' : ($key->status == 'suspended' ? 'warning' : 'danger') }}">
-                                    {{ __(ucfirst($key->status)) }}
+                                <span class="badge badge-{{ $key->is_active ? 'success' : 'danger' }}">
+                                    {{ $key->is_active ? 'Active' : 'Inactive' }}
                                 </span>
                             </td>
                             <td>{{ $key->created_at->format('d/m/Y H:i') }}</td>

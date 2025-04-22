@@ -19,7 +19,7 @@ class Licence extends Model
         'licence_key',
         'user_id',
         'product_id',
-        'status',
+        'is_active',
         'expires_at',
         'max_activations',
         'current_activations',
@@ -35,16 +35,15 @@ class Licence extends Model
     protected $casts = [
         'expires_at' => 'datetime',
         'last_check_at' => 'datetime',
-        'metadata' => 'array'
+        'metadata' => 'array',
+        'is_active' => 'boolean'
     ];
 
     /**
      * Les statuts possibles d'une licence
      */
-    const STATUS_ACTIVE = 'active';
-    const STATUS_EXPIRED = 'expired';
-    const STATUS_SUSPENDED = 'suspended';
-    const STATUS_REVOKED = 'revoked';
+    const STATUS_ACTIVE = true;
+    const STATUS_INACTIVE = false;
 
     /**
      * Relation avec l'utilisateur propriétaire de la licence
@@ -88,7 +87,7 @@ class Licence extends Model
      */
     public function isActive()
     {
-        return $this->status === self::STATUS_ACTIVE && 
+        return $this->is_active && 
                ($this->expires_at === null || $this->expires_at->isFuture());
     }
 

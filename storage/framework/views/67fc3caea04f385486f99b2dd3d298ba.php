@@ -224,6 +224,13 @@ $admin = Auth::guard('admin')->user();
                                     <i class="fab fa-paypal me-1"></i> PayPal
                                 </a>
                             </li>
+                            <?php if(Auth::guard('admin')->check() && Auth::guard('admin')->user()->is_super_admin): ?>
+                            <li class="nav-item">
+                                <a class="nav-link <?php echo e(request()->routeIs('admin.payment-test') ? 'active' : ''); ?>" href="<?php echo e(route('admin.payment-test')); ?>">
+                                    <i class="fas fa-vial me-1"></i> Tester les paiements
+                                </a>
+                            </li>
+                            <?php endif; ?>
                         </ul>
                     </div>
                 </li>
@@ -344,7 +351,7 @@ $admin = Auth::guard('admin')->user();
                                     <i class="fas fa-plus-circle me-2"></i> Créer ticket
                                 </a>
                             </li>
-                            <?php if(auth()->guard('admin')->user()->is_super_admin): ?>
+                            <?php if(auth()->guard('admin')->check() && auth()->guard('admin')->user() && auth()->guard('admin')->user()->is_super_admin): ?>
                             <li class="nav-item">
                                 <a class="nav-link <?php echo e(request()->routeIs('admin.super.tickets.*') ? 'active' : ''); ?>" href="<?php echo e(route('admin.super.tickets.index')); ?>">
                                     <i class="fas fa-user-shield me-2"></i> Super Admin Tickets
@@ -451,8 +458,12 @@ $admin = Auth::guard('admin')->user();
                             </li>
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
-                                    <?php echo e(Auth::guard('admin')->user()->name); ?>
+                                    <?php if(Auth::guard('admin')->check()): ?>
+                                        <?php echo e(Auth::guard('admin')->user()->name); ?>
 
+                                    <?php else: ?>
+                                        Utilisateur
+                                    <?php endif; ?>
                                 </a>
                                 <ul class="dropdown-menu dropdown-menu-end">
                                     <li>
